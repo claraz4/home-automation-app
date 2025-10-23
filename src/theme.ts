@@ -1,0 +1,57 @@
+import { StyleSheet, TextStyle, Platform } from "react-native";
+
+type HeadingVariant = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+type TextVariant = "body";
+
+export const colors = {
+    primary: {
+        25:  '#fafaff',
+        50:  '#EFF4FF',
+        100: '#D1E0FF',
+        200: '#B2CCFF',
+        300: '#84ADFF',
+        400: '#528BFF',
+        500: '#2970FF',
+        600: '#155EEF',
+        700: '#004EEB',
+        800: '#0040C1',
+        900: '#00359E',
+        950: '#002266',
+    },
+    text: "#111",
+    background: "#fff",
+    gray: {
+        25:  '#FCFCFC',
+        50:  '#FAFAFA',
+        100: '#F5F5F5',
+        200: '#E5E5E5',
+        300: '#D4D4D4',
+        400: '#A3A3A3',
+        500: '#737373',
+        600: '#525252',
+        700: '#404040',
+        800: '#262626',
+        900: '#171717',
+    }
+};
+
+export const fontStyle: TextStyle = {
+    fontFamily: Platform.select({
+        ios: 'System',
+        android: 'Roboto',
+        default: 'System',
+    }),
+};
+
+export const headings = StyleSheet.create<Record<HeadingVariant, TextStyle>>({
+    h1: { fontSize: 32, fontWeight: "700", color: colors.text },
+    h2: { fontSize: 28, fontWeight: "600", color: colors.text },
+    h3: { fontSize: 22, fontWeight: "600", color: colors.text },
+    h4: { fontSize: 18, fontWeight: "600", color: colors.text },
+    h5: { fontSize: 16, fontWeight: "600", color: colors.text },
+    h6: { fontSize: 14, fontWeight: "600", color: colors.text },
+});
+
+export const text = StyleSheet.create<Record<TextVariant, TextStyle>>({
+    body: { fontSize: 16, fontWeight: "500", color: colors.text },
+});
