@@ -24,5 +24,6 @@ export default function ScreenView({
 const screenViewStyles = StyleSheet.create({
   commonStyle: {
     backgroundColor: colors.primary[25],
+    justifyContent: "flex-start",
   },
 });

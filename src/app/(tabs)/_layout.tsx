@@ -2,8 +2,8 @@ import { Tabs } from "expo-router";
 import Octicons from "@expo/vector-icons/Octicons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { colors } from "../../theme";
-import { layoutStyles } from "./layoutStyles";
+import { colors, spaces } from "../../theme";
+import { StyleSheet } from "react-native";
 
 export default function Layout() {
   return (
@@ -55,3 +55,9 @@ export default function Layout() {
     </Tabs>
   );
 }
+
+const layoutStyles = StyleSheet.create({
+  tabBar: {
+    paddingTop: spaces.xs,
+  },
+});
