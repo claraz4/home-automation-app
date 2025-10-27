@@ -1,29 +1,56 @@
 import React from "react";
-import { StyleSheet, View, ViewProps } from "react-native";
-import { colors } from "../../theme";
+import { ScrollView, StyleSheet, View, ViewProps } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { colors } from "../../theme";
 
 interface ScreenViewProps extends ViewProps {
   safe?: boolean;
+  scroll?: boolean;
+  children?: React.ReactNode;
 }
 
 export default function ScreenView({
   style,
   safe = false,
+  scroll = true,
+  children,
   ...props
 }: ScreenViewProps) {
+  const Container = scroll ? ScrollView : View;
+
   if (safe) {
     return (
-      <SafeAreaView {...props} style={[style, screenViewStyles.commonStyle]} />
+      <SafeAreaView style={styles.safeArea}>
+        <Container
+          {...props}
+          style={[styles.common, style]}
+          contentContainerStyle={scroll ? styles.contentContainer : undefined}
+        >
+          {children}
+        </Container>
+      </SafeAreaView>
     );
-  } else {
-    return <View {...props} style={[style, screenViewStyles.commonStyle]} />;
   }
+
+  return (
+    <Container
+      {...props}
+      style={[styles.common, style]}
+      contentContainerStyle={scroll ? styles.contentContainer : undefined}
+    >
+      {children}
+    </Container>
+  );
 }
 
-const screenViewStyles = StyleSheet.create({
-  commonStyle: {
+const styles = StyleSheet.create({
+  safeArea: { flex: 1 },
+  common: {
     backgroundColor: colors.primary[25],
+    flex: 1,
+  },
+  contentContainer: {
+    flexGrow: 1,
     justifyContent: "flex-start",
   },
 });

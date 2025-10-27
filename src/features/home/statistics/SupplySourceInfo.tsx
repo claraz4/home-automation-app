@@ -51,6 +51,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     columnGap: spaces.md,
     alignItems: "center",
+    padding: spaces.md,
+    paddingRight: spaces.lg,
   },
   supplySourceHeadingContainer: {
     flexDirection: "row",
