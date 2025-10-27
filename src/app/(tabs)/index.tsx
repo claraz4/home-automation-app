@@ -1,26 +1,30 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import AppHeader from "../../features/home/AppHeader";
 import ScreenView from "@/src/shared/ui/ScreenView";
+import Rooms from "../../features/home/rooms/Rooms";
+import { spaces } from "@/src/theme";
+import Statistics from "@/src/features/home/statistics/Statistics";
 
 export default function App() {
   return (
-    <ScreenView style={styles.container}>
+    <ScreenView>
       <AppHeader />
+      <View style={styles.componentsContainer}>
+        <Rooms style={styles.componentsSubContainer} />
+        <Statistics style={styles.componentsSubContainer} />
+      </View>
     </ScreenView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+  componentsContainer: {
+    padding: spaces.md,
+    height: "100%",
+    rowGap: spaces.lg,
   },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 10,
+  componentsSubContainer: {
+    rowGap: spaces.md,
   },
 });

@@ -1,7 +1,7 @@
 import { StyleSheet, TextStyle, Platform } from "react-native";
 
 type HeadingVariant = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-type TextVariant = "body" | "bodySecondary";
+export type TextVariant = "body" | "bodySecondary" | "emphasis" | "bodyWhite";
 
 export const colors = {
   primary: {
@@ -33,6 +33,10 @@ export const colors = {
     800: "#262626",
     900: "#171717",
   },
+  status: {
+    fail: "#da2f2f",
+    success: "#6bcb6f",
+  },
 };
 
 export const fontStyle: TextStyle = {
@@ -54,8 +58,16 @@ export const headings = StyleSheet.create<Record<HeadingVariant, TextStyle>>({
 
 export const text = StyleSheet.create<Record<TextVariant, TextStyle>>({
   body: { fontSize: 16, fontWeight: "500", color: colors.text },
+  bodyWhite: { fontSize: 16, fontWeight: "500", color: "white" },
   bodySecondary: { fontSize: 16, fontWeight: "400", color: colors.gray[500] },
+  emphasis: { fontSize: 16, fontWeight: "400", color: colors.primary[500] },
 });
+
+export const borderRadius = {
+  sm: 5,
+  md: 10,
+  lg: 15,
+};
 
 export const spaces = {
   xxxs: 2,
@@ -67,4 +79,15 @@ export const spaces = {
   xl: 32,
   xxl: 40,
   xxxl: 48,
+};
+export type Space = keyof typeof spaces;
+
+export const boxShadow = {
+  normal: {
+    shadowColor: "rgba(0,0,0,0.2)",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 1,
+    shadowRadius: 1,
+    elevation: 2,
+  },
 };
