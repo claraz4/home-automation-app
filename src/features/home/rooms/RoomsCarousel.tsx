@@ -1,10 +1,10 @@
 import { View, StyleSheet, ScrollView } from "react-native";
 import RoomBox from "@/src/features/home/rooms/RoomBox";
-import { Room } from "../types/Room";
+import { RoomDTO } from "../types/RoomDTO";
 import { spaces } from "@/src/theme";
 
 interface RoomsCarouselProps {
-  rooms: Room[];
+  rooms: RoomDTO[];
 }
 
 export default function RoomsCarousel({ rooms }: RoomsCarouselProps) {
@@ -12,13 +12,7 @@ export default function RoomsCarousel({ rooms }: RoomsCarouselProps) {
     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
       <View style={roomsCarouselStyles.roomsCarouselContainer}>
         {rooms.map((room) => (
-          <RoomBox
-            key={room.id}
-            roomId={room.id}
-            roomName={room.name}
-            deviceNumber={room.deviceNumber}
-            roomType={room.type}
-          ></RoomBox>
+          <RoomBox key={room.roomId} room={room}></RoomBox>
         ))}
       </View>
     </ScrollView>

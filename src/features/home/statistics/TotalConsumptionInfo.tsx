@@ -5,35 +5,25 @@ import { AppText } from "@/src/shared/ui/AppText";
 import { plugStable, plugWarning } from "@/src/icons";
 import { statisticsCommonStyles } from "@/src/features/home/statistics/statisticsCommonStyles";
 
-type SourceType = "EDL" | "Generator";
-
-interface SupplySourceInfoProps {
+interface TotalConsumptionInfoProps {
   style?: StyleProp<ViewStyle>;
-  source: SourceType;
-  voltage: number;
-  isStable: boolean;
+  consumption: number;
 }
 
-export default function SupplySourceInfo({
+export default function TotalConsumptionInfo({
   style,
-  source,
-  voltage,
-  isStable,
-}: SupplySourceInfoProps) {
+  consumption,
+}: TotalConsumptionInfoProps) {
+  const isStable = true;
   const stabilityColor = isStable ? colors.status.success : colors.status.fail;
 
   return (
     <View style={[statisticsCommonStyles.supplySourceContainer, style]}>
-      {isStable
-        ? plugStable(stabilityColor, 38)
-        : plugWarning(stabilityColor, 38)}
+      {plugStable(stabilityColor, 40)}
       <View>
-        <Heading variant="h4">Supply Source</Heading>
-
+        <Heading variant="h4">Daily Consumption</Heading>
         <View style={statisticsCommonStyles.supplySourceInfoContainer}>
-          <AppText>
-            {source} {voltage}V
-          </AppText>
+          <AppText>{consumption} kWh</AppText>
 
           <View style={statisticsCommonStyles.supplySourceStatusContainer}>
             <AppText>Status:</AppText>

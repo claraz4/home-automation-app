@@ -1,12 +1,12 @@
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { JSX } from "react";
-import { RoomType } from "@/src/features/home/types/Room";
+import { RoomType } from "@/src/features/home/types/RoomDTO";
 
 export const roomIcons = (
   color: string,
   size: number,
-): Record<RoomType, JSX.Element> => ({
+): Record<string, JSX.Element> => ({
   kitchen: <FontAwesome6 name="kitchen-set" size={size} color={color} />,
   livingRoom: <FontAwesome6 name="couch" size={size} color={color} />,
   bedroom: <FontAwesome6 name="bed" size={size} color={color} />,

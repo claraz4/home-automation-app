@@ -1,35 +1,29 @@
 import { StyleSheet, View } from "react-native";
 import { spaces, colors, borderRadius } from "@/src/theme";
 import { AppText } from "@/src/shared/ui/AppText";
-import { RoomType } from "@/src/features/home/types/Room";
 import { roomIcons } from "../data/roomIcons";
+import { RoomDTO } from "@/src/features/home/types/RoomDTO";
 
 interface RoomBoxProps {
-  roomType?: RoomType;
+  room: RoomDTO;
   size?: number;
   color?: string;
-  roomName: string;
-  deviceNumber: number;
-  roomId: number;
 }
 
 export default function RoomBox({
-  roomType = "default",
   size = spaces.xxl,
   color = "white",
-  roomName,
-  deviceNumber,
-  roomId,
+  room,
 }: RoomBoxProps) {
   return (
-    <View style={roomBoxStyles.roomBoxContainer} key={roomId}>
+    <View style={roomBoxStyles.roomBoxContainer} key={room.roomId}>
       <View style={roomBoxStyles.roomIconContainer}>
-        {roomIcons(color, size)[roomType]}
+        {roomIcons(color, size)[room.roomType]}
       </View>
       <View style={roomBoxStyles.roomInfoContainer}>
-        <AppText variant="bodyWhite">{roomName}</AppText>
+        <AppText variant="bodyWhite">{room.name}</AppText>
         <AppText variant="bodyWhite" opacity={0.7}>
-          {deviceNumber} devices
+          {room.totalPlugsCount} devices
         </AppText>
       </View>
     </View>

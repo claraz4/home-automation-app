@@ -1,4 +1,4 @@
-import { Room } from "@/src/features/home/types/Room";
+import { Room } from "@/src/features/home/types/RoomDTO";
 
 export const roomsList: Room[] = [
   {

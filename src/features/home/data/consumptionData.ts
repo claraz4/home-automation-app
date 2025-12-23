@@ -3,5 +3,4 @@ export const data = [
   { label: "Living Room", value: 30 },
   { label: "Bedroom", value: 20 },
   { label: "Bathroom", value: 15 },
-  { label: "Bathroom", value: 15 },
 ];

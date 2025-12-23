@@ -2,20 +2,36 @@ import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { Heading } from "@/src/shared/ui/Heading";
 import { AppText } from "@/src/shared/ui/AppText";
 import RoomsCarousel from "@/src/features/home/rooms/RoomsCarousel";
-import { roomsList } from "@/src/features/home/data/roomsList";
+import { householdApi } from "@/src/api/api";
+import { useEffect, useState } from "react";
+import { RoomDTO } from "@/src/features/home/types/RoomDTO";
 
 interface RoomsProps {
   style?: StyleProp<ViewStyle>;
 }
 
 export default function Rooms({ style }: RoomsProps) {
+  const [roomsInfo, setRoomsInfo] = useState<RoomDTO[]>([]);
+
+  useEffect(() => {
+    // Get the general rooms info
+    const getRoomsInfo = () => {
+      householdApi
+        .get("/rooms/plugs/details")
+        .then((res) => setRoomsInfo(res.data.rooms))
+        .catch((err) => console.error("Failed to fetch rooms info:", err));
+    };
+
+    getRoomsInfo();
+  }, []);
+
   return (
     <View style={[roomsStyle.roomsContainer, style]}>
       <View style={roomsStyle.roomsHeaderContainer}>
         <Heading variant="h2">Rooms</Heading>
         <AppText variant="emphasis">See All</AppText>
       </View>
-      <RoomsCarousel rooms={roomsList}></RoomsCarousel>
+      <RoomsCarousel rooms={roomsInfo}></RoomsCarousel>
     </View>
   );
 }

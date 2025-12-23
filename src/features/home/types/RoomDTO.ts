@@ -1,8 +1,9 @@
-export interface Room {
-  id: number;
+export interface RoomDTO {
+  roomId: number;
   name: string;
-  deviceNumber: number;
-  type: RoomType;
+  roomType: string;
+  totalPlugsCount: number;
+  activePlugsCount: number;
 }
 
 export type RoomType =
