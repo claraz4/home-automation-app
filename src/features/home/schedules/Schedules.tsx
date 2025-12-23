@@ -6,17 +6,17 @@ import { ScheduleDay } from "@/src/features/home/schedules/ScheduleDay";
 import { ScheduleTimeSlot } from "@/src/features/home/schedules/ScheduleTimeSlot";
 import { ScheduleItem } from "@/src/features/home/schedules/ScheduleItem";
 import { spaces } from "@/src/theme";
-import { AppText } from "@/src/shared/ui/AppText";
-import { Link } from "expo-router";
-
-interface SchedulesProps {
-  style?: StyleProp<ViewStyle>;
-}
 
 export default function Schedules() {
   return (
     <View>
-      <Heading variant="h2" style={styles.heading}>
+      <Heading
+        variant="h2"
+        containerStyles={styles.heading}
+        hasLink={true}
+        href="/"
+        linkPlaceholder="Show All"
+      >
         Schedules
       </Heading>
 

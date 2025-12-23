@@ -2,12 +2,12 @@ import { View, StyleSheet } from "react-native";
 import { AppText } from "@/src/shared/ui/AppText";
 import { colors, borderRadius, spaces } from "@/src/theme";
 
-interface Props {
+interface ScheduleItemProps {
   name: string;
   deviceCount: number;
 }
 
-export function ScheduleItem({ name, deviceCount }: Props) {
+export function ScheduleItem({ name, deviceCount }: ScheduleItemProps) {
   return (
     <View style={styles.container}>
       <AppText variant="bodyWhite">{name}</AppText>

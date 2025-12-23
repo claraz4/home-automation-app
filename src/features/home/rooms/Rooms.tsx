@@ -27,10 +27,9 @@ export default function Rooms({ style }: RoomsProps) {
 
   return (
     <View style={[roomsStyle.roomsContainer, style]}>
-      <View style={roomsStyle.roomsHeaderContainer}>
-        <Heading variant="h2">Rooms</Heading>
-        <AppText variant="emphasis">See All</AppText>
-      </View>
+      <Heading variant="h2" hasLink={true} href="/" linkPlaceholder="Show All">
+        Rooms
+      </Heading>
       <RoomsCarousel rooms={roomsInfo}></RoomsCarousel>
     </View>
   );
@@ -41,11 +40,5 @@ const roomsStyle = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     width: "100%",
-  },
-  roomsHeaderContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    alignItems: "center",
   },
 });

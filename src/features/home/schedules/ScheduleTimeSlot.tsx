@@ -3,12 +3,12 @@ import { Heading } from "@/src/shared/ui/Heading";
 import React from "react";
 import { colors, spaces } from "@/src/theme";
 
-interface Props {
+interface ScheduleTimeSlotProps {
   time: string;
   children: React.ReactNode;
 }
 
-export function ScheduleTimeSlot({ time, children }: Props) {
+export function ScheduleTimeSlot({ time, children }: ScheduleTimeSlotProps) {
   return (
     <View style={styles.container}>
       <Heading variant="h4" style={styles.heading}>

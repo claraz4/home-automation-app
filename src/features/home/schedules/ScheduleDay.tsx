@@ -3,12 +3,12 @@ import { Heading } from "@/src/shared/ui/Heading";
 import React from "react";
 import { spaces } from "@/src/theme";
 
-interface Props {
+interface ScheduleDayProps {
   title: string;
   children: React.ReactNode;
 }
 
-export function ScheduleDay({ title, children }: Props) {
+export function ScheduleDay({ title, children }: ScheduleDayProps) {
   return (
     <View>
       <Heading variant="h3" style={styles.heading}>
