@@ -1,7 +1,12 @@
 import { StyleSheet, TextStyle, Platform } from "react-native";
 
 type HeadingVariant = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-export type TextVariant = "body" | "bodySecondary" | "emphasis" | "bodyWhite";
+export type TextVariant =
+  | "body"
+  | "bodySecondary"
+  | "emphasis"
+  | "bodyWhite"
+  | "bodySmallWhite";
 
 export const colors = {
   primary: {
@@ -72,6 +77,7 @@ export const headings = StyleSheet.create<Record<HeadingVariant, TextStyle>>({
 export const text = StyleSheet.create<Record<TextVariant, TextStyle>>({
   body: { fontSize: 16, fontWeight: "500", color: colors.text },
   bodyWhite: { fontSize: 16, fontWeight: "500", color: "white" },
+  bodySmallWhite: { fontSize: 13, fontWeight: "400", color: "white" },
   bodySecondary: { fontSize: 16, fontWeight: "400", color: colors.gray[500] },
   emphasis: { fontSize: 16, fontWeight: "400", color: colors.primary[500] },
 });

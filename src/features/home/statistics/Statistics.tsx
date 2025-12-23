@@ -4,7 +4,6 @@ import {
   StyleProp,
   ViewStyle,
   ScrollView,
-  Text,
 } from "react-native";
 import { borderRadius, boxShadow, spaces } from "@/src/theme";
 import SupplySourceInfo from "@/src/features/home/statistics/SupplySourceInfo";
