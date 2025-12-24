@@ -11,7 +11,7 @@ interface ScreenViewProps extends ViewProps {
 
 export default function ScreenView({
   style,
-  safe = false,
+  safe = true,
   scroll = true,
   children,
   ...props

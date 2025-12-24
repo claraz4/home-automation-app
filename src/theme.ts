@@ -101,6 +101,10 @@ export const spaces = {
 };
 export type Space = keyof typeof spaces;
 
+export const paddings = {
+  page: 16,
+};
+
 export const boxShadow = {
   normal: {
     shadowColor: "rgba(0,0,0,0.2)",

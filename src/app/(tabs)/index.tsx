@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import AppHeader from "../../features/home/AppHeader";
 import ScreenView from "@/src/shared/ui/ScreenView";
 import Rooms from "../../features/home/rooms/Rooms";
-import { spaces } from "@/src/theme";
+import { paddings, spaces } from "@/src/theme";
 import Statistics from "@/src/features/home/statistics/Statistics";
 import Schedules from "@/src/features/home/schedules/Schedules";
 
@@ -22,7 +22,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   componentsContainer: {
-    padding: spaces.md,
+    padding: paddings.page,
     height: "100%",
     rowGap: spaces.lg,
   },

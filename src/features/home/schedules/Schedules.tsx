@@ -7,7 +7,11 @@ import { ScheduleTimeSlot } from "@/src/features/home/schedules/ScheduleTimeSlot
 import { ScheduleItem } from "@/src/features/home/schedules/ScheduleItem";
 import { spaces } from "@/src/theme";
 
-export default function Schedules() {
+interface SchedulesProps {
+  style: StyleProp<ViewStyle>;
+}
+
+export default function Schedules({ style }: SchedulesProps) {
   return (
     <View>
       <Heading

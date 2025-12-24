@@ -16,7 +16,7 @@ export default function RoomBox({
   room,
 }: RoomBoxProps) {
   return (
-    <View style={roomBoxStyles.roomBoxContainer} key={room.roomId}>
+    <View style={roomBoxStyles.roomBoxContainer} key={room.id}>
       <View style={roomBoxStyles.roomIconContainer}>
         {roomIcons(color, size)[room.roomType]}
       </View>

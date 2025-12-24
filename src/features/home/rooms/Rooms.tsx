@@ -1,6 +1,5 @@
 import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { Heading } from "@/src/shared/ui/Heading";
-import { AppText } from "@/src/shared/ui/AppText";
 import RoomsCarousel from "@/src/features/home/rooms/RoomsCarousel";
 import { householdApi } from "@/src/api/api";
 import { useEffect, useState } from "react";
@@ -27,7 +26,12 @@ export default function Rooms({ style }: RoomsProps) {
 
   return (
     <View style={[roomsStyle.roomsContainer, style]}>
-      <Heading variant="h2" hasLink={true} href="/" linkPlaceholder="Show All">
+      <Heading
+        variant="h2"
+        hasLink={true}
+        href="/rooms"
+        linkPlaceholder="Show All"
+      >
         Rooms
       </Heading>
       <RoomsCarousel rooms={roomsInfo}></RoomsCarousel>
