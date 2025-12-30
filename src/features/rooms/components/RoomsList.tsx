@@ -23,7 +23,7 @@ export default function RoomsList() {
   return (
     <View style={styles.roomsListContainer} key={1}>
       {roomsInfo.map((room) => (
-        <RoomListBox key={room.id} room={room} />
+        <RoomListBox key={room.roomId} room={room} />
       ))}
     </View>
   );

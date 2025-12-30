@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   StyleProp,
@@ -12,8 +12,9 @@ import {
   getMaxValue,
   getNextMultiple,
 } from "@/src/features/home/utils/consumptionGraphUtils";
-import { data } from "../data/consumptionData";
 import ConsumptionBarChart from "./ConsumptionBarChart";
+import { householdApi } from "@/src/api/api";
+import { RoomConsumptionGroupedDTO } from "@/src/features/home/types/RoomConsumptionGroupedDTO";
 
 interface ConsumptionGraphProps {
   style?: StyleProp<ViewStyle>;
@@ -21,17 +22,56 @@ interface ConsumptionGraphProps {
 
 export default function ConsumptionGraph({ style }: ConsumptionGraphProps) {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const [roomsConsumptions, setRoomsConsumptions] = useState<
+    RoomConsumptionGroupedDTO[]
+  >([]);
+  const [roomsConsumptionsEdited, setRoomsConsumptionEdited] =
+    useState<any>(null);
+  const [maxValue, setMaxValue] = useState<number>(0);
 
-  const editedData = data.map((item, index) => ({
-    ...item,
-    frontColor:
-      selectedIndex !== index ? colors.primary[500] : colors.secondary[500],
-    onPress: () => {
-      setSelectedIndex(index);
-    },
-  }));
+  useEffect(() => {
+    // Get the grouped rooms
+    const getRoomsConsumption = (isGrouped: boolean) => {
+      householdApi
+        .get(`/rooms/consumption/daily?groupByRoomType=${isGrouped}`)
+        .then((res) => {
+          setRoomsConsumptions(
+            isGrouped ? res.data.groupedRooms : res.data.rooms,
+          );
+        })
+        .catch((err) =>
+          console.error("Failed to fetch rooms consumption:", err),
+        );
+    };
 
-  const maxValue = getNextMultiple(10, getMaxValue(data));
+    getRoomsConsumption(true);
+  }, []);
+
+  useEffect(() => {
+    setRoomsConsumptionEdited(() =>
+      roomsConsumptions.map((item, index) => ({
+        label: item.roomType,
+        value: item.consumption,
+        frontColor:
+          selectedIndex !== index ? colors.primary[500] : colors.secondary[500],
+        onPress: () => {
+          setSelectedIndex(index);
+        },
+      })),
+    );
+  }, [roomsConsumptions, selectedIndex]);
+
+  useEffect(() => {
+    if (roomsConsumptionsEdited)
+      setMaxValue(getNextMultiple(10, getMaxValue(roomsConsumptionsEdited)));
+  }, [roomsConsumptionsEdited]);
+
+  if (!roomsConsumptionsEdited || roomsConsumptions.length === 0) {
+    return <View>Loading</View>;
+  }
+
+  if (roomsConsumptionsEdited.length === 0)
+    return <View>No current consumption</View>;
 
   return (
     <View style={[style, styles.consumptionGraphContainer]}>
@@ -41,10 +81,14 @@ export default function ConsumptionGraph({ style }: ConsumptionGraphProps) {
           variant="h2"
           style={{ color: colors.secondary[500], marginBottom: spaces.md }}
         >
-          {data[selectedIndex].label}: {data[selectedIndex].value} kW
+          {roomsConsumptionsEdited[selectedIndex].label}:{" "}
+          {roomsConsumptionsEdited[selectedIndex].value} kW
         </Heading>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <ConsumptionBarChart data={editedData} maxValue={maxValue} />
+          <ConsumptionBarChart
+            data={roomsConsumptionsEdited}
+            maxValue={maxValue}
+          />
         </ScrollView>
       </View>
     </View>

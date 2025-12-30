@@ -1,5 +1,5 @@
 export interface RoomDTO {
-  id: number;
+  roomId: number;
   name: string;
   roomType: string;
   totalPlugsCount: number;

@@ -1,8 +1,9 @@
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { spaces, colors, borderRadius, boxShadow } from "@/src/theme";
 import { AppText } from "@/src/shared/ui/AppText";
 import { roomIcons } from "../../home/data/roomIcons";
 import { RoomDTO } from "@/src/features/home/types/RoomDTO";
+import { router } from "expo-router";
 
 interface RoomListBoxProps {
   room: RoomDTO;
@@ -10,7 +11,18 @@ interface RoomListBoxProps {
 
 export default function RoomListBox({ room }: RoomListBoxProps) {
   return (
-    <View style={styles.roomBoxContainer} key={room.id}>
+    <Pressable
+      style={styles.roomBoxContainer}
+      key={room.roomId}
+      onPress={() =>
+        router.push({
+          pathname: "/rooms/[roomId]",
+          params: {
+            roomId: room.roomId,
+          },
+        })
+      }
+    >
       {roomIcons(colors.primary[500], 45)[room.roomType]}
       <View style={styles.roomInfoContainer}>
         <AppText variant="body">{room.name}</AppText>
@@ -26,7 +38,7 @@ export default function RoomListBox({ room }: RoomListBoxProps) {
           </View>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -37,7 +49,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     columnGap: spaces.md,
     backgroundColor: "white",
-    padding: spaces.sm,
+    padding: "3%",
     borderRadius: borderRadius.md,
     flexGrow: 1,
     ...boxShadow.normal,

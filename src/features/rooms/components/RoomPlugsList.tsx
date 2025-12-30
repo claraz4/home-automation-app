@@ -1,0 +1,48 @@
+import { View, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import { RoomPlugDTO } from "@/src/features/rooms/data/RoomPlugDTO";
+import PlugBox from "@/src/features/rooms/components/PlugBox";
+import { useLocalSearchParams } from "expo-router";
+import { spaces } from "@/src/theme";
+
+export default function RoomPlugsList() {
+  const { roomId } = useLocalSearchParams<{ roomId: string }>();
+
+  const [roomPlugs, setRoomPlugs] = useState<RoomPlugDTO[]>([]);
+
+  useEffect(() => {
+    setRoomPlugs([
+      { plugId: 1, name: "Plug 1", isOn: true, isConstant: true },
+      {
+        plugId: 2,
+        name: "Plug 2",
+        isOn: false,
+        isConstant: false,
+      },
+      {
+        plugId: 3,
+        name: "Plug 3",
+        isOn: false,
+        isConstant: false,
+      },
+    ]);
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      {roomPlugs.map((plug) => (
+        <PlugBox key={plug.plugId} plug={plug} />
+      ))}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    flexWrap: "wrap",
+    rowGap: spaces.xs,
+    justifyContent: "space-between",
+  },
+});
