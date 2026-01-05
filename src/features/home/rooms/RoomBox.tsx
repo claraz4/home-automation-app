@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import { spaces, colors, borderRadius } from "@/src/theme";
 import { AppText } from "@/src/shared/ui/AppText";
-import { roomIcons } from "../data/roomIcons";
+import { roomIcons } from "@/src/shared/data/roomIcons";
 import { RoomDTO } from "@/src/features/home/types/RoomDTO";
 
 interface RoomBoxProps {
@@ -16,7 +16,7 @@ export default function RoomBox({
   room,
 }: RoomBoxProps) {
   return (
-    <View style={roomBoxStyles.roomBoxContainer} key={room.id}>
+    <View style={roomBoxStyles.roomBoxContainer} key={room.roomId}>
       <View style={roomBoxStyles.roomIconContainer}>
         {roomIcons(color, size)[room.roomType]}
       </View>

@@ -27,10 +27,10 @@ export default function PlugBox({ plug }: PlugBoxProps) {
         circleSize={24}
         barHeight={24}
         circleBorderWidth={4}
-        circleBorderActiveColor={colors.status.success}
-        circleBorderInactiveColor={colors.status.fail}
-        backgroundActive={colors.status.success}
-        backgroundInactive={colors.status.fail}
+        circleBorderActiveColor={colors.primary[400]}
+        circleBorderInactiveColor={colors.gray[300]}
+        backgroundActive={colors.primary[400]}
+        backgroundInactive={colors.gray[300]}
         circleActiveColor={"white"}
         circleInActiveColor={"white"}
         changeValueImmediately={true}
@@ -51,9 +51,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderRadius: borderRadius.md,
     padding: spaces.sm,
-    rowGap: spaces.sm,
-    backgroundColor: "white",
-    ...boxShadow.normal,
     flexGrow: 1,
     width: "100%",
     justifyContent: "space-between",

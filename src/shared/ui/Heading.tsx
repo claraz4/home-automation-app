@@ -9,8 +9,8 @@ import {
 import { fontStyle, headings, spaces, colors, boxShadow } from "../../theme";
 import AppLink from "@/src/shared/ui/AppLink";
 import { Href } from "expo-router";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
+import Entypo from "@expo/vector-icons/Entypo";
 
 type Variant = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
@@ -35,15 +35,17 @@ export function Heading({
   ...props
 }: HeadingProps) {
   const heading = (
-    <Text
-      {...props}
-      style={[
-        headings[variant],
-        style,
-        fontStyle,
-        hasBackButton && styles.backHeading,
-      ]}
-    />
+    <View style={[{ flexShrink: 1 }, hasBackButton && styles.backHeading]}>
+      <Text
+        {...props}
+        style={[
+          fontStyle,
+          headings[variant],
+          style,
+          hasBackButton && styles.backHeading,
+        ]}
+      />
+    </View>
   );
   const navigation = useNavigation();
 
@@ -60,7 +62,7 @@ export function Heading({
     return (
       <View style={[styles.backContainer, containerStyles]}>
         <Pressable onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color="white" />
+          <Entypo name="chevron-left" size={28} color={colors.text} />
         </Pressable>
         {heading}
       </View>
@@ -80,11 +82,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: spaces.xs,
     paddingHorizontal: spaces.xs,
-    backgroundColor: colors.primary[500],
-    ...boxShadow.normal,
+    // backgroundColor: colors.primary[500],
+    // ...boxShadow.normal,
   },
   backHeading: {
-    margin: "auto",
-    color: "white",
+    // marginHorizontal: "auto",
+    // color: "white",
+    marginLeft: spaces.sm,
   },
 });

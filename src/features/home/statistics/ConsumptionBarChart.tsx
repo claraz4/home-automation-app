@@ -27,7 +27,6 @@ export default function ConsumptionBarChart({
       yAxisColor={colors.gray[200]}
       yAxisTextStyle={{
         color: colors.gray[500],
-        fontWeight: 400,
       }}
       yAxisLabelSuffix={"kW"}
       yAxisLabelWidth={50}

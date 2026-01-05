@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { RoomPlugDTO } from "@/src/features/rooms/data/RoomPlugDTO";
 import PlugBox from "@/src/features/rooms/components/PlugBox";
 import { useLocalSearchParams } from "expo-router";
-import { spaces } from "@/src/theme";
+import { borderRadius, boxShadow, spaces } from "@/src/theme";
 
 export default function RoomPlugsList() {
   const { roomId } = useLocalSearchParams<{ roomId: string }>();
@@ -42,7 +42,9 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     flexWrap: "wrap",
-    rowGap: spaces.xs,
     justifyContent: "space-between",
+    backgroundColor: "white",
+    ...boxShadow.normal,
+    borderRadius: borderRadius.md,
   },
 });

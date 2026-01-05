@@ -46,7 +46,7 @@ export default function ScreenView({
 const styles = StyleSheet.create({
   safeArea: { flex: 1 },
   common: {
-    backgroundColor: colors.primary[25],
+    backgroundColor: colors.gray[150],
     flex: 1,
   },
   contentContainer: {

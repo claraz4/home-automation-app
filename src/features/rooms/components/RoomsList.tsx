@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   roomsListContainer: {
     flexDirection: "column",
     alignItems: "center",
-    rowGap: spaces.md,
+    rowGap: spaces.sm,
     width: "100%",
   },
 });

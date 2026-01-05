@@ -1,9 +1,10 @@
 import { Pressable, StyleSheet, View } from "react-native";
 import { spaces, colors, borderRadius, boxShadow } from "@/src/theme";
 import { AppText } from "@/src/shared/ui/AppText";
-import { roomIcons } from "../../home/data/roomIcons";
+import { roomIcons } from "@/src/shared/data/roomIcons";
 import { RoomDTO } from "@/src/features/home/types/RoomDTO";
 import { router } from "expo-router";
+import { Heading } from "@/src/shared/ui/Heading";
 
 interface RoomListBoxProps {
   room: RoomDTO;
@@ -23,9 +24,20 @@ export default function RoomListBox({ room }: RoomListBoxProps) {
         })
       }
     >
-      {roomIcons(colors.primary[500], 45)[room.roomType]}
+      <View
+        style={{
+          backgroundColor: colors.primary[500],
+          borderRadius: borderRadius.sm,
+          width: 60,
+          height: 60,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {roomIcons("white", 30)[room.roomType]}
+      </View>
       <View style={styles.roomInfoContainer}>
-        <AppText variant="body">{room.name}</AppText>
+        <Heading variant="h5">{room.name}</Heading>
         <View style={styles.deviceCountContainer}>
           <AppText variant="bodySecondary">
             {room.totalPlugsCount} devices
@@ -47,16 +59,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    columnGap: spaces.md,
+    columnGap: spaces.md + spaces.xs,
     backgroundColor: "white",
-    padding: "3%",
     borderRadius: borderRadius.md,
     flexGrow: 1,
-    ...boxShadow.normal,
+    boxShadow: "0.5px 0.5px 5px 0px rgba(0, 0, 0, 0.1)",
+    paddingHorizontal: spaces.md,
+    paddingVertical: spaces.sm,
   },
   roomInfoContainer: {
     flexDirection: "column",
-    rowGap: spaces.xxs,
+    rowGap: spaces.xs,
     alignItems: "flex-start",
     flexGrow: 1,
   },
