@@ -9,5 +9,5 @@ export const api = axios.create({
 });
 
 export const householdApi = axios.create({
-  baseURL: `${BACKEND_URL}/mains/households/${1}/`,
+  baseURL: `${BACKEND_URL}/mains/`,
 });
