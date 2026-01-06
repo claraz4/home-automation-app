@@ -8,7 +8,6 @@ import { useAuth } from "@/src/auth/useAuth";
 
 export default function Layout() {
   const { state } = useAuth();
-  console.log(state.isSignedIn);
   if (!state.isSignedIn) return <Redirect href="/login" />;
   return (
     <Tabs

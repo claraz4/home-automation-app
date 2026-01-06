@@ -1,11 +1,17 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useAuth } from "@/src/auth/useAuth";
 
 export default function Settings() {
+  const { signOut } = useAuth();
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Settings</Text>
       <Text>Try.</Text>
+      <Pressable onPress={signOut}>
+        <Text>Sign out</Text>
+      </Pressable>
     </View>
   );
 }

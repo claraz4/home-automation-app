@@ -24,7 +24,6 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
       };
 
     case "SIGN_OUT":
-      console.log("sign out");
       return initialAuthState;
 
     case "RESTORE_DONE":
