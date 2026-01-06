@@ -11,11 +11,11 @@ import {
   useAuthRequest,
   useAutoDiscovery,
 } from "expo-auth-session";
+import * as SecureStore from "expo-secure-store";
+import { Platform } from "react-native";
 
 type AuthState = {
   isSignedIn: boolean;
-  accessToken: string | null;
-  idToken: string | null;
   userInfo: Record<string, any> | null;
 };
 
@@ -31,10 +31,49 @@ type TokenParams = {
 
 const initialState: AuthState = {
   isSignedIn: false,
-  accessToken: null,
-  idToken: null,
   userInfo: null,
 };
+
+const storage = {
+  async set(key: string, value: string) {
+    if (Platform.OS === "web") {
+      localStorage.setItem(key, value);
+      return;
+    }
+    await SecureStore.setItemAsync(key, value);
+  },
+
+  async get(key: string) {
+    if (Platform.OS === "web") {
+      return localStorage.getItem(key);
+    }
+    return await SecureStore.getItemAsync(key);
+  },
+
+  async del(key: string) {
+    if (Platform.OS === "web") {
+      localStorage.removeItem(key);
+      return;
+    }
+    await SecureStore.deleteItemAsync(key);
+  },
+};
+
+async function saveTokens(accessToken: string, idToken: string) {
+  await storage.set("accessToken", accessToken);
+  await storage.set("idToken", idToken);
+}
+
+async function getTokens() {
+  const accessToken = await storage.get("accessToken");
+  const idToken = await storage.get("idToken");
+  return { accessToken, idToken };
+}
+
+async function deleteTokens() {
+  await storage.del("accessToken");
+  await storage.del("idToken");
+}
 
 const AuthContext = createContext({
   state: initialState,
@@ -55,7 +94,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   const discovery = useAutoDiscovery(keycloakUrl);
-  const redirectUri = makeRedirectUri();
+  const redirectUri = makeRedirectUri({ preferLocalhost: true });
   const [request, response, promptAsync] = useAuthRequest(
     {
       clientId: clientId,
@@ -73,8 +112,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           return {
             ...previousState,
             isSignedIn: true,
-            accessToken: action.payload.access_token,
-            idToken: action.payload.id_token,
           };
         case "USER_INFO":
           return {
@@ -99,9 +136,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     () => ({
       state: authState,
       signIn: () => {
-        console.log("Starting login");
-        console.log("Redirect URI:", redirectUri);
-        console.log("Auth request:", request);
         if (!request) {
           console.warn("Auth request not ready yet");
           return;
@@ -110,7 +144,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       },
       signOut: async () => {
         try {
-          const idToken = authState.idToken;
+          const { idToken } = await getTokens();
           await fetch(
             `${keycloakUrl}/protocol/openid-connect/logout?id_token_hint=${idToken}`,
           );
@@ -124,7 +158,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 
   useEffect(() => {
-    const getToken = async ({
+    const getPayload = async ({
       code,
       codeVerifier,
       redirectUri,
@@ -137,7 +171,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           code_verifier: codeVerifier,
           redirect_uri: redirectUri,
         };
-        console.log("REDIRECT URI USED:", redirectUri);
 
         const formBody: string[] = [];
         for (const property in formData) {
@@ -160,8 +193,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           },
         );
         if (response.ok) {
-          const payload = await response.json();
-          dispatch({ type: "SIGN_IN", payload });
+          return await response.json();
         }
       } catch (e) {
         console.warn(e);
@@ -171,12 +203,13 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     if (response?.type === "success" && request?.codeVerifier) {
       const { code } = response.params;
       const run = async () => {
-        const token = await getToken({
+        const payload = await getPayload({
           code,
           codeVerifier: request.codeVerifier!,
           redirectUri,
         });
-        console.log(token);
+        dispatch({ type: "SIGN_IN", payload });
+        await saveTokens(payload.access_token, payload.id_token);
       };
 
       void run();
@@ -188,7 +221,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const getUserInfo = async () => {
       try {
-        const accessToken = authState.accessToken;
+        const { accessToken } = await getTokens();
         const response = await fetch(
           `${keycloakUrl}/protocol/openid-connect/userinfo`,
           {
@@ -201,7 +234,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         );
         if (response.ok) {
           const payload = await response.json();
-          console.log(payload);
           dispatch({ type: "USER_INFO", payload });
         }
       } catch (e) {
@@ -211,12 +243,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     if (authState.isSignedIn) {
       void getUserInfo();
     }
-  }, [authState.accessToken, authState.isSignedIn, dispatch]);
+  }, [authState.isSignedIn, dispatch]);
 
-  useEffect(() => {
-    console.log("Auth response:", response);
-    console.log("Code verifier:", request?.codeVerifier);
-  }, [response, request?.codeVerifier]);
+  useEffect(() => {}, [response, request?.codeVerifier]);
 
   return (
     <AuthContext.Provider value={authContext}>{children}</AuthContext.Provider>
