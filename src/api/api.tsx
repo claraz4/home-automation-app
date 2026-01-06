@@ -1,29 +1,19 @@
 import axios from "axios";
-import { Platform } from "react-native";
-import * as SecureStore from "expo-secure-store";
-
-export const tokenStorage = {
-  async getAccessToken(): Promise<string | null> {
-    if (Platform.OS === "web") {
-      return localStorage.getItem("accessToken");
-    }
-    return await SecureStore.getItemAsync("accessToken");
-  },
-};
+import {
+  forceRefreshAccessToken,
+  getValidAccessToken,
+  logoutLocal,
+} from "@/src/auth/keycloakRefresh";
 
 const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
-
-export const api = axios.create({
-  baseURL: BACKEND_URL,
-});
 
 export const householdApi = axios.create({
   baseURL: `${BACKEND_URL}/mains/`,
 });
 
-api.interceptors.request.use(
+householdApi.interceptors.request.use(
   async (config) => {
-    const token = await tokenStorage.getAccessToken();
+    const token = await getValidAccessToken();
 
     if (token) {
       config.headers = config.headers ?? {};
@@ -35,16 +25,23 @@ api.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-householdApi.interceptors.request.use(
-  async (config) => {
-    const token = await tokenStorage.getAccessToken();
+householdApi.interceptors.response.use(
+  (res) => res,
+  async (error) => {
+    const original = error.config;
 
-    if (token) {
-      config.headers = config.headers ?? {};
-      config.headers.Authorization = `Bearer ${token}`;
+    if (error.response?.status === 401 && !original._retry) {
+      original._retry = true;
+
+      try {
+        const token = await forceRefreshAccessToken();
+        original.headers.Authorization = `Bearer ${token}`;
+        return householdApi(original);
+      } catch {
+        await logoutLocal();
+      }
     }
 
-    return config;
+    return Promise.reject(error);
   },
-  (error) => Promise.reject(error),
 );

@@ -12,7 +12,6 @@ import {
   Poppins_900Black,
 } from "@expo-google-fonts/poppins";
 import { Providers } from "@/src/providers/Providers";
-
 import * as WebBrowser from "expo-web-browser";
 
 WebBrowser.maybeCompleteAuthSession({
@@ -33,13 +32,13 @@ export default function RootLayout() {
     Poppins_800ExtraBold,
     Poppins_900Black,
   });
-  console.log("INITIAL URL:", window.location.href);
 
   return (
     <Providers>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="rooms" />
+        <Stack.Screen name="rooms/index" />
+        <Stack.Screen name="(auth)/login" />
       </Stack>
     </Providers>
   );

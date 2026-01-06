@@ -1,11 +1,15 @@
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 import Octicons from "@expo/vector-icons/Octicons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { colors, spaces } from "../../theme";
 import { StyleSheet } from "react-native";
+import { useAuth } from "@/src/auth/useAuth";
 
 export default function Layout() {
+  const { state } = useAuth();
+  console.log(state.isSignedIn);
+  if (!state.isSignedIn) return <Redirect href="/login" />;
   return (
     <Tabs
       screenOptions={{

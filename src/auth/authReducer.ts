@@ -3,12 +3,13 @@ import { AuthAction, AuthState } from "./authTypes";
 export const initialAuthState: AuthState = {
   isSignedIn: false,
   userInfo: null,
+  isLoading: false,
 };
 
 export function authReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
     case "SIGN_IN":
-      return { ...state, isSignedIn: true };
+      return { ...state, isSignedIn: true, isLoading: true };
 
     case "SET_USER_INFO":
       return {
@@ -19,10 +20,15 @@ export function authReducer(state: AuthState, action: AuthAction): AuthState {
           familyName: action.payload.family_name,
           email: action.payload.email,
         },
+        isLoading: false,
       };
 
     case "SIGN_OUT":
+      console.log("sign out");
       return initialAuthState;
+
+    case "RESTORE_DONE":
+      return { ...state, isLoading: false };
 
     default:
       return state;

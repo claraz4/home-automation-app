@@ -35,6 +35,21 @@ export function AuthProvider({ children }: Props) {
   const [state, dispatch] = useReducer(authReducer, initialAuthState);
 
   useEffect(() => {
+    const restoreSession = async () => {
+      const tokens = await getTokens();
+
+      if (tokens?.accessToken) {
+        dispatch({ type: "SIGN_IN" });
+      }
+
+      dispatch({ type: "RESTORE_DONE" });
+    };
+
+    void restoreSession();
+  }, []);
+
+  // Sign in and save tokens if available
+  useEffect(() => {
     if (response?.type !== "success" || !request?.codeVerifier) return;
 
     const run = async () => {
@@ -45,7 +60,6 @@ export function AuthProvider({ children }: Props) {
         clientId,
         keycloakUrl,
       });
-
       if (!tokens) return;
 
       await saveTokens(tokens);
@@ -55,6 +69,7 @@ export function AuthProvider({ children }: Props) {
     void run();
   }, [response, request?.codeVerifier]);
 
+  // Fetch user info if the user is signed in
   useEffect(() => {
     if (!state.isSignedIn) return;
 
@@ -71,6 +86,7 @@ export function AuthProvider({ children }: Props) {
     void run();
   }, [state.isSignedIn]);
 
+  // Define the state and the signIn and signOut functions
   const value = useMemo(
     () => ({
       state,
