@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { AuthProvider } from "../auth/AuthContext";
+import { AuthProvider } from "@/src/auth/AuthProvider";
 
 type ProvidersProps = {
   children: ReactNode;
