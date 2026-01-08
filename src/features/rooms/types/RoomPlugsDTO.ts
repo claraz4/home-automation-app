@@ -1,6 +1,10 @@
 export interface RoomPlugDTO {
-  plugId: number;
+  id: number;
   name: string;
   isOn: boolean;
   isConstant: boolean;
+}
+
+export interface RoomPlugsDTO {
+  plugs: RoomPlugDTO[];
 }

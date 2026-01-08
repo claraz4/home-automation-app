@@ -1,44 +1,42 @@
 import { View, StyleSheet, Pressable } from "react-native";
 import { useEffect, useState } from "react";
-import { RoomPlugDTO } from "@/src/features/rooms/data/RoomPlugDTO";
 import PlugBox from "@/src/features/rooms/components/PlugBox";
 import { router, useLocalSearchParams } from "expo-router";
 import { borderRadius, boxShadow } from "@/src/theme";
+import { api } from "@/src/api/api";
+import { RoomPlugsDTO } from "../types/RoomPlugsDTO";
 
 export default function RoomPlugsList() {
   const { roomId } = useLocalSearchParams<{ roomId: string }>();
 
-  const [roomPlugs, setRoomPlugs] = useState<RoomPlugDTO[]>([]);
+  const [roomPlugs, setRoomPlugs] = useState<RoomPlugsDTO>({ plugs: [] });
 
   useEffect(() => {
-    setRoomPlugs([
-      { plugId: 1, name: "Plug 1", isOn: true, isConstant: true },
-      {
-        plugId: 2,
-        name: "Plug 2",
-        isOn: false,
-        isConstant: false,
-      },
-      {
-        plugId: 3,
-        name: "Plug 3",
-        isOn: false,
-        isConstant: false,
-      },
-    ]);
-  }, []);
+    if (!roomId) return;
+
+    const getRoomPlugs = async () => {
+      try {
+        const { data } = await api.get<RoomPlugsDTO>(`/rooms/${roomId}/plugs`);
+        setRoomPlugs(data);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    void getRoomPlugs();
+  }, [roomId]);
 
   return (
     <View style={styles.container}>
-      {roomPlugs.map((plug) => (
+      {roomPlugs.plugs.map((plug) => (
         <Pressable
-          key={plug.plugId}
+          key={plug.id}
           onPress={() =>
             router.push({
               pathname: `/rooms/[roomId]/plugs/[plugId]`,
               params: {
                 roomId: String(roomId),
-                plugId: String(plug.plugId),
+                plugId: String(plug.id),
               },
             })
           }

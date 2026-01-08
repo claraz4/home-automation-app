@@ -1,6 +1,6 @@
 import { Heading } from "@/src/shared/ui/Heading";
 import { View, StyleSheet } from "react-native";
-import PlugScheduleRow from "@/src/app/rooms/[roomId]/plugs/PlugScheduleRow";
+import PlugScheduleRow from "@/src/features/plugs/components/PlugScheduleRow";
 import { spaces } from "@/src/theme";
 
 export default function PlugSchedules() {

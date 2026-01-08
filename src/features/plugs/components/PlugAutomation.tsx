@@ -1,7 +1,7 @@
 import { Heading } from "@/src/shared/ui/Heading";
 import { View, StyleSheet } from "react-native";
-import TimeoutRow from "@/src/app/rooms/[roomId]/plugs/TimeoutRow";
-import AuthorizationRow from "@/src/app/rooms/[roomId]/plugs/AuthorizationRow";
+import TimeoutRow from "@/src/features/plugs/components/TimeoutRow";
+import AuthorizationRow from "@/src/features/plugs/components/AuthorizationRow";
 import { spaces } from "@/src/theme";
 
 export default function PlugAutomation() {

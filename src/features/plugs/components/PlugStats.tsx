@@ -1,21 +1,29 @@
 import { StyleSheet, View } from "react-native";
 import { AppText } from "@/src/shared/ui/AppText";
 import { Heading } from "@/src/shared/ui/Heading";
-import { borderRadius, colors, paddings, spaces } from "@/src/theme";
+import { borderRadius, colors, spaces } from "@/src/theme";
 
-export default function PlugStats() {
+interface PlugStatsProps {
+  currentConsumption: number;
+  isDeviceConnected: boolean;
+}
+
+export default function PlugStats({
+  currentConsumption,
+  isDeviceConnected,
+}: PlugStatsProps) {
   return (
     <View style={styles.statsContainer}>
       <View style={styles.statsSubcontainer}>
         <AppText variant="bodyWhite">Consumption</AppText>
         <Heading variant="h4" style={{ color: "white" }}>
-          129 kWh
+          {currentConsumption} kWh
         </Heading>
       </View>
       <View style={styles.statsSubcontainer}>
         <AppText variant="bodyWhite">Connection</AppText>
         <Heading variant="h4" style={{ color: "white" }}>
-          No Device
+          {isDeviceConnected ? "Connected" : "No Device"}
         </Heading>
       </View>
     </View>

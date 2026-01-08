@@ -1,7 +1,7 @@
 import { View, StyleSheet, Pressable } from "react-native";
 import { RoomPlugDTO } from "@/src/features/rooms/data/RoomPlugDTO";
 import { AppText } from "@/src/shared/ui/AppText";
-import { borderRadius, boxShadow, colors, spaces } from "@/src/theme";
+import { borderRadius, colors, spaces } from "@/src/theme";
 import { useState } from "react";
 import { Switch } from "react-native-switch";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
