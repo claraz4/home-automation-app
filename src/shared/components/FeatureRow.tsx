@@ -1,4 +1,11 @@
-import { View, StyleSheet, Switch, Pressable } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Switch,
+  Pressable,
+  ViewStyle,
+  StyleProp,
+} from "react-native";
 import { Heading } from "@/src/shared/ui/Heading";
 import { AppText } from "@/src/shared/ui/AppText";
 import { borderRadius, colors, fontWeight, spaces } from "@/src/theme";
@@ -16,6 +23,7 @@ interface FeatureRowProps {
   extraScreen?: Href;
   hasIcon?: boolean;
   icon?: React.ReactNode;
+  iconContainerStyles?: StyleProp<ViewStyle>;
 }
 
 export default function FeatureRow({
@@ -28,13 +36,22 @@ export default function FeatureRow({
   extraScreen,
   hasIcon,
   icon,
+  iconContainerStyles,
 }: FeatureRowProps) {
   return (
     <View style={styles.controlContainer}>
-      {hasIcon && <View>{icon}</View>}
-      <View style={{ rowGap: spaces.xxs }}>
-        <Heading variant="h5">{headingText}</Heading>
-        <AppText variant="bodySecondary">{subtitleText}</AppText>
+      <View style={styles.titleContainer}>
+        {hasIcon && (
+          <View style={[styles.iconContainer, iconContainerStyles]}>
+            {icon}
+          </View>
+        )}
+        <View style={{ rowGap: spaces.xxs }}>
+          <Heading variant="h5">{headingText}</Heading>
+          {subtitleText && (
+            <AppText variant="bodySecondary">{subtitleText}</AppText>
+          )}
+        </View>
       </View>
       {hasSwitch && (
         <Switch
@@ -53,7 +70,13 @@ export default function FeatureRow({
           style={styles.statusContainer}
           onPress={() => router.push(extraScreen)}
         >
-          <AppText variant="bodySecondary" style={styles.statusText}>
+          <AppText
+            variant="bodySecondary"
+            style={[
+              styles.statusText,
+              status && { color: colors.primary[500] },
+            ]}
+          >
             {status ? "ON" : "OFF"}
           </AppText>
           <Entypo
@@ -75,7 +98,12 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.sm,
     alignItems: "center",
     padding: spaces.sm,
-    paddingLeft: spaces.md,
+    width: "100%",
+  },
+  titleContainer: {
+    flexDirection: "row",
+    columnGap: spaces.md,
+    alignItems: "center",
   },
   statusContainer: {
     flexDirection: "row",
@@ -85,5 +113,10 @@ const styles = StyleSheet.create({
   statusText: {
     fontFamily: fontWeight[500],
     marginRight: -spaces.xxs,
+  },
+  iconContainer: {
+    backgroundColor: colors.primary[500],
+    borderRadius: borderRadius.sm,
+    padding: spaces.xs,
   },
 });

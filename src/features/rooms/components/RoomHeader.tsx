@@ -1,8 +1,7 @@
 import { View, StyleSheet } from "react-native";
 import { RoomType } from "@/src/features/home/types/RoomDTO";
-import { roomIcons } from "@/src/shared/data/roomIcons";
-import { borderRadius, colors, spaces } from "@/src/theme";
-import { Heading } from "@/src/shared/ui/Heading";
+import { spaces } from "@/src/theme";
+import InfoBox from "@/src/shared/components/InfoBox";
 
 interface RoomHeaderProps {
   roomType: RoomType;
@@ -11,26 +10,34 @@ interface RoomHeaderProps {
 export default function RoomHeader({ roomType }: RoomHeaderProps) {
   return (
     <View style={styles.container}>
-      {roomIcons("white", 50)[roomType]}
-      <Heading variant="h4" style={styles.heading}>
-        {roomType}
-      </Heading>
+      <View style={styles.statsContainer}>
+        <InfoBox
+          style={styles.statsSubContainer}
+          title="Plugs"
+          subtitle="4 Active"
+        />
+        <InfoBox
+          style={styles.statsSubContainer}
+          title="Consumption"
+          subtitle="120 kWh"
+        />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.primary[500],
-    borderRadius: borderRadius.md,
-    padding: spaces.md,
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    rowGap: spaces.sm,
+    flexDirection: "row",
+    columnGap: spaces.sm,
   },
-  heading: {
-    color: "white",
-    textTransform: "capitalize",
+  statsContainer: {
+    flexDirection: "row",
+    rowGap: spaces.sm,
+    flex: 4,
+    justifyContent: "space-between",
+  },
+  statsSubContainer: {
+    width: "49%",
   },
 });

@@ -2,7 +2,7 @@ import { View, StyleSheet, Pressable } from "react-native";
 import { useEffect, useState } from "react";
 import PlugBox from "@/src/features/rooms/components/PlugBox";
 import { router, useLocalSearchParams } from "expo-router";
-import { borderRadius, boxShadow } from "@/src/theme";
+import { borderRadius, boxShadow, spaces } from "@/src/theme";
 import { api } from "@/src/api/api";
 import { RoomPlugsDTO } from "../types/RoomPlugsDTO";
 
@@ -31,6 +31,7 @@ export default function RoomPlugsList() {
       {roomPlugs.plugs.map((plug) => (
         <Pressable
           key={plug.id}
+          style={{ width: "100%" }}
           onPress={() =>
             router.push({
               pathname: `/rooms/[roomId]/plugs/[plugId]`,
@@ -50,12 +51,9 @@ export default function RoomPlugsList() {
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
     flexDirection: "column",
-    flexWrap: "wrap",
     justifyContent: "space-between",
-    backgroundColor: "white",
-    ...boxShadow.normal,
     borderRadius: borderRadius.md,
+    rowGap: spaces.sm,
   },
 });

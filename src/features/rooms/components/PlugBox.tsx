@@ -1,10 +1,9 @@
-import { View, StyleSheet, Pressable } from "react-native";
-import { RoomPlugDTO } from "@/src/features/rooms/data/RoomPlugDTO";
-import { AppText } from "@/src/shared/ui/AppText";
+import { StyleSheet } from "react-native";
+import { RoomPlugDTO } from "../types/RoomPlugsDTO";
 import { borderRadius, colors, spaces } from "@/src/theme";
 import { useState } from "react";
-import { Switch } from "react-native-switch";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import FeatureRow from "@/src/shared/components/FeatureRow";
 
 interface PlugBoxProps {
   plug: RoomPlugDTO;
@@ -14,34 +13,17 @@ export default function PlugBox({ plug }: PlugBoxProps) {
   const [isEnabled, setIsEnabled] = useState(plug.isOn);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <AppText>{plug.name}</AppText>
-        {plug.isConstant && (
-          <FontAwesome name="lock" size={24} color={colors.primary[500]} />
-        )}
-      </View>
-      <Switch
-        value={isEnabled}
-        onValueChange={setIsEnabled}
-        circleSize={24}
-        barHeight={24}
-        circleBorderWidth={4}
-        circleBorderActiveColor={colors.primary[400]}
-        circleBorderInactiveColor={colors.gray[300]}
-        backgroundActive={colors.primary[400]}
-        backgroundInactive={colors.gray[300]}
-        circleActiveColor={"white"}
-        circleInActiveColor={"white"}
-        changeValueImmediately={true}
-        innerCircleStyle={{
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-        renderActiveText={false}
-        renderInActiveText={false}
-      />
-    </View>
+    <FeatureRow
+      headingText={plug.name}
+      subtitleText={plug.isConstant ? "Constant Plug" : undefined}
+      hasExtraScreen={true}
+      extraScreen="/"
+      status={isEnabled}
+      setStatus={setIsEnabled}
+      hasIcon={true}
+      icon={<FontAwesome6 name="plug" size={24} color="white" />}
+      iconContainerStyles={styles.iconContainer}
+    />
   );
 }
 
@@ -61,5 +43,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     columnGap: spaces.sm + spaces.xxxs,
     alignItems: "center",
+  },
+  iconContainer: {
+    paddingVertical: spaces.xs,
+    paddingHorizontal: spaces.sm,
   },
 });
