@@ -12,6 +12,7 @@
     "@expo-google-fonts/inter": "^0.4.2",
     "@expo-google-fonts/poppins": "^0.4.1",
     "@expo/vector-icons": "^15.0.2",
+    "@imcarlosguerrero/react-native-switch-toggle": "^2.2.3",
     "@react-navigation/native": "^7.1.8",
     "axios": "^1.13.1",
     "expo": "~54.0.13",

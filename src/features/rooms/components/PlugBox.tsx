@@ -14,7 +14,7 @@ export default function PlugBox({ plug }: PlugBoxProps) {
   const [isEnabled, setIsEnabled] = useState(plug.isOn);
 
   return (
-    <Pressable style={styles.container} key={plug.plugId}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <AppText>{plug.name}</AppText>
         {plug.isConstant && (
@@ -41,7 +41,7 @@ export default function PlugBox({ plug }: PlugBoxProps) {
         renderActiveText={false}
         renderInActiveText={false}
       />
-    </Pressable>
+    </View>
   );
 }
 

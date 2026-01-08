@@ -6,7 +6,6 @@ import Rooms from "../../features/home/rooms/Rooms";
 import { paddings, spaces } from "@/src/theme";
 import Statistics from "@/src/features/home/statistics/Statistics";
 import Schedules from "@/src/features/home/schedules/Schedules";
-import { getValidAccessToken } from "@/src/auth/keycloakRefresh";
 
 export default function App() {
   return (

@@ -13,6 +13,6 @@ export function AppText({
   ...props
 }: AppTextProps) {
   return (
-    <Text {...props} style={[text[variant], style, fontStyle, { opacity }]} />
+    <Text {...props} style={[text[variant], fontStyle, { opacity }, style]} />
   );
 }

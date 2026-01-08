@@ -82,12 +82,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: spaces.xs,
     paddingHorizontal: spaces.xs,
-    // backgroundColor: colors.primary[500],
-    // ...boxShadow.normal,
   },
   backHeading: {
-    // marginHorizontal: "auto",
-    // color: "white",
     marginLeft: spaces.sm,
   },
 });

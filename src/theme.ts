@@ -70,6 +70,19 @@ export const colors = {
   },
 };
 
+export const spaces = {
+  xxxs: 2,
+  xxs: 4,
+  xs: 8,
+  sm: 12,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  xxl: 40,
+  xxxl: 48,
+};
+export type Space = keyof typeof spaces;
+
 export const fontStyle: TextStyle = {
   // fontFamily: Platform.select({
   //   ios: "System",
@@ -82,8 +95,13 @@ export const fontStyle: TextStyle = {
 export const headings = StyleSheet.create<Record<HeadingVariant, TextStyle>>({
   h1: { fontSize: 32, fontFamily: fontWeight[800], color: colors.text },
   h2: { fontSize: 28, fontFamily: fontWeight[600], color: colors.text },
-  h3: { fontSize: 22, fontFamily: fontWeight[600], color: colors.text },
-  h4: { fontSize: 18, fontFamily: fontWeight[600], color: colors.text },
+  h3: {
+    fontSize: 24,
+    fontFamily: fontWeight[600],
+    color: colors.text,
+    marginVertical: spaces.xs,
+  },
+  h4: { fontSize: 20, fontFamily: fontWeight[600], color: colors.text },
   h5: { fontSize: 17, fontFamily: fontWeight[500], color: colors.text },
   h6: { fontSize: 16, fontFamily: fontWeight[500], color: colors.text },
 });
@@ -101,19 +119,6 @@ export const borderRadius = {
   md: 10,
   lg: 15,
 };
-
-export const spaces = {
-  xxxs: 2,
-  xxs: 4,
-  xs: 8,
-  sm: 12,
-  md: 16,
-  lg: 24,
-  xl: 32,
-  xxl: 40,
-  xxxl: 48,
-};
-export type Space = keyof typeof spaces;
 
 export const paddings = {
   page: 20,

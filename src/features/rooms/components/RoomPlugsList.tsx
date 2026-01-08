@@ -1,9 +1,9 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import { useEffect, useState } from "react";
 import { RoomPlugDTO } from "@/src/features/rooms/data/RoomPlugDTO";
 import PlugBox from "@/src/features/rooms/components/PlugBox";
-import { useLocalSearchParams } from "expo-router";
-import { borderRadius, boxShadow, spaces } from "@/src/theme";
+import { router, useLocalSearchParams } from "expo-router";
+import { borderRadius, boxShadow } from "@/src/theme";
 
 export default function RoomPlugsList() {
   const { roomId } = useLocalSearchParams<{ roomId: string }>();
@@ -31,7 +31,20 @@ export default function RoomPlugsList() {
   return (
     <View style={styles.container}>
       {roomPlugs.map((plug) => (
-        <PlugBox key={plug.plugId} plug={plug} />
+        <Pressable
+          key={plug.plugId}
+          onPress={() =>
+            router.push({
+              pathname: `/rooms/[roomId]/plugs/[plugId]`,
+              params: {
+                roomId: String(roomId),
+                plugId: String(plug.plugId),
+              },
+            })
+          }
+        >
+          <PlugBox plug={plug} />
+        </Pressable>
       ))}
     </View>
   );
