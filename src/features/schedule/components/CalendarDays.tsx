@@ -3,10 +3,11 @@ import dayjs from "dayjs";
 import { useEffect, useRef, useState } from "react";
 import {
   daysGenerator,
+  isDayScheduled,
   LIST_SEPARATOR,
 } from "@/src/features/schedule/utils/daysHelper";
-import { colors } from "@/src/theme";
 import CalendarDay from "@/src/features/schedule/components/CalendarDay";
+import { ScheduleDTO } from "@/src/features/schedule/types/AllSchedulesDTO";
 
 interface DayItem {
   key: number;
@@ -16,11 +17,13 @@ interface DayItem {
 interface CalendarDaysProps {
   currentDay: dayjs.Dayjs;
   setCurrentDay: (day: dayjs.Dayjs) => void;
+  allSchedules: ScheduleDTO[];
 }
 
 export default function CalendarDays({
   currentDay,
   setCurrentDay,
+  allSchedules,
 }: CalendarDaysProps) {
   const [daysItems, setDaysItems] = useState<DayItem[]>([]);
 
@@ -45,7 +48,7 @@ export default function CalendarDays({
     const today = dayjs().startOf("day");
     const isCurrentDay = item.day.isSame(currentDay);
     const isDisabled = item.day.isBefore(today);
-    const hasSchedules = item.key % 3 === 0; // temporary
+    const hasSchedules = !isDisabled && isDayScheduled(item.day, allSchedules);
 
     return (
       <CalendarDay

@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { spaces } from "@/src/theme";
+import { ScheduleDTO } from "@/src/features/schedule/types/AllSchedulesDTO";
 
 export const LIST_SEPARATOR = spaces.md;
 export const DAYS_AFTER = 30;
@@ -20,4 +21,13 @@ export function daysGenerator(): dayjs.Dayjs[] {
   }
 
   return days;
+}
+
+export function isDayScheduled(
+  currentDay: dayjs.Dayjs,
+  schedules: ScheduleDTO[],
+): boolean {
+  return schedules.some((schedule) =>
+    dayjs(schedule.time).startOf("day").isSame(currentDay, "day"),
+  );
 }

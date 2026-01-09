@@ -15,6 +15,7 @@ import React from "react";
 
 interface FeatureRowProps {
   headingText: string;
+  key?: number;
   subtitleText?: string;
   hasSwitch?: boolean;
   status?: boolean; // true if ON; false if OFF
@@ -27,6 +28,7 @@ interface FeatureRowProps {
 }
 
 export default function FeatureRow({
+  key = 0,
   headingText,
   subtitleText,
   hasSwitch,
@@ -39,7 +41,7 @@ export default function FeatureRow({
   iconContainerStyles,
 }: FeatureRowProps) {
   return (
-    <View style={styles.controlContainer}>
+    <View key={key} style={styles.controlContainer}>
       <View style={styles.titleContainer}>
         {hasIcon && (
           <View style={[styles.iconContainer, iconContainerStyles]}>
