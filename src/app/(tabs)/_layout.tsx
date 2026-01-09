@@ -8,7 +8,9 @@ import { useAuth } from "@/src/auth/useAuth";
 
 export default function Layout() {
   const { state } = useAuth();
+
   if (!state.isSignedIn) return <Redirect href="/login" />;
+
   return (
     <Tabs
       screenOptions={{
@@ -29,9 +31,9 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="controls"
+        name="schedules"
         options={{
-          title: "Controls",
+          title: "Schedules",
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="power" size={size + 10} color={color} />
           ),

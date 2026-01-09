@@ -23,8 +23,8 @@ export default function ScreenView({
       <SafeAreaView style={styles.safeArea}>
         <Container
           {...props}
-          style={[styles.common, style]}
-          contentContainerStyle={scroll ? styles.contentContainer : undefined}
+          style={styles.common}
+          contentContainerStyle={[style, scroll && styles.contentContainer]}
         >
           {children}
         </Container>

@@ -1,5 +1,4 @@
-import React, { useContext, useEffect } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import AppHeader from "../../features/home/AppHeader";
 import ScreenView from "@/src/shared/ui/ScreenView";
 import Rooms from "../../features/home/rooms/Rooms";
