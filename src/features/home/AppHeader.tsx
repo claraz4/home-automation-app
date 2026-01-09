@@ -4,15 +4,19 @@ import { Heading } from "../../shared/ui/Heading";
 import { AppText } from "@/src/shared/ui/AppText";
 import { colors, spaces } from "../../theme";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import dayjs from "dayjs";
 
 export default function App() {
+  const today = dayjs();
+  const todayFullData = `${today.format("dddd")}, ${today.format("MMMM")} ${today.date()}`;
+
   return (
     <View style={appHeaderStyles.container}>
       <View style={appHeaderStyles.profileInfoContainer}>
         <View style={appHeaderStyles.circle} />
         <View style={appHeaderStyles.userInfoContainer}>
           <Heading variant="h3">Hello, User</Heading>
-          <AppText variant="bodySecondary">Thursday 23, 2025</AppText>
+          <AppText variant="bodySecondary">{todayFullData}</AppText>
         </View>
       </View>
       <Ionicons
