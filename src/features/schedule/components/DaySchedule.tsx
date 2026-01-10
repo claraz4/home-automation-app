@@ -16,7 +16,10 @@ export default function DaySchedule({
 }: DayScheduleProps) {
   return (
     <View>
-      <Heading variant="h3">{`${currentDay.format("dddd")}, ${currentDay.format("MMMM")} ${currentDay.date()}`}</Heading>
+      <Heading
+        variant="h3"
+        style={{ marginBottom: spaces.sm }}
+      >{`${currentDay.format("dddd")}, ${currentDay.format("MMMM")} ${currentDay.date()}`}</Heading>
       <View style={{ rowGap: spaces.sm }}>
         {schedules.map((schedule) => (
           <FeatureRow

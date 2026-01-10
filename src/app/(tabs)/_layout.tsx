@@ -18,7 +18,7 @@ export default function Layout() {
         tabBarInactiveTintColor: colors.gray[400],
         headerShown: false,
         tabBarStyle: layoutStyles.tabBar,
-        tabBarShowLabel: true,
+        tabBarShowLabel: false,
       }}
     >
       <Tabs.Screen
@@ -26,7 +26,12 @@ export default function Layout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color, size }) => (
-            <Octicons name="home-fill" size={size} color={color} />
+            <Octicons
+              name="home-fill"
+              size={size}
+              color={color}
+              style={{ marginTop: spaces.xxs }}
+            />
           ),
         }}
       />
@@ -35,7 +40,11 @@ export default function Layout() {
         options={{
           title: "Schedules",
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="power" size={size + 10} color={color} />
+            <MaterialIcons
+              name="calendar-month"
+              size={size + 5}
+              color={color}
+            />
           ),
         }}
       />
@@ -44,7 +53,7 @@ export default function Layout() {
         options={{
           title: "Analytics",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="analytics-sharp" size={size} color={color} />
+            <Ionicons name="analytics-sharp" size={size + 5} color={color} />
           ),
         }}
       />
