@@ -5,11 +5,10 @@ import {
   ViewStyle,
   ScrollView,
 } from "react-native";
-import { borderRadius, boxShadow, spaces } from "@/src/theme";
-import SupplySourceInfo from "@/src/features/home/statistics/SupplySourceInfo";
+import { spaces } from "@/src/theme";
 import { Heading } from "@/src/shared/ui/Heading";
 import ConsumptionGraph from "@/src/features/home/statistics/ConsumptionGraph";
-import TotalConsumptionInfo from "@/src/features/home/statistics/TotalConsumptionInfo";
+import StatisticsBox from "@/src/features/home/statistics/StatisticsBox";
 
 interface StatisticsProps {
   style?: StyleProp<ViewStyle>;
@@ -26,18 +25,22 @@ export default function Statistics({ style }: StatisticsProps) {
           horizontal={true}
           showsHorizontalScrollIndicator={false}
         >
-          <SupplySourceInfo
-            style={styles.statisticsSubContainers}
+          <StatisticsBox
+            title="Supply Source"
+            number={220}
+            unit={"V"}
+            isSupplySource
             source="EDL"
-            voltage={220}
             isStable
           />
-          <TotalConsumptionInfo
-            style={styles.statisticsSubContainers}
-            consumption={10}
+          <StatisticsBox
+            title="Daily Consumption"
+            number={10}
+            unit={"kWh"}
+            isStable
           />
         </ScrollView>
-        <ConsumptionGraph style={styles.statisticsSubContainers} />
+        <ConsumptionGraph />
       </View>
     </View>
   );
@@ -53,18 +56,12 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     rowGap: spaces.md,
   },
-  statisticsSubContainers: {
-    borderRadius: borderRadius.md,
-    backgroundColor: "white",
-    ...boxShadow.normal,
-  },
   scrollableStatisticsContainer: {
     flexDirection: "row",
     alignItems: "center",
     columnGap: spaces.md,
   },
   scrollView: {
-    height: 110,
     width: "100%",
     margin: 0.01, // removing this hides the scroll view content
     alignSelf: "center",

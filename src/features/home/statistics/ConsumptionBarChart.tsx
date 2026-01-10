@@ -36,7 +36,7 @@ export default function ConsumptionBarChart({
       rulesColor={colors.gray[300]}
       isAnimated
       animationDuration={500}
-      disableScroll={false}
+      disableScroll={true}
       adjustToWidth
     />
   );

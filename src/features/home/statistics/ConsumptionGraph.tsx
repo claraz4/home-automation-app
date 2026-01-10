@@ -1,12 +1,6 @@
-import React, { useEffect, useState } from "react";
-import {
-  ScrollView,
-  StyleProp,
-  StyleSheet,
-  View,
-  ViewStyle,
-} from "react-native";
-import { colors, spaces } from "@/src/theme";
+import React, { useEffect, useMemo, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { borderRadius, boxShadow, colors, spaces } from "@/src/theme";
 import { Heading } from "@/src/shared/ui/Heading";
 import {
   getMaxValue,
@@ -15,22 +9,28 @@ import {
 import ConsumptionBarChart from "./ConsumptionBarChart";
 import { householdApi } from "@/src/api/api";
 import { RoomConsumptionGroupedDTO } from "@/src/features/home/types/RoomConsumptionGroupedDTO";
+import NoConsumptionData from "@/src/features/home/statistics/NoConsumptionData";
+import SegmentedControl from "@/src/shared/components/SegmentedControl";
 
-interface ConsumptionGraphProps {
-  style?: StyleProp<ViewStyle>;
-}
+type ChartItem = {
+  label: string;
+  value: number;
+  frontColor: string;
+  onPress: () => void;
+};
 
-export default function ConsumptionGraph({ style }: ConsumptionGraphProps) {
+export default function ConsumptionGraph() {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [roomsConsumptions, setRoomsConsumptions] = useState<
     RoomConsumptionGroupedDTO[]
   >([]);
-  const [roomsConsumptionsEdited, setRoomsConsumptionEdited] =
-    useState<any>(null);
-  const [maxValue, setMaxValue] = useState<number>(0);
+  const segmentedControlOptions = ["Individual", "By Type"];
+  const [selectedOption, setSelectedOption] = useState<string>(
+    segmentedControlOptions[0],
+  );
 
+  // Get the grouped rooms
   useEffect(() => {
-    // Get the grouped rooms
     const getRoomsConsumption = (isGrouped: boolean) => {
       householdApi
         .get(`/rooms/consumption/daily?groupByRoomType=${isGrouped}`)
@@ -44,53 +44,55 @@ export default function ConsumptionGraph({ style }: ConsumptionGraphProps) {
         );
     };
 
-    getRoomsConsumption(true);
-  }, []);
+    getRoomsConsumption(selectedOption === "By Type");
+  }, [selectedOption]);
 
-  useEffect(() => {
-    setRoomsConsumptionEdited(() =>
-      roomsConsumptions.map((item, index) => ({
-        label: item.roomType,
+  // Get chart data (sorted by consumption descending)
+  const chartData = useMemo<ChartItem[]>(() => {
+    return [...roomsConsumptions]
+      .sort((a, b) => b.consumption - a.consumption)
+      .map((item, index) => ({
+        label:
+          item.roomType.charAt(0).toUpperCase() + item.roomType.substring(1),
         value: item.consumption,
         frontColor:
-          selectedIndex !== index ? colors.primary[500] : colors.secondary[500],
-        onPress: () => {
-          setSelectedIndex(index);
-        },
-      })),
-    );
+          selectedIndex === index ? colors.secondary[500] : colors.primary[500],
+        onPress: () => setSelectedIndex(index),
+      }));
   }, [roomsConsumptions, selectedIndex]);
 
-  useEffect(() => {
-    if (roomsConsumptionsEdited)
-      setMaxValue(getNextMultiple(10, getMaxValue(roomsConsumptionsEdited)));
-  }, [roomsConsumptionsEdited]);
+  // Get chart max value
+  const maxValue = useMemo(() => {
+    if (chartData.length === 0) return 0;
+    return getNextMultiple(10, getMaxValue(chartData));
+  }, [chartData]);
 
-  if (!roomsConsumptionsEdited || roomsConsumptions.length === 0) {
-    return <View>Loading</View>;
-  }
-
-  if (roomsConsumptionsEdited.length === 0)
-    return <View>No current consumption</View>;
+  const selectedItem = chartData[selectedIndex];
 
   return (
-    <View style={[style, styles.consumptionGraphContainer]}>
-      <Heading variant="h3">Daily Power Consumption</Heading>
-      <View>
-        <Heading
-          variant="h2"
-          style={{ color: colors.secondary[500], marginBottom: spaces.md }}
-        >
-          {roomsConsumptionsEdited[selectedIndex].label}:{" "}
-          {roomsConsumptionsEdited[selectedIndex].value} kW
-        </Heading>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <ConsumptionBarChart
-            data={roomsConsumptionsEdited}
-            maxValue={maxValue}
+    <View style={styles.consumptionGraphContainer}>
+      <Heading variant="h4">Daily Consumption</Heading>
+      {maxValue === 0 ? (
+        <NoConsumptionData />
+      ) : (
+        <View>
+          <Heading
+            variant="h3"
+            style={{ color: colors.secondary[500], marginBottom: spaces.md }}
+          >
+            {selectedItem.label}: {selectedItem.value} kW
+          </Heading>
+          <SegmentedControl
+            options={segmentedControlOptions}
+            value={selectedOption}
+            onPress={setSelectedOption}
+            style={{ marginBottom: spaces.md }}
           />
-        </ScrollView>
-      </View>
+          <ScrollView showsHorizontalScrollIndicator={false} horizontal>
+            <ConsumptionBarChart data={chartData} maxValue={maxValue} />
+          </ScrollView>
+        </View>
+      )}
     </View>
   );
 }
@@ -99,7 +101,15 @@ const styles = StyleSheet.create({
   consumptionGraphContainer: {
     width: "100%",
     rowGap: spaces.md,
-    padding: spaces.lg,
+    padding: spaces.md,
     paddingLeft: spaces.md,
+    borderRadius: borderRadius.md,
+    backgroundColor: "white",
+    ...boxShadow.normal,
+  },
+  noDataContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    rowGap: spaces.sm,
   },
 });
