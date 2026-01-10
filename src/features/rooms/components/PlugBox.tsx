@@ -4,6 +4,7 @@ import { borderRadius, colors, spaces } from "@/src/theme";
 import { useState } from "react";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import FeatureRow from "@/src/shared/components/FeatureRow";
+import { Href, usePathname } from "expo-router";
 
 interface PlugBoxProps {
   plug: RoomPlugDTO;
@@ -11,13 +12,14 @@ interface PlugBoxProps {
 
 export default function PlugBox({ plug }: PlugBoxProps) {
   const [isEnabled, setIsEnabled] = useState(plug.isOn);
+  const pathname = usePathname();
 
   return (
     <FeatureRow
       headingText={plug.name}
       subtitleText={plug.isConstant ? "Constant Plug" : undefined}
       hasExtraScreen={true}
-      extraScreen="/"
+      extraScreen={`${pathname}/plugs/${plug.id}` as Href}
       status={isEnabled}
       setStatus={setIsEnabled}
       hasIcon={true}

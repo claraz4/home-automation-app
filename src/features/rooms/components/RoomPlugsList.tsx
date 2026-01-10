@@ -2,7 +2,7 @@ import { View, StyleSheet, Pressable } from "react-native";
 import { useEffect, useState } from "react";
 import PlugBox from "@/src/features/rooms/components/PlugBox";
 import { router, useLocalSearchParams } from "expo-router";
-import { borderRadius, boxShadow, spaces } from "@/src/theme";
+import { borderRadius, spaces } from "@/src/theme";
 import { api } from "@/src/api/api";
 import { RoomPlugsDTO } from "../types/RoomPlugsDTO";
 
@@ -32,15 +32,7 @@ export default function RoomPlugsList() {
         <Pressable
           key={plug.id}
           style={{ width: "100%" }}
-          onPress={() =>
-            router.push({
-              pathname: `/rooms/[roomId]/plugs/[plugId]`,
-              params: {
-                roomId: String(roomId),
-                plugId: String(plug.id),
-              },
-            })
-          }
+          onPress={() => router.push(`/rooms/${roomId}/plugs/${plug.id}`)}
         >
           <PlugBox plug={plug} />
         </Pressable>
