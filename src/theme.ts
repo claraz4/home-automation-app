@@ -93,14 +93,9 @@ export const fontStyle: TextStyle = {
 };
 
 export const headings = StyleSheet.create<Record<HeadingVariant, TextStyle>>({
-  h1: { fontSize: 32, fontFamily: fontWeight[800], color: colors.text },
+  h1: { fontSize: 36, fontFamily: fontWeight[700], color: colors.text },
   h2: { fontSize: 28, fontFamily: fontWeight[600], color: colors.text },
-  h3: {
-    fontSize: 24,
-    fontFamily: fontWeight[600],
-    color: colors.text,
-    marginVertical: spaces.xs,
-  },
+  h3: { fontSize: 24, fontFamily: fontWeight[600], color: colors.text },
   h4: { fontSize: 20, fontFamily: fontWeight[600], color: colors.text },
   h5: { fontSize: 17, fontFamily: fontWeight[500], color: colors.text },
   h6: { fontSize: 16, fontFamily: fontWeight[500], color: colors.text },

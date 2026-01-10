@@ -24,7 +24,7 @@ export default function ScreenView({
         <Container
           {...props}
           style={styles.common}
-          contentContainerStyle={[style, scroll && styles.contentContainer]}
+          contentContainerStyle={[scroll && styles.contentContainer, style]}
         >
           {children}
         </Container>
@@ -35,8 +35,8 @@ export default function ScreenView({
   return (
     <Container
       {...props}
-      style={[styles.common, style]}
-      contentContainerStyle={scroll ? styles.contentContainer : undefined}
+      style={[styles.common]}
+      contentContainerStyle={[scroll && styles.contentContainer, style]}
     >
       {children}
     </Container>
