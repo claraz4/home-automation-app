@@ -5,13 +5,15 @@ import { spaces } from "@/src/theme";
 
 export default function PlugSchedules() {
   const schedules = [
-    { scheduleName: "Schedule 1", action: "Turn off", time: "Monday" },
+    { id: 1, scheduleName: "Schedule 1", action: "Turn off", time: "Monday" },
     {
+      id: 2,
       scheduleName: "Schedule 2",
       action: "Turn on",
       time: "Wednesday",
     },
   ];
+
   return (
     <View>
       <Heading variant="h3" hasLink={true} linkPlaceholder={"Manage"}>
@@ -20,6 +22,7 @@ export default function PlugSchedules() {
       <View style={styles.schedulesContainer}>
         {schedules.map((schedule) => (
           <PlugScheduleRow
+            key={schedule.id}
             scheduleName={schedule.scheduleName}
             action={schedule.action}
             time={schedule.time}

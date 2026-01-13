@@ -20,7 +20,6 @@ interface HeadingProps extends TextProps {
   href?: Href;
   linkPlaceholder?: string;
   hasBackButton?: boolean;
-  prevHref?: string;
   containerStyles?: ViewStyle;
 }
 

@@ -1,8 +1,10 @@
 import FeatureRow from "@/src/shared/components/FeatureRow";
 import { useState } from "react";
+import { Href, usePathname } from "expo-router";
 
 export default function TimeoutRow() {
   const [status, setStatus] = useState(true);
+  const pathname = usePathname();
 
   return (
     <FeatureRow
@@ -11,7 +13,7 @@ export default function TimeoutRow() {
       status={status}
       setStatus={setStatus}
       hasExtraScreen={true}
-      extraScreen={"/rooms"}
+      extraScreen={`${pathname}/timeout` as Href}
     />
   );
 }
