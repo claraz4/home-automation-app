@@ -1,28 +1,35 @@
-import { useEffect, useState } from "react";
-import { PlugDTO } from "@/src/features/plugs/types/PlugDTO";
+import { useCallback, useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
 import { api } from "@/src/api/api";
 
 export function usePlug(plugId: number) {
-  const [plugInfo, setPlugInfo] = useState<PlugDTO | null>(null);
+  const [plugInfo, setPlugInfo] = useState<any>(null);
 
-  useEffect(() => {
-    api.get<PlugDTO>(`/plugs/${plugId}`).then((r) => setPlugInfo(r.data));
-  }, [plugId]);
-
-  const togglePlugStatus = async (isCurrentlyOn: boolean) => {
-    const payload = {
-      plugId,
-      switchOn: !isCurrentlyOn,
-    };
-
-    setPlugInfo((p) => (p ? { ...p, isOn: !isCurrentlyOn } : p));
-
-    try {
-      await api.put("/plugs/status/set", payload);
-    } catch {
-      setPlugInfo((p) => (p ? { ...p, isOn: isCurrentlyOn } : p));
-    }
+  const fetchPlug = async () => {
+    const { data } = await api.get(`plugs/${plugId}`);
+    setPlugInfo(data);
   };
 
-  return { plugInfo, togglePlugStatus };
+  // Fetch on mount
+  useEffect(() => {
+    void fetchPlug();
+  }, [plugId]);
+
+  // Fetch every time screen gains focus
+  useFocusEffect(
+    useCallback(() => {
+      void fetchPlug();
+    }, [plugId]),
+  );
+
+  const togglePlugStatus = async () => {
+    await api.post(`plugs/${plugId}/toggle`);
+    await fetchPlug(); // refresh after mutation
+  };
+
+  return {
+    plugInfo,
+    togglePlugStatus,
+    refetch: fetchPlug,
+  };
 }

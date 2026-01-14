@@ -5,7 +5,7 @@ export interface PlugDTO {
   isDeviceConnected: boolean;
   isConstant: boolean;
   currentConsumption: number;
-  timeout: number | null;
+  timeout: string | null;
   schedules: Schedule[];
 }
 

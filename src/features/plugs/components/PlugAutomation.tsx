@@ -4,12 +4,16 @@ import TimeoutRow from "@/src/features/plugs/components/TimeoutRow";
 import AuthorizationRow from "@/src/features/plugs/components/AuthorizationRow";
 import { spaces } from "@/src/theme";
 
-export default function PlugAutomation() {
+interface PlugAutomationProps {
+  timeout: string | null;
+}
+
+export default function PlugAutomation({ timeout }: PlugAutomationProps) {
   return (
     <View>
       <Heading variant="h3">Automation</Heading>
       <View style={styles.rowsContainer}>
-        <TimeoutRow />
+        <TimeoutRow timeout={timeout} />
         <AuthorizationRow />
       </View>
     </View>

@@ -2,14 +2,19 @@ import { FlatList, View } from "react-native";
 import Chip from "@/src/shared/components/Chip";
 import { spaces } from "@/src/theme";
 
+export interface ChipOption {
+  id: string;
+  text: string;
+}
+
 interface ChipOptionsProps {
-  options: string[];
-  selectedOption: string;
-  setSelectedOption: (option: string) => void;
+  options: ChipOption[];
+  selectedOption: ChipOption;
+  setSelectedOption: (option: ChipOption) => void;
 }
 
 // In the case where the last row doesn't contain all the columns - Avoid the chips stretching too much
-function padData(data: string[], columns: number): string[] {
+function padData(data: ChipOption[], columns: number): ChipOption[] {
   const remainder = data.length % columns;
   if (remainder === 0) return data;
 
@@ -28,7 +33,7 @@ export default function ChipOptions({
     <FlatList
       data={paddedOptions}
       numColumns={3}
-      keyExtractor={(item) => item}
+      keyExtractor={(item) => item.id}
       columnWrapperStyle={{ gap: spaces.sm }}
       ItemSeparatorComponent={() => <View style={{ height: spaces.sm }} />}
       renderItem={({ item }) => {
@@ -38,8 +43,9 @@ export default function ChipOptions({
         return (
           <View style={{ flex: 1 }}>
             <Chip
-              text={item}
-              isSelected={selectedOption === item}
+              id={item.id}
+              text={item.text}
+              isSelected={selectedOption.id === item.id}
               onPress={() => setSelectedOption(item)}
             />
           </View>

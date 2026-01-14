@@ -1,17 +1,19 @@
 import { Pressable, StyleSheet } from "react-native";
 import { borderRadius, colors, fontWeight, spaces } from "@/src/theme";
 import { Heading } from "@/src/shared/ui/Heading";
+import { ChipOption } from "@/src/shared/components/ChipOptions";
 
 interface ChipProps {
+  id: string;
   text: string;
   isSelected: boolean;
-  onPress: () => void;
+  onPress: (item: ChipOption) => void;
 }
 
-export default function Chip({ text, isSelected, onPress }: ChipProps) {
+export default function Chip({ id, text, isSelected, onPress }: ChipProps) {
   return (
     <Pressable
-      onPress={onPress}
+      onPress={() => onPress({ id, text })}
       style={[styles.container, isSelected && styles.selectedContainer]}
     >
       <Heading

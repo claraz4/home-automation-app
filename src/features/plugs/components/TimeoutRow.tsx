@@ -1,17 +1,31 @@
 import FeatureRow from "@/src/shared/components/FeatureRow";
-import { useState } from "react";
 import { Href, usePathname } from "expo-router";
+import { HHMMSSToHoursMinutes } from "@/src/features/timeout/utils/timeoutUtils";
 
-export default function TimeoutRow() {
-  const [status, setStatus] = useState(true);
+interface TimeoutRowProps {
+  timeout: string | null;
+}
+
+export default function TimeoutRow({ timeout }: TimeoutRowProps) {
+  const status = !!timeout;
   const pathname = usePathname();
+  let timeoutSubtitle = "No timeout set yet";
+
+  if (timeout) {
+    const { hours, minutes } = HHMMSSToHoursMinutes(timeout);
+    const hoursSubtitle =
+      hours === 0 ? "" : `${hours} Hour${hours === 1 ? "" : "s"} `;
+    const minutesSubtitle = `${minutes} Minutes`;
+
+    timeoutSubtitle = `After ${hoursSubtitle}${minutesSubtitle}`;
+  }
 
   return (
     <FeatureRow
       headingText="Auto Turn Off"
-      subtitleText="After 2 Hours"
+      subtitleText={timeoutSubtitle}
       status={status}
-      setStatus={setStatus}
+      setStatus={() => {}}
       hasExtraScreen={true}
       extraScreen={`${pathname}/timeout` as Href}
     />

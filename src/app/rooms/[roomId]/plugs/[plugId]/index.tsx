@@ -31,7 +31,7 @@ export default function Plug() {
             currentConsumption={plugInfo.currentConsumption}
             isDeviceConnected={plugInfo.isDeviceConnected}
           />
-          <PlugAutomation />
+          <PlugAutomation timeout={plugInfo.timeout} />
           <PlugSchedules />
         </View>
       )}

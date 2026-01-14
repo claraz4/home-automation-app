@@ -7,15 +7,41 @@ interface ButtonProps {
   text: string;
   onPress: () => void;
   style?: StyleProp<ViewStyle>;
+  invertColors?: boolean;
+  disabled?: boolean;
 }
 
-export default function Button({ style, text, onPress }: ButtonProps) {
+export default function Button({
+  style,
+  text,
+  onPress,
+  invertColors = false,
+  disabled = false,
+}: ButtonProps) {
   return (
-    <Pressable onPress={onPress} style={[styles.container, style]}>
+    <Pressable
+      onPress={onPress}
+      style={[
+        styles.container,
+        {
+          backgroundColor: disabled
+            ? colors.gray[300]
+            : invertColors
+              ? colors.primary[500]
+              : "white",
+        },
+        style,
+      ]}
+      disabled={disabled}
+    >
       <AppText
         variant="body"
         style={{
-          color: colors.primary[500],
+          color: disabled
+            ? colors.gray[400]
+            : invertColors
+              ? "white"
+              : colors.primary[500],
           fontFamily: fontWeight[500],
           lineHeight: 20,
         }}
@@ -29,7 +55,6 @@ export default function Button({ style, text, onPress }: ButtonProps) {
 const styles = StyleSheet.create({
   container: {
     borderRadius: borderRadius.sm,
-    backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
     padding: spaces.sm,
