@@ -5,15 +5,6 @@ import TimeSelectorAndroid from "@/src/features/timeout/components/TimeSelectorA
 import { spaces } from "@/src/theme";
 import { Dispatch, SetStateAction } from "react";
 
-function getTimeArray(min: number, max: number, step: number = 1): number[] {
-  const timeArray: number[] = [];
-  for (let i = min; i <= max; i += step) {
-    timeArray.push(i);
-  }
-
-  return timeArray;
-}
-
 interface CustomTimeSelectionProps {
   selectedHour: number;
   selectedMinute: number;
@@ -33,8 +24,6 @@ export default function CustomTimeSelection({
     minMinute = 0,
     maxMinute = 59,
     stepMinute = 5;
-  const hours = getTimeArray(minHour, maxHour, stepHour);
-  const minutes = getTimeArray(minMinute, maxMinute, stepMinute);
 
   return (
     <View>
@@ -43,6 +32,12 @@ export default function CustomTimeSelection({
       </Heading>
       {Platform.OS === "ios" ? (
         <TimeSelectorIOS
+          maxHourValue={maxHour}
+          minHourValue={minHour}
+          maxMinuteValue={maxMinute}
+          minMinuteValue={minMinute}
+          stepHour={stepHour}
+          stepMinute={stepMinute}
           selectedHour={selectedHour}
           selectedMinute={selectedMinute}
           onSelectedHourChange={setSelectedHour}

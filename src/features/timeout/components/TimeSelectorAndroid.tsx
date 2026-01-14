@@ -3,15 +3,6 @@ import TimeSelectorProps from "@/src/features/timeout/types/TimeSelectorProps";
 import Stepper from "@/src/shared/components/Stepper";
 import { spaces } from "@/src/theme";
 
-interface TimeSelectorAndroidProps extends TimeSelectorProps {
-  maxHourValue: number;
-  minHourValue: number;
-  maxMinuteValue: number;
-  minMinuteValue: number;
-  stepHour?: number;
-  stepMinute?: number;
-}
-
 export default function TimeSelectorAndroid({
   maxHourValue,
   minHourValue,
@@ -23,7 +14,7 @@ export default function TimeSelectorAndroid({
   selectedMinute,
   onSelectedMinuteChange,
   onSelectedHourChange,
-}: TimeSelectorAndroidProps) {
+}: TimeSelectorProps) {
   return (
     <View style={styles.container}>
       <Stepper
