@@ -23,7 +23,11 @@ export function usePlug(plugId: number) {
   );
 
   const togglePlugStatus = async () => {
-    await api.post(`plugs/${plugId}/toggle`);
+    setPlugInfo((prevState: any) => ({ ...prevState, isOn: !prevState.isOn }));
+    await api.put(`plugs/status/set`, {
+      plugId,
+      switchOn: !plugInfo.isOn,
+    });
     await fetchPlug(); // refresh after mutation
   };
 

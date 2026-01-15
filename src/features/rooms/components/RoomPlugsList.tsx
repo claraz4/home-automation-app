@@ -1,7 +1,7 @@
 import { View, StyleSheet, Pressable } from "react-native";
 import { useEffect, useState } from "react";
 import PlugBox from "@/src/features/rooms/components/PlugBox";
-import { router, useLocalSearchParams } from "expo-router";
+import { Href, router, useLocalSearchParams, usePathname } from "expo-router";
 import { borderRadius, spaces } from "@/src/theme";
 import { api } from "@/src/api/api";
 import { RoomPlugsDTO } from "../types/RoomPlugsDTO";
@@ -28,15 +28,24 @@ export default function RoomPlugsList() {
 
   return (
     <View style={styles.container}>
-      {roomPlugs.plugs.map((plug) => (
-        <Pressable
-          key={plug.id}
-          style={{ width: "100%" }}
-          onPress={() => router.push(`/rooms/${roomId}/plugs/${plug.id}`)}
-        >
-          <PlugBox plug={plug} />
-        </Pressable>
-      ))}
+      {roomPlugs.plugs.map((plug) => {
+        const extraScreen: Href = `/rooms/${roomId}/plugs/${plug.id}`;
+
+        return (
+          <Pressable
+            key={plug.id}
+            style={{ width: "100%" }}
+            onPress={() => router.push(extraScreen)}
+          >
+            <PlugBox
+              plug={plug}
+              hasExtraScreen={true}
+              extraScreen={extraScreen}
+              status={plug.isOn}
+            />
+          </Pressable>
+        );
+      })}
     </View>
   );
 }

@@ -1,27 +1,42 @@
 import { StyleSheet } from "react-native";
-import { RoomPlugDTO } from "../types/RoomPlugsDTO";
 import { borderRadius, colors, spaces } from "@/src/theme";
 import { useState } from "react";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import FeatureRow from "@/src/shared/components/FeatureRow";
-import { Href, usePathname } from "expo-router";
+import { Href } from "expo-router";
+import { BasePlug } from "@/src/shared/types/BasePlug";
 
-interface PlugBoxProps {
-  plug: RoomPlugDTO;
+interface PlugBoxProps<T extends BasePlug> {
+  plug: T;
+  hasExtraScreen?: boolean;
+  hasSwitch?: boolean;
+  extraScreen?: Href;
+  hasStatus?: boolean;
+  status?: boolean;
+  setStatus?: (status: boolean) => void;
 }
 
-export default function PlugBox({ plug }: PlugBoxProps) {
-  const [isEnabled, setIsEnabled] = useState(plug.isOn);
-  const pathname = usePathname();
-
+export default function PlugBox<T extends BasePlug>({
+  plug,
+  hasExtraScreen = true,
+  extraScreen,
+  status,
+  hasStatus = true,
+  setStatus,
+  hasSwitch,
+}: PlugBoxProps<T>) {
   return (
     <FeatureRow
       headingText={plug.name}
-      subtitleText={plug.isConstant ? "Constant Plug" : undefined}
-      hasExtraScreen={true}
-      extraScreen={`${pathname}/plugs/${plug.id}` as Href}
-      status={isEnabled}
-      setStatus={setIsEnabled}
+      subtitleText={
+        "isConstant" in plug && plug.isConstant ? "Constant Plug" : undefined
+      }
+      hasSwitch={hasSwitch}
+      hasStatus={hasStatus}
+      hasExtraScreen={hasExtraScreen}
+      extraScreen={extraScreen}
+      status={status ?? plug.isOn}
+      setStatus={setStatus}
       hasIcon={true}
       icon={<FontAwesome6 name="plug" size={24} color="white" />}
       iconContainerStyles={styles.iconContainer}

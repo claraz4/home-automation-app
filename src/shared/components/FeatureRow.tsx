@@ -17,6 +17,7 @@ interface FeatureRowProps {
   headingText: string;
   subtitleText?: string;
   hasSwitch?: boolean;
+  hasStatus?: boolean;
   status?: boolean; // true if ON; false if OFF
   setStatus?: (status: boolean) => void;
   hasExtraScreen?: boolean;
@@ -30,6 +31,7 @@ export default function FeatureRow({
   headingText,
   subtitleText,
   hasSwitch,
+  hasStatus = true,
   status,
   setStatus,
   hasExtraScreen,
@@ -70,15 +72,17 @@ export default function FeatureRow({
           style={styles.statusContainer}
           onPress={() => router.push(extraScreen)}
         >
-          <AppText
-            variant="bodySecondary"
-            style={[
-              styles.statusText,
-              status && { color: colors.primary[500] },
-            ]}
-          >
-            {status ? "ON" : "OFF"}
-          </AppText>
+          {hasStatus && (
+            <AppText
+              variant="bodySecondary"
+              style={[
+                styles.statusText,
+                status && { color: colors.primary[500] },
+              ]}
+            >
+              {status ? "ON" : "OFF"}
+            </AppText>
+          )}
           <Entypo
             name="chevron-small-right"
             size={30}

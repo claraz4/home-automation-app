@@ -1,7 +1,6 @@
-export interface RoomPlugDTO {
-  id: number;
-  name: string;
-  isOn: boolean;
+import { BasePlug } from "@/src/shared/types/BasePlug";
+
+export interface RoomPlugDTO extends BasePlug {
   isConstant: boolean;
 }
 

@@ -31,3 +31,13 @@ export function isDayScheduled(
     dayjs(schedule.time).startOf("day").isSame(currentDay, "day"),
   );
 }
+
+export function getFormattedDateTime(day: dayjs.Dayjs): {
+  date: string;
+  time: string;
+} {
+  const date = `${day.format("ddd, MMM D")}`;
+  const time = `${day.format("HH:mm")}`;
+
+  return { date, time };
+}

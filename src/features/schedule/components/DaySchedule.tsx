@@ -4,6 +4,7 @@ import { ScheduleDTO } from "@/src/features/schedule/types/AllSchedulesDTO";
 import { Heading } from "@/src/shared/ui/Heading";
 import FeatureRow from "@/src/shared/components/FeatureRow";
 import { spaces } from "@/src/theme";
+import { Href } from "expo-router";
 
 interface DayScheduleProps {
   currentDay: dayjs.Dayjs;
@@ -26,7 +27,7 @@ export default function DaySchedule({
             key={schedule.id}
             headingText={schedule.name}
             hasExtraScreen={true}
-            extraScreen="/"
+            extraScreen={`/schedules/${schedule.id}` as Href}
             subtitleText={`${schedule.deviceCount} Plugs`}
           />
         ))}
