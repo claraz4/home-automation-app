@@ -1,5 +1,11 @@
 import { AppText } from "@/src/shared/ui/AppText";
-import { Pressable, StyleProp, StyleSheet, ViewStyle } from "react-native";
+import {
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  ViewStyle,
+} from "react-native";
 import React from "react";
 import { borderRadius, spaces, colors, fontWeight } from "@/src/theme";
 
@@ -9,6 +15,7 @@ interface ButtonProps {
   style?: StyleProp<ViewStyle>;
   invertColors?: boolean;
   disabled?: boolean;
+  textStyle?: StyleProp<TextStyle>;
 }
 
 export default function Button({
@@ -17,6 +24,7 @@ export default function Button({
   onPress,
   invertColors = false,
   disabled = false,
+  textStyle,
 }: ButtonProps) {
   return (
     <Pressable
@@ -36,15 +44,18 @@ export default function Button({
     >
       <AppText
         variant="body"
-        style={{
-          color: disabled
-            ? colors.gray[400]
-            : invertColors
-              ? "white"
-              : colors.primary[500],
-          fontFamily: fontWeight[500],
-          lineHeight: 20,
-        }}
+        style={[
+          {
+            color: disabled
+              ? colors.gray[400]
+              : invertColors
+                ? "white"
+                : colors.primary[500],
+            fontFamily: fontWeight[500],
+            lineHeight: 20,
+          },
+          textStyle,
+        ]}
       >
         {text}
       </AppText>

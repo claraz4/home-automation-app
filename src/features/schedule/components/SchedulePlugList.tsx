@@ -7,11 +7,13 @@ import { AppText } from "@/src/shared/ui/AppText";
 
 interface SchedulePlugListProps {
   plugList: BasePlug[];
+  editPlugState: (plug: BasePlug, newState: boolean) => void;
   isOn?: boolean;
 }
 
 export default function SchedulePlugList({
   plugList,
+  editPlugState,
   isOn = true,
 }: SchedulePlugListProps) {
   return (
@@ -20,7 +22,13 @@ export default function SchedulePlugList({
       <View style={{ rowGap: spaces.sm }}>
         {plugList.length !== 0 ? (
           plugList.map((plug) => (
-            <PlugBox plug={plug} hasSwitch status={isOn} />
+            <PlugBox
+              key={plug.id}
+              plug={plug}
+              hasSwitch
+              status={isOn}
+              setStatus={() => editPlugState(plug, !isOn)}
+            />
           ))
         ) : (
           <AppText variant="bodySecondary">
