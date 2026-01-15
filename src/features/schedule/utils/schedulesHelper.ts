@@ -31,3 +31,32 @@ function arePlugArraysEqual(
     );
   });
 }
+
+export function editPlugState(
+  plug: BasePlug,
+  newState: boolean,
+  prevSchedule: SingleScheduleDTO,
+) {
+  if (!prevSchedule) return prevSchedule;
+
+  const isCurrentlyOn = prevSchedule.onPlugs.some((p) => p.id === plug.id);
+
+  // No-op guard (prevents useless re-renders)
+  if (isCurrentlyOn === newState) return prevSchedule;
+
+  if (newState) {
+    // OFF ➜ ON
+    return {
+      ...prevSchedule,
+      offPlugs: prevSchedule.offPlugs.filter((p) => p.id !== plug.id),
+      onPlugs: [...prevSchedule.onPlugs, plug],
+    };
+  } else {
+    // ON ➜ OFF
+    return {
+      ...prevSchedule,
+      onPlugs: prevSchedule.onPlugs.filter((p) => p.id !== plug.id),
+      offPlugs: [...prevSchedule.offPlugs, plug],
+    };
+  }
+}
