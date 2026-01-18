@@ -29,6 +29,7 @@ export default function SegmentedControl({
           onPress={() => onPress(option)}
           style={[
             styles.optionContainer,
+            { width: `${100 / options.length}%` },
             value === option && styles.selectedOptionContainer,
           ]}
         >
@@ -52,20 +53,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.gray[100],
     alignSelf: "flex-end",
-    borderRadius: borderRadius.lg,
-    padding: spaces.xs,
-    columnGap: spaces.xs,
+    borderRadius: borderRadius.md,
+    width: "100%",
   },
   selectedOptionContainer: {
-    backgroundColor: "white",
+    backgroundColor: colors.primary[500],
     borderRadius: borderRadius.md,
   },
   selectedOptionText: {
-    color: colors.primary[500],
+    color: "white",
   },
   optionContainer: {
-    paddingHorizontal: spaces.xs,
+    paddingHorizontal: spaces.sm,
     paddingVertical: spaces.xxs,
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   optionText: {
     color: colors.gray[500],

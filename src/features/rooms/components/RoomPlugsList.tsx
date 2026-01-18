@@ -39,7 +39,7 @@ export default function RoomPlugsList() {
           >
             <PlugBox
               plug={plug}
-              hasExtraScreen={true}
+              hasExtra={true}
               extraScreen={extraScreen}
               status={plug.isOn}
             />

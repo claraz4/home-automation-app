@@ -1,29 +1,27 @@
 import { StyleSheet } from "react-native";
-import { borderRadius, colors, spaces } from "@/src/theme";
-import { useState } from "react";
+import { borderRadius, spaces } from "@/src/theme";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import FeatureRow from "@/src/shared/components/FeatureRow";
-import { Href } from "expo-router";
+import FeatureRow, {
+  FeatureRowProps,
+} from "@/src/shared/components/FeatureRow";
 import { BasePlug } from "@/src/shared/types/BasePlug";
 
-interface PlugBoxProps<T extends BasePlug> {
+interface PlugBoxProps<T extends BasePlug> extends FeatureRowProps {
   plug: T;
-  hasExtraScreen?: boolean;
-  hasSwitch?: boolean;
-  extraScreen?: Href;
-  hasStatus?: boolean;
-  status?: boolean;
-  setStatus?: (status: boolean) => void;
+  iconSize?: number;
 }
 
 export default function PlugBox<T extends BasePlug>({
   plug,
-  hasExtraScreen = true,
+  hasExtra = true,
   extraScreen,
   status,
   hasStatus = true,
   setStatus,
   hasSwitch,
+  onRemove,
+  iconSize = 24,
+  containerStyles,
 }: PlugBoxProps<T>) {
   return (
     <FeatureRow
@@ -33,13 +31,15 @@ export default function PlugBox<T extends BasePlug>({
       }
       hasSwitch={hasSwitch}
       hasStatus={hasStatus}
-      hasExtraScreen={hasExtraScreen}
+      hasExtra={hasExtra}
       extraScreen={extraScreen}
       status={status ?? plug.isOn}
       setStatus={setStatus}
       hasIcon={true}
-      icon={<FontAwesome6 name="plug" size={24} color="white" />}
+      icon={<FontAwesome6 name="plug" size={iconSize} color="white" />}
       iconContainerStyles={styles.iconContainer}
+      onRemove={onRemove}
+      containerStyles={containerStyles}
     />
   );
 }

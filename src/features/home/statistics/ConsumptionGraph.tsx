@@ -86,7 +86,7 @@ export default function ConsumptionGraph() {
             options={segmentedControlOptions}
             value={selectedOption}
             onPress={setSelectedOption}
-            style={{ marginBottom: spaces.md }}
+            style={{ marginBottom: spaces.md, width: 200, height: 32 }}
           />
           <ScrollView showsHorizontalScrollIndicator={false} horizontal>
             <ConsumptionBarChart data={chartData} maxValue={maxValue} />

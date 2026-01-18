@@ -7,10 +7,11 @@ function getTimeArray(
   min: number,
   max: number,
   step: number = 1,
+  padStart: number = 1,
 ): AppPickerItem<number>[] {
   const timeArray: AppPickerItem<number>[] = [];
   for (let i = min; i <= max; i += step) {
-    timeArray.push({ label: String(i), value: i });
+    timeArray.push({ label: String(i).padStart(padStart, "0"), value: i });
   }
 
   return timeArray;
@@ -27,9 +28,15 @@ export default function TimeSelectorIOS({
   selectedMinute,
   onSelectedMinuteChange,
   onSelectedHourChange,
+  padStart,
 }: TimeSelectorProps) {
-  const hours = getTimeArray(minHourValue, maxHourValue, stepHour);
-  const minutes = getTimeArray(minMinuteValue, maxMinuteValue, stepMinute);
+  const hours = getTimeArray(minHourValue, maxHourValue, stepHour, padStart);
+  const minutes = getTimeArray(
+    minMinuteValue,
+    maxMinuteValue,
+    stepMinute,
+    padStart,
+  );
 
   return (
     <View style={styles.container}>

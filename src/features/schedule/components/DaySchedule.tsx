@@ -26,7 +26,7 @@ export default function DaySchedule({
           <FeatureRow
             key={schedule.id}
             headingText={schedule.name}
-            hasExtraScreen={true}
+            hasExtra={true}
             extraScreen={`/schedules/${schedule.id}` as Href}
             subtitleText={`${schedule.deviceCount} Plugs`}
           />

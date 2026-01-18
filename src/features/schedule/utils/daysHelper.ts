@@ -25,11 +25,10 @@ export function daysGenerator(): dayjs.Dayjs[] {
 
 export function isDayScheduled(
   currentDay: dayjs.Dayjs,
-  schedules: ScheduleDTO[],
+  schedules: Set<string>,
 ): boolean {
-  return schedules.some((schedule) =>
-    dayjs(schedule.time).startOf("day").isSame(currentDay, "day"),
-  );
+  const currentDayFormatted = dayjs(currentDay).format("YYYY-MM-DD");
+  return schedules.has(currentDayFormatted);
 }
 
 export function getFormattedDateTime(day: dayjs.Dayjs): {

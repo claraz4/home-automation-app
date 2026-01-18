@@ -10,6 +10,7 @@ interface StepperProps {
   setCurrent: Dispatch<SetStateAction<number>>;
   step?: number;
   title?: string;
+  padStart?: number;
 }
 
 export default function Stepper({
@@ -19,6 +20,7 @@ export default function Stepper({
   current,
   setCurrent,
   title,
+  padStart = 1,
 }: StepperProps) {
   const [isAddDisabled, setIsAddDisabled] = useState(false);
   const [isMinusDisabled, setIsMinusDisabled] = useState(false);
@@ -59,7 +61,9 @@ export default function Stepper({
             +
           </AppText>
         </Pressable>
-        <AppText style={styles.textValue}>{current}</AppText>
+        <AppText style={styles.textValue}>
+          {String(current).padStart(padStart, "0")}
+        </AppText>
         <Pressable
           disabled={isMinusDisabled}
           onPress={decreaseCurrent}

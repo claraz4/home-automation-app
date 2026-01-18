@@ -20,7 +20,7 @@ export default function PlugScheduleRow({
       subtitleText={time}
       status={status}
       setStatus={setStatus}
-      hasExtraScreen={true}
+      hasExtra={true}
       extraScreen={"/rooms"}
     />
   );

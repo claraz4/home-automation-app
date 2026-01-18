@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { Heading } from "@/src/shared/ui/Heading";
 import FeatureRow from "@/src/shared/components/FeatureRow";
 import ScreenView from "@/src/shared/ui/ScreenView";
@@ -13,6 +13,7 @@ import { BasePlug } from "@/src/shared/types/BasePlug";
 import { editPlugState } from "@/src/features/schedule/utils/schedulesHelper";
 import useSchedules from "@/src/features/schedule/hooks/useSchedules";
 import ScheduleActions from "@/src/features/schedule/components/ScheduleActions";
+import { AppText } from "@/src/shared/ui/AppText";
 
 export default function SingleScheduleScreen() {
   const { scheduleId } = useLocalSearchParams<{ scheduleId: string }>();
@@ -52,7 +53,7 @@ export default function SingleScheduleScreen() {
 
   return (
     <ScreenView>
-      <Heading variant="h2" hasBackButton>
+      <Heading variant="h2" hasBackButton={true}>
         {scheduleInfo?.name}
       </Heading>
 
@@ -67,7 +68,7 @@ export default function SingleScheduleScreen() {
           headingText={`${date} at ${time}`}
           subtitleText="Repeats: Never"
           hasStatus={false}
-          hasExtraScreen
+          hasExtra
           extraScreen="/"
         />
         <SchedulePlugList

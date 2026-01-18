@@ -14,6 +14,7 @@ export default function TimeSelectorAndroid({
   selectedMinute,
   onSelectedMinuteChange,
   onSelectedHourChange,
+  padStart = 1,
 }: TimeSelectorProps) {
   return (
     <View style={styles.container}>
@@ -24,6 +25,7 @@ export default function TimeSelectorAndroid({
         current={selectedHour}
         setCurrent={onSelectedHourChange}
         title="Hours"
+        padStart={padStart}
       />
       <Stepper
         max={maxMinuteValue}
@@ -32,6 +34,7 @@ export default function TimeSelectorAndroid({
         current={selectedMinute}
         setCurrent={onSelectedMinuteChange}
         title="Minutes"
+        padStart={padStart}
       />
     </View>
   );

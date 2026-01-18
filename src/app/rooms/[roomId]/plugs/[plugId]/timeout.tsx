@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { Heading } from "@/src/shared/ui/Heading";
 import FeatureRow from "@/src/shared/components/FeatureRow";
 import ScreenView from "@/src/shared/ui/ScreenView";
-import { paddings } from "@/src/theme";
+import { paddings, spaces } from "@/src/theme";
 import TimeoutOptions from "@/src/features/timeout/components/TimeoutOptions";
 import { usePlug } from "@/src/features/plugs/hooks/usePlug";
 import { useLocalSearchParams } from "expo-router";
@@ -33,12 +33,12 @@ export default function TimeoutScreen() {
   };
 
   return (
-    <ScreenView>
+    <ScreenView style={{ padding: paddings.page, rowGap: spaces.md }}>
       <Heading variant="h2" hasBackButton>
         Timeout
       </Heading>
 
-      <View style={{ padding: paddings.page }}>
+      <View>
         <FeatureRow
           headingText="Auto Turn Off"
           hasSwitch

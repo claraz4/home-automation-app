@@ -8,12 +8,10 @@ import { colors, spaces } from "@/src/theme";
 
 export default function AllRooms() {
   return (
-    <ScreenView>
-      <View>
-        <Heading variant="h2" hasBackButton={true}>
-          All Rooms
-        </Heading>
-      </View>
+    <ScreenView style={{ padding: paddings.page }}>
+      <Heading variant="h2" hasBackButton={true}>
+        All Rooms
+      </Heading>
       <View style={styles.componentsContainer}>
         <View style={styles.statsContainer}>
           <View style={styles.statsSubcontainer}>
@@ -38,7 +36,6 @@ export default function AllRooms() {
 
 const styles = StyleSheet.create({
   componentsContainer: {
-    padding: paddings.page,
     width: "100%",
     position: "relative",
   },

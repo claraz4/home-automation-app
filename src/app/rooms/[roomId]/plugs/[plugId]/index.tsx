@@ -16,7 +16,7 @@ export default function Plug() {
   const { plugInfo, togglePlugStatus } = usePlug(Number(plugId));
 
   return (
-    <ScreenView>
+    <ScreenView style={{ padding: paddings.page, rowGap: spaces.md }}>
       <Heading variant="h2" hasBackButton={true}>
         {plugInfo?.name}
       </Heading>
@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
   componentsContainer: {
     flexDirection: "column",
     justifyContent: "center",
-    padding: paddings.page,
     rowGap: spaces.md,
   },
 });

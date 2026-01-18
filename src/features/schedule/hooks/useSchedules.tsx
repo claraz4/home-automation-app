@@ -25,7 +25,8 @@ export default function useSchedules(scheduleId: number) {
   // Edit the current schedule
   const editSchedule = async (editedSchedule: SingleScheduleDTO) => {
     try {
-      await api.put("/schedules", editedSchedule);
+      console.log(editedSchedule);
+      // await api.put("/schedules", editedSchedule);
     } catch (error) {
       console.error(error);
     }

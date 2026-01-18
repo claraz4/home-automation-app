@@ -26,6 +26,8 @@ export default function SchedulePlugList({
               key={plug.id}
               plug={plug}
               hasSwitch
+              hasExtra={false}
+              hasStatus={true}
               status={isOn}
               setStatus={() => editPlugState(plug, !isOn)}
             />

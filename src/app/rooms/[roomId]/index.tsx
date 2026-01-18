@@ -7,7 +7,7 @@ import RoomHeader from "@/src/features/rooms/components/RoomHeader";
 
 export default function RoomPlugs() {
   return (
-    <ScreenView>
+    <ScreenView style={{ padding: paddings.page, rowGap: spaces.md }}>
       <Heading variant="h2" hasBackButton={true}>
         Room 1
       </Heading>
@@ -26,7 +26,6 @@ export default function RoomPlugs() {
 
 const styles = StyleSheet.create({
   componentsContainer: {
-    padding: paddings.page,
     width: "100%",
     display: "flex",
     flexDirection: "column",

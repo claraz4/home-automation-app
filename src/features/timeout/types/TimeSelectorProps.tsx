@@ -11,4 +11,5 @@ export default interface TimeSelectorProps {
   selectedMinute: number;
   onSelectedHourChange: Dispatch<SetStateAction<number>>;
   onSelectedMinuteChange: Dispatch<SetStateAction<number>>;
+  padStart?: number;
 }

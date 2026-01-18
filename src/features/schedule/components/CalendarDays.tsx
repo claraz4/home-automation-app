@@ -7,7 +7,6 @@ import {
   LIST_SEPARATOR,
 } from "@/src/features/schedule/utils/daysHelper";
 import CalendarDay from "@/src/features/schedule/components/CalendarDay";
-import { ScheduleDTO } from "@/src/features/schedule/types/AllSchedulesDTO";
 
 interface DayItem {
   key: number;
@@ -17,7 +16,7 @@ interface DayItem {
 interface CalendarDaysProps {
   currentDay: dayjs.Dayjs;
   setCurrentDay: (day: dayjs.Dayjs) => void;
-  allSchedules: ScheduleDTO[];
+  allSchedules: Set<string>;
 }
 
 export default function CalendarDays({

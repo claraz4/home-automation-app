@@ -26,7 +26,7 @@ export default function TimeoutRow({ timeout }: TimeoutRowProps) {
       subtitleText={timeoutSubtitle}
       status={status}
       setStatus={() => {}}
-      hasExtraScreen={true}
+      hasExtra={true}
       extraScreen={`${pathname}/timeout` as Href}
     />
   );

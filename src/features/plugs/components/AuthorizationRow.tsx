@@ -10,7 +10,7 @@ export default function AuthorizationRow() {
       subtitleText="2 Users"
       status={status}
       setStatus={setStatus}
-      hasExtraScreen={true}
+      hasExtra={true}
       extraScreen={"/rooms"}
     />
   );

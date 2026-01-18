@@ -1,14 +1,20 @@
 export interface ScheduleDTO {
   id: number;
   name: string;
-  time: Date;
+  time: string;
+  isActive: boolean;
   deviceCount: number;
+}
+
+export interface DaySchedulesDTO {
+  date: string; // YYYY-MM-DD
+  schedules: ScheduleDTO[];
 }
 
 export interface AllSchedulesDTO {
   page: number;
   pageSize: number;
-  totalCount: number;
+  totalDays: number;
   totalPages: number;
-  schedules: ScheduleDTO[];
+  days: DaySchedulesDTO[];
 }
