@@ -10,33 +10,45 @@ let refreshPromise: Promise<string> | null = null;
 
 async function refreshAccessToken(): Promise<string> {
   const { refreshToken } = await getTokens();
-  if (!refreshToken) throw new Error("No refresh token available");
-
-  const params = new URLSearchParams({
-    grant_type: "refresh_token",
-    client_id: CLIENT_ID!,
-    refresh_token: refreshToken,
-  });
-
-  const res = await axios.post(TOKEN_URL, params.toString(), {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-  });
-
-  const { access_token, refresh_token, id_token } = res.data;
-
-  if (!access_token) {
-    throw new Error("No access token in refresh response");
+  if (!refreshToken) {
+    throw { fatal: true }; // session is dead
   }
 
-  await saveTokens({
-    access_token: access_token,
-    refresh_token: refresh_token ?? refreshToken, // rotation-safe
-    id_token: id_token,
-  });
+  try {
+    const params = new URLSearchParams({
+      grant_type: "refresh_token",
+      client_id: CLIENT_ID!,
+      refresh_token: refreshToken,
+    });
 
-  return access_token;
+    const res = await axios.post(TOKEN_URL, params.toString(), {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+
+    const { access_token, refresh_token, id_token } = res.data;
+
+    if (!access_token) {
+      throw { fatal: false };
+    }
+
+    await saveTokens({
+      access_token,
+      refresh_token: refresh_token ?? refreshToken, // rotation-safe
+      id_token,
+    });
+
+    return access_token;
+  } catch (err: any) {
+    const oauthError = err?.response?.data?.error;
+
+    if (oauthError === "invalid_grant") {
+      throw { fatal: true };
+    }
+
+    throw { fatal: false };
+  }
 }
 
 export async function getValidAccessToken(): Promise<string | null> {

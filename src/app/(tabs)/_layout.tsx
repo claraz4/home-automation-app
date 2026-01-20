@@ -1,15 +1,23 @@
-import { Redirect, Tabs } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
 import Octicons from "@expo/vector-icons/Octicons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { colors, spaces } from "../../theme";
 import { StyleSheet } from "react-native";
 import { useAuth } from "@/src/auth/useAuth";
+import { useEffect } from "react";
 
 export default function Layout() {
   const { state } = useAuth();
+  const router = useRouter();
 
-  if (!state.isSignedIn) return <Redirect href="/login" />;
+  useEffect(() => {
+    if (!state.isSignedIn) {
+      router.replace("/login");
+    }
+  }, [state.isSignedIn]);
+
+  if (!state.isSignedIn) return null;
 
   return (
     <Tabs

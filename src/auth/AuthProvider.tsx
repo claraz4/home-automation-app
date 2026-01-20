@@ -10,6 +10,7 @@ import { AuthContext } from "./AuthContext";
 import { authReducer, initialAuthState } from "./authReducer";
 import { exchangeCodeForToken, fetchUserInfo } from "./keycloak";
 import { clearTokens, getTokens, saveTokens } from "./tokenStorage";
+import { getValidAccessToken } from "@/src/auth/keycloakRefresh";
 
 type Props = {
   children: ReactNode;
@@ -34,18 +35,26 @@ export function AuthProvider({ children }: Props) {
 
   const [state, dispatch] = useReducer(authReducer, initialAuthState);
 
+  // Verify the tokens and check the user state
   useEffect(() => {
-    const restoreSession = async () => {
-      const tokens = await getTokens();
+    const bootstrap = async () => {
+      try {
+        const token = await getValidAccessToken();
 
-      if (tokens?.accessToken) {
+        if (!token) {
+          throw new Error("No valid session");
+        }
+
         dispatch({ type: "SIGN_IN" });
+      } catch {
+        await clearTokens();
+        dispatch({ type: "SIGN_OUT" });
+      } finally {
+        dispatch({ type: "RESTORE_DONE" });
       }
-
-      dispatch({ type: "RESTORE_DONE" });
     };
 
-    void restoreSession();
+    void bootstrap();
   }, []);
 
   // Sign in and save tokens if available

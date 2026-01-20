@@ -3,7 +3,7 @@ import React from "react";
 import { useAuth } from "@/src/auth/useAuth";
 import ScreenView from "@/src/shared/ui/ScreenView";
 import { Redirect } from "expo-router";
-import { borderRadius, colors, paddings, spaces, boxShadow } from "@/src/theme";
+import { borderRadius, colors, spaces } from "@/src/theme";
 import Button from "@/src/shared/components/Button";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Heading } from "@/src/shared/ui/Heading";
@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary[500],
     padding: spaces.xl,
     justifyContent: "center",
-    // alignItems: "center",
   },
   iconContainer: {
     borderWidth: 1,

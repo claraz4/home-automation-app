@@ -25,6 +25,7 @@ export async function exchangeCodeForToken({
       redirect_uri: redirectUri,
     });
 
+    // returns error 400 with "invalid_grant" if it fails
     const { data } = await axios.post<TokenResponse>(
       `${keycloakUrl}/protocol/openid-connect/token`,
       params.toString(),
