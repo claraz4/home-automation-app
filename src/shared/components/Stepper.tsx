@@ -11,6 +11,7 @@ interface StepperProps {
   step?: number;
   title?: string;
   padStart?: number;
+  hasDisabled?: boolean;
 }
 
 export default function Stepper({
@@ -21,26 +22,43 @@ export default function Stepper({
   setCurrent,
   title,
   padStart = 1,
+  hasDisabled = false,
 }: StepperProps) {
   const [isAddDisabled, setIsAddDisabled] = useState(false);
   const [isMinusDisabled, setIsMinusDisabled] = useState(false);
 
   // Disable buttons when no longer possible
   useEffect(() => {
-    setIsMinusDisabled(current - step < min);
-    setIsAddDisabled(current + step > max);
+    if (hasDisabled) {
+      setIsMinusDisabled(current - step < min);
+      setIsAddDisabled(current + step > max);
+    }
   }, [current]);
 
   // Logic for the pressable buttons
   const increaseCurrent = () => {
-    if (current + step <= max) {
+    if (hasDisabled && current + step <= max) {
       setCurrent((prevState) => prevState + step);
+    }
+
+    if (!hasDisabled) {
+      setCurrent((prevState) => (prevState + step) % max);
     }
   };
 
   const decreaseCurrent = () => {
-    if (current - step >= min) {
+    if (hasDisabled && current - step >= min) {
       setCurrent((prevState) => prevState - step);
+    }
+
+    if (!hasDisabled) {
+      setCurrent((prevState) => {
+        if (prevState - step < 0) {
+          return Math.floor(max / step) * step; // so it doesn't reach a number that can't be reach in the current step
+        }
+
+        return prevState - step;
+      });
     }
   };
 
