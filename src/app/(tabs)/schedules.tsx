@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import ScreenView from "@/src/shared/ui/ScreenView";
 import { Heading } from "@/src/shared/ui/Heading";
@@ -12,7 +12,7 @@ import {
 } from "@/src/features/schedule/types/AllSchedulesDTO";
 import DaySchedule from "@/src/features/schedule/components/DaySchedule";
 import { AppText } from "@/src/shared/ui/AppText";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 
 export default function Schedules() {
   const [currentDay, setCurrentDay] = useState<dayjs.Dayjs>(
@@ -21,18 +21,20 @@ export default function Schedules() {
   const [allSchedules, setAllSchedules] = useState<AllSchedulesDTO>();
 
   // Get all schedules
-  useEffect(() => {
-    const getAllSchedules = async () => {
-      try {
-        const res = await api.get<AllSchedulesDTO>("/schedules");
-        setAllSchedules(res.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  useFocusEffect(
+    useCallback(() => {
+      const getAllSchedules = async () => {
+        try {
+          const res = await api.get<AllSchedulesDTO>("/schedules");
+          setAllSchedules(res.data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
-    void getAllSchedules();
-  }, []);
+      void getAllSchedules();
+    }, []),
+  );
 
   if (!allSchedules) return null;
 

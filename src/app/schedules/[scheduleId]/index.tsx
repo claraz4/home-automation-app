@@ -1,8 +1,8 @@
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Heading } from "@/src/shared/ui/Heading";
 import FeatureRow from "@/src/shared/components/FeatureRow";
 import ScreenView from "@/src/shared/ui/ScreenView";
-import { paddings, spaces, colors } from "@/src/theme";
+import { paddings, spaces } from "@/src/theme";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { SingleScheduleDTO } from "@/src/features/schedule/types/SingleScheduleDTO";
@@ -13,7 +13,6 @@ import { BasePlug } from "@/src/shared/types/BasePlug";
 import { editPlugState } from "@/src/features/schedule/utils/schedulesHelper";
 import useSchedules from "@/src/features/schedule/hooks/useSchedules";
 import ScheduleActions from "@/src/features/schedule/components/ScheduleActions";
-import { AppText } from "@/src/shared/ui/AppText";
 import ConfirmationMessagePopUp from "@/src/shared/components/ConfirmationMessagePopUp";
 
 export default function SingleScheduleScreen() {
@@ -54,7 +53,7 @@ export default function SingleScheduleScreen() {
   }
 
   return (
-    <ScreenView>
+    <ScreenView style={{ padding: paddings.page, rowGap: spaces.lg }}>
       <Heading variant="h2" hasBackButton={true}>
         {scheduleInfo?.name}
       </Heading>
@@ -102,7 +101,6 @@ export default function SingleScheduleScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: paddings.page,
     rowGap: spaces.lg,
   },
 });
