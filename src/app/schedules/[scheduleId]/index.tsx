@@ -14,6 +14,7 @@ import { editPlugState } from "@/src/features/schedule/utils/schedulesHelper";
 import useSchedules from "@/src/features/schedule/hooks/useSchedules";
 import ScheduleActions from "@/src/features/schedule/components/ScheduleActions";
 import { AppText } from "@/src/shared/ui/AppText";
+import ConfirmationMessagePopUp from "@/src/shared/components/ConfirmationMessagePopUp";
 
 export default function SingleScheduleScreen() {
   const { scheduleId } = useLocalSearchParams<{ scheduleId: string }>();
@@ -23,6 +24,7 @@ export default function SingleScheduleScreen() {
   const [originalScheduleInfo, setOriginalScheduleInfo] =
     useState<SingleScheduleDTO>();
   const [scheduleInfo, setScheduleInfo] = useState<SingleScheduleDTO>();
+  const [isDeleteSchedule, setIsDeleteSchedule] = useState(false);
 
   // Fetch schedule
   useEffect(() => {
@@ -84,7 +86,14 @@ export default function SingleScheduleScreen() {
           originalSchedule={originalScheduleInfo}
           editedSchedule={scheduleInfo}
           onEdit={editSchedule}
-          onDelete={deleteSchedule}
+          onDelete={() => setIsDeleteSchedule(true)}
+        />
+        <ConfirmationMessagePopUp
+          headingText="Delete Schedule"
+          message={`Are you sure you want to delete ${scheduleInfo.name}?`}
+          onConfirm={deleteSchedule}
+          visible={isDeleteSchedule}
+          setVisible={setIsDeleteSchedule}
         />
       </View>
     </ScreenView>

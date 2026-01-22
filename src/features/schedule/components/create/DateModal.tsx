@@ -3,22 +3,24 @@ import { Calendar } from "react-native-calendars";
 import { fontWeight, colors, spaces } from "@/src/theme";
 import Button from "@/src/shared/components/Button";
 import dayjs from "dayjs";
+import { useState } from "react";
 
 interface DateModalProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
   selectedDate: Date;
-  setSelectedDate: (selectedDate: Date) => void;
+  saveDate: (date: Date) => void;
 }
 
 export default function DateModal({
   visible,
   setVisible,
   selectedDate,
-  setSelectedDate,
+  saveDate,
 }: DateModalProps) {
+  const [currentDate, setCurrentDate] = useState<Date>(selectedDate);
   const todayKey = dayjs().format("YYYY-MM-DD");
-  const currentDateKey = dayjs(selectedDate).format("YYYY-MM-DD");
+  const currentDateKey = dayjs(currentDate).format("YYYY-MM-DD");
   const maxDateKey = dayjs().add(30, "day").format("YYYY-MM-DD");
 
   return (
@@ -49,7 +51,7 @@ export default function DateModal({
           textMonthFontFamily: fontWeight[500],
           textDayHeaderFontFamily: fontWeight[400],
         }}
-        onDayPress={(day) => setSelectedDate(dayjs(day.dateString).toDate())}
+        onDayPress={(day) => setCurrentDate(dayjs(day.dateString).toDate())}
         markedDates={{
           [currentDateKey]: {
             customStyles: {
@@ -63,7 +65,7 @@ export default function DateModal({
       />
       <Button
         text="Save Date"
-        onPress={() => {}}
+        onPress={() => saveDate(currentDate)}
         invertColors
         style={{ marginVertical: spaces.sm }}
       />

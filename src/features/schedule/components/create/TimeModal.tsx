@@ -1,22 +1,24 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { borderRadius, colors, spaces } from "@/src/theme";
 import AppModal from "@/src/shared/components/AppModal";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import CustomTimeSelection from "@/src/features/timeout/components/CustomTimeSelection";
 import Button from "@/src/shared/components/Button";
 
 interface TimeModalProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
-  setSelectedHour: (hour: number) => void;
-  setSelectedMinute: (minute: number) => void;
+  hour: number;
+  minute: number;
+  saveTime: (hour: number, minute: number) => void;
 }
 
 export default function TimeModal({
   visible,
   setVisible,
-  setSelectedHour,
-  setSelectedMinute,
+  hour,
+  minute,
+  saveTime,
 }: TimeModalProps) {
   const minHour = 0,
     maxHour = 23,
@@ -25,13 +27,8 @@ export default function TimeModal({
     maxMinute = 59,
     stepMinute = 1;
 
-  const [editHour, setEditHour] = useState(0);
-  const [editMinute, setEditMinute] = useState(0);
-
-  const saveTime = () => {
-    setSelectedHour(editHour);
-    setSelectedMinute(editMinute);
-  };
+  const [editHour, setEditHour] = useState(hour);
+  const [editMinute, setEditMinute] = useState(minute);
 
   return (
     <AppModal
@@ -58,7 +55,7 @@ export default function TimeModal({
       />
       <Button
         text="Save Time"
-        onPress={saveTime}
+        onPress={() => saveTime(editHour, editMinute)}
         invertColors
         style={{ marginBottom: spaces.md }}
       />

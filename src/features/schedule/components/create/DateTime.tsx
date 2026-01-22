@@ -31,6 +31,19 @@ export default function DateTime({
   const dayjsDate = dayjs(selectedDate);
   const formattedDate = `${dayjsDate.format("dddd")}, ${dayjsDate.format("MMMM")} ${dayjsDate.format("D")}`;
 
+  // Save time
+  const saveTime = (editHour: number, editMinute: number) => {
+    setSelectedHour(editHour);
+    setSelectedMinute(editMinute);
+    setIsTimeClicked(false);
+  };
+
+  // Save date
+  const saveDate = (editDate: Date) => {
+    setSelectedDate(editDate);
+    setIsDateClicked(false);
+  };
+
   return (
     <View style={{ rowGap: spaces.sm }}>
       <Heading variant="h3">Date & Time</Heading>
@@ -58,14 +71,15 @@ export default function DateTime({
         <TimeModal
           visible={isTimeClicked}
           setVisible={setIsTimeClicked}
-          setSelectedHour={setSelectedHour}
-          setSelectedMinute={setSelectedMinute}
+          hour={selectedHour}
+          minute={selectedMinute}
+          saveTime={saveTime}
         />
         <DateModal
           visible={isDateClicked}
           setVisible={setIsDateClicked}
           selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
+          saveDate={saveDate}
         />
       </View>
     </View>

@@ -11,6 +11,7 @@ interface AppModalProps {
   isBottom: boolean;
   headingVariant?: Variant;
   headingText?: string;
+  hasCloseButton?: boolean;
 }
 
 export default function AppModal({
@@ -20,6 +21,7 @@ export default function AppModal({
   isBottom = false,
   headingVariant = "h4",
   headingText = "Add Plug to Schedule",
+  hasCloseButton = true,
 }: AppModalProps) {
   return (
     <Modal
@@ -32,13 +34,15 @@ export default function AppModal({
         <View style={[styles.sheet, isBottom && styles.sheetBottom]}>
           <View style={styles.headingContainer}>
             <Heading variant={headingVariant}>{headingText}</Heading>
-            <Pressable onPress={() => setVisible(false)}>
-              <Ionicons
-                name="close-circle-outline"
-                size={32}
-                color={colors.primary[500]}
-              />
-            </Pressable>
+            {hasCloseButton && (
+              <Pressable onPress={() => setVisible(false)}>
+                <Ionicons
+                  name="close-circle-outline"
+                  size={32}
+                  color={colors.primary[500]}
+                />
+              </Pressable>
+            )}
           </View>
           {children}
         </View>
