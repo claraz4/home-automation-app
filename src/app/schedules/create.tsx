@@ -15,43 +15,43 @@ import dayjs from "dayjs";
 export default function CreateSchedule() {
   const [scheduleName, setScheduleName] = useState("");
   const [showAddPlug, setShowAddPlug] = useState(false);
+
   const [onPlugs, setOnPlugs] = useState<SmallBasePlug[]>([]);
   const [offPlugs, setOffPlugs] = useState<SmallBasePlug[]>([]);
-  const [selectedHour, setSelectedHour] = useState<number>(0);
-  const [selectedMinute, setSelectedMinute] = useState<number>(0);
-  const [selectedDay, setSelectedDay] = useState<Date>(new Date());
 
-  // Remove a plug from the list
-  const removePlug = (id: number, isOn: boolean) => {
-    if (isOn) {
-      setOnPlugs((prevState) => prevState.filter((p) => p.id !== id));
-    } else {
-      setOffPlugs((prevState) => prevState.filter((p) => p.id !== id));
-    }
-  };
+  const [dateTime, setDateTime] = useState({
+    day: new Date(),
+    hour: 0,
+    minute: 0,
+  });
 
-  // Extract plugs ids from object
-  const extractIds = (plugs: SmallBasePlug[]) => {
-    return plugs.map((plug) => plug.id);
-  };
+  // Plug handlers
+  const removeOnPlug = (id: number) =>
+    setOnPlugs((prev) => prev.filter((p) => p.id !== id));
 
-  // Create a new schedule
+  const removeOffPlug = (id: number) =>
+    setOffPlugs((prev) => prev.filter((p) => p.id !== id));
+
+  // Create schedule
   const createSchedule = async () => {
+    if (!scheduleName.trim()) return;
+
+    if (onPlugs.length === 0 && offPlugs.length === 0) {
+      console.error("A schedule needs at least one plug");
+      return;
+    }
+
+    const jsDate = dayjs(dateTime.day)
+      .hour(dateTime.hour)
+      .minute(dateTime.minute)
+      .toDate();
+
     try {
-      const jsDate = dayjs(selectedDay)
-        .hour(selectedHour)
-        .minute(selectedMinute)
-        .toDate();
-
-      if (onPlugs.length === 0 && offPlugs.length === 0) {
-        throw new Error("ERROR: A schedule needs at least one plug");
-      }
-
       await api.post("/schedules", {
         name: scheduleName,
         time: jsDate,
-        onPlugIds: extractIds(onPlugs),
-        offPlugIds: extractIds(offPlugs),
+        onPlugIds: onPlugs.map((p) => p.id),
+        offPlugIds: offPlugs.map((p) => p.id),
         isActive: true,
       });
     } catch (error) {
@@ -61,9 +61,10 @@ export default function CreateSchedule() {
 
   return (
     <ScreenView style={{ padding: paddings.page }}>
-      <Heading variant="h2" hasBackButton={true}>
+      <Heading variant="h2" hasBackButton>
         Create Schedule
       </Heading>
+
       <View style={styles.subContainer}>
         <AppTextInput
           label="Schedule Name"
@@ -71,37 +72,49 @@ export default function CreateSchedule() {
           onChange={setScheduleName}
           containerStyle={{ marginTop: spaces.md }}
         />
+
         <DateTime
-          selectedDate={selectedDay}
-          setSelectedDate={setSelectedDay}
-          selectedHour={selectedHour}
-          setSelectedHour={setSelectedHour}
-          selectedMinute={selectedMinute}
-          setSelectedMinute={setSelectedMinute}
+          selectedDate={dateTime.day}
+          setSelectedDate={(day) => setDateTime((prev) => ({ ...prev, day }))}
+          selectedHour={dateTime.hour}
+          setSelectedHour={(hour) => setDateTime((prev) => ({ ...prev, hour }))}
+          selectedMinute={dateTime.minute}
+          setSelectedMinute={(minute) =>
+            setDateTime((prev) => ({ ...prev, minute }))
+          }
         />
+
         <View style={{ rowGap: spaces.sm }}>
           <PlugsStateSchedule
-            isOn={true}
+            isOn
             plugs={onPlugs}
-            removePlug={(plug: SmallBasePlug) => removePlug(plug.id, true)}
+            removePlug={(plug) => removeOnPlug(plug.id)}
           />
+
           <PlugsStateSchedule
             isOn={false}
             plugs={offPlugs}
-            removePlug={(plug: SmallBasePlug) => removePlug(plug.id, false)}
+            removePlug={(plug) => removeOffPlug(plug.id)}
           />
+
           <Button
             text="+ Add Plugs"
             onPress={() => setShowAddPlug(true)}
             textStyle={{ fontFamily: fontWeight[600] }}
           />
         </View>
+
         <Button
-          text="Create Shedule"
+          text="Create Schedule"
           onPress={createSchedule}
           invertColors
+          disabled={
+            !scheduleName.trim() ||
+            (onPlugs.length === 0 && offPlugs.length === 0)
+          }
           textStyle={{ fontFamily: fontWeight[600] }}
         />
+
         <AddPlugModal
           visible={showAddPlug}
           setVisible={setShowAddPlug}
