@@ -5,15 +5,13 @@ import { View } from "react-native";
 import { SingleScheduleDTO } from "@/src/features/schedule/types/SingleScheduleDTO";
 
 interface ScheduleActionsProps {
-  originalSchedule: SingleScheduleDTO;
-  editedSchedule: SingleScheduleDTO;
-  onEdit: (schedule: SingleScheduleDTO) => void;
+  isScheduleEdited: boolean;
+  onEdit: () => void;
   onDelete: () => void;
 }
 
 export default function ScheduleActions({
-  originalSchedule,
-  editedSchedule,
+  isScheduleEdited,
   onEdit,
   onDelete,
 }: ScheduleActionsProps) {
@@ -22,8 +20,8 @@ export default function ScheduleActions({
       <Button
         text="Save Changes"
         invertColors
-        onPress={() => onEdit(editedSchedule)}
-        disabled={areSchedulesEqual(originalSchedule, editedSchedule)}
+        onPress={onEdit}
+        disabled={!isScheduleEdited}
       />
       <Button
         text="Delete Schedule"

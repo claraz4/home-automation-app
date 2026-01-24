@@ -1,19 +1,16 @@
-import { StyleSheet, View } from "react-native";
-import { Heading } from "@/src/shared/ui/Heading";
-import FeatureRow from "@/src/shared/components/FeatureRow";
+import { StyleSheet } from "react-native";
 import ScreenView from "@/src/shared/ui/ScreenView";
 import { paddings, spaces } from "@/src/theme";
-import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { SingleScheduleDTO } from "@/src/features/schedule/types/SingleScheduleDTO";
 import dayjs from "dayjs";
-import { getFormattedDateTime } from "@/src/features/schedule/utils/daysHelper";
-import SchedulePlugList from "@/src/features/schedule/components/SchedulePlugList";
 import { BasePlug } from "@/src/shared/types/BasePlug";
-import { editPlugState } from "@/src/features/schedule/utils/schedulesHelper";
+import { areSchedulesEqual } from "@/src/features/schedule/utils/schedulesHelper";
 import useSchedules from "@/src/features/schedule/hooks/useSchedules";
-import ScheduleActions from "@/src/features/schedule/components/ScheduleActions";
 import ConfirmationMessagePopUp from "@/src/shared/components/ConfirmationMessagePopUp";
+import { CreateEditSchedule } from "@/src/features/schedule/components/create/CreateEditSchedule";
+import { useScheduleDateEdit } from "@/src/features/schedule/hooks/useScheduleDateEdit";
 
 export default function SingleScheduleScreen() {
   const { scheduleId } = useLocalSearchParams<{ scheduleId: string }>();
@@ -24,6 +21,22 @@ export default function SingleScheduleScreen() {
     useState<SingleScheduleDTO>();
   const [scheduleInfo, setScheduleInfo] = useState<SingleScheduleDTO>();
   const [isDeleteSchedule, setIsDeleteSchedule] = useState(false);
+  const [onPlugs, setOnPlugs] = useState<BasePlug[]>([]);
+  const [offPlugs, setOffPlugs] = useState<BasePlug[]>([]);
+  const { date, setMode, setDate } = useScheduleDateEdit();
+
+  // Set edit mode
+  useEffect(() => {
+    setMode("edit");
+  }, []);
+
+  // Check if the schedule has been edited
+  const [hasChanged, setHasChanged] = useState(false);
+  useEffect(() => {
+    if (originalScheduleInfo && scheduleInfo) {
+      setHasChanged(!areSchedulesEqual(originalScheduleInfo, scheduleInfo));
+    }
+  }, [scheduleInfo, originalScheduleInfo]);
 
   // Fetch schedule
   useEffect(() => {
@@ -33,20 +46,51 @@ export default function SingleScheduleScreen() {
 
       setOriginalScheduleInfo(res.data);
       setScheduleInfo(res.data);
+      setOnPlugs(res.data.onPlugs);
+      setOffPlugs(res.data.offPlugs);
+      setDate(dayjs(res.data.time));
     };
 
     void fetchSchedule();
   }, [scheduleId]);
 
   // Create the date to display
-  const day = dayjs(scheduleInfo?.time);
-  const { date, time } = getFormattedDateTime(day);
+  const day = scheduleInfo ? dayjs(scheduleInfo.time).toDate() : new Date();
 
-  // Toggle schedule
-  const toggleSchedule = (plug: BasePlug, newState: boolean) =>
-    setScheduleInfo((prev) =>
-      prev ? editPlugState(plug, newState, prev) : prev,
-    );
+  // Edit the time
+  useFocusEffect(
+    useCallback(() => {
+      setScheduleInfo((prevState) => {
+        if (!prevState || !date) return prevState;
+
+        const newTime = date.toISOString();
+
+        if (prevState.time === newTime) {
+          return prevState; // no change
+        }
+
+        return {
+          ...prevState,
+          time: newTime,
+        };
+      });
+    }, [date]),
+  );
+
+  // Edit the on and off plug list
+  useFocusEffect(
+    useCallback(() => {
+      setScheduleInfo((prevState) => {
+        if (!prevState || !date) return prevState;
+
+        return {
+          ...prevState,
+          onPlugs,
+          offPlugs,
+        };
+      });
+    }, [onPlugs, offPlugs]),
+  );
 
   if (!originalScheduleInfo || !scheduleInfo) {
     return <ScreenView />;
@@ -54,53 +98,23 @@ export default function SingleScheduleScreen() {
 
   return (
     <ScreenView style={{ padding: paddings.page, rowGap: spaces.lg }}>
-      <Heading variant="h2" hasBackButton={true}>
-        {scheduleInfo?.name}
-      </Heading>
-
-      <View style={styles.container}>
-        <FeatureRow
-          headingText="Current State"
-          hasSwitch
-          status={true}
-          setStatus={() => {}}
-        />
-        <FeatureRow
-          headingText={`${date} at ${time}`}
-          subtitleText="Repeats: Never"
-          hasStatus={false}
-          hasExtra
-          extraScreen="/"
-        />
-        <SchedulePlugList
-          plugList={scheduleInfo.onPlugs}
-          editPlugState={toggleSchedule}
-        />
-        <SchedulePlugList
-          plugList={scheduleInfo.offPlugs}
-          isOn={false}
-          editPlugState={toggleSchedule}
-        />
-        <ScheduleActions
-          originalSchedule={originalScheduleInfo}
-          editedSchedule={scheduleInfo}
-          onEdit={editSchedule}
-          onDelete={() => setIsDeleteSchedule(true)}
-        />
-        <ConfirmationMessagePopUp
-          headingText="Delete Schedule"
-          message={`Are you sure you want to delete ${scheduleInfo.name}?`}
-          onConfirm={deleteSchedule}
-          visible={isDeleteSchedule}
-          setVisible={setIsDeleteSchedule}
-        />
-      </View>
+      <CreateEditSchedule
+        scheduleName={scheduleInfo.name}
+        onPlugs={onPlugs}
+        offPlugs={offPlugs}
+        isScheduleEdited={hasChanged}
+        setOnPlugs={setOnPlugs}
+        setOffPlugs={setOffPlugs}
+        onEdit={() => editSchedule(scheduleInfo)}
+        setIsDeleteSchedule={setIsDeleteSchedule}
+      />
+      <ConfirmationMessagePopUp
+        headingText="Delete Schedule"
+        message={`Are you sure you want to delete ${scheduleInfo.name}?`}
+        onConfirm={deleteSchedule}
+        visible={isDeleteSchedule}
+        setVisible={setIsDeleteSchedule}
+      />
     </ScreenView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    rowGap: spaces.lg,
-  },
-});

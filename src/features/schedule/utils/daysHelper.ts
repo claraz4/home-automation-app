@@ -32,11 +32,11 @@ export function isDayScheduled(
 }
 
 export function getFormattedDateTime(day: dayjs.Dayjs): {
-  date: string;
-  time: string;
+  formattedDate: string;
+  formattedTime: string;
 } {
-  const date = `${day.format("ddd, MMM D")}`;
-  const time = `${day.format("HH:mm")}`;
+  const formattedDate = `${day.format("ddd, MMM D")}`;
+  const formattedTime = `${day.format("HH:mm")}`;
 
-  return { date, time };
+  return { formattedDate, formattedTime };
 }

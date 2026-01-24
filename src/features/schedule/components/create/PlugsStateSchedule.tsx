@@ -4,25 +4,28 @@ import { AppText } from "@/src/shared/ui/AppText";
 import PlugBox from "@/src/features/rooms/components/PlugBox";
 import { spaces } from "@/src/theme";
 import { SmallBasePlug } from "@/src/features/schedule/types/SmallBasePlug";
+import { Dispatch, SetStateAction } from "react";
 
 interface PlugsStateScheduleProps {
   isOn: boolean;
   plugs: SmallBasePlug[];
-  removePlug: (plug: SmallBasePlug) => void;
+  setPlugs: Dispatch<SetStateAction<SmallBasePlug[]>>;
 }
 
 export default function PlugsStateSchedule({
   isOn,
   plugs,
-  removePlug,
+  setPlugs,
 }: PlugsStateScheduleProps) {
   return (
     <View style={{ rowGap: spaces.md }}>
       <View>
         <Heading variant="h3">Plugs {isOn ? "ON" : "OFF"}</Heading>
-        <AppText variant="bodySecondary">
-          Turns {isOn ? "on" : "off"} for this schedule
-        </AppText>
+        {plugs.length === 0 && (
+          <AppText variant="bodySecondary">
+            No plug turns {isOn ? "on" : "off"} in this schedule.
+          </AppText>
+        )}
       </View>
       <View style={{ rowGap: spaces.xs }}>
         {plugs.map((plug) => {
@@ -33,7 +36,9 @@ export default function PlugsStateSchedule({
               hasStatus={false}
               hasExtra={false}
               hasSwitch={false}
-              onRemove={() => removePlug(plug)}
+              onRemove={() =>
+                setPlugs((prev) => prev.filter((p) => p.id !== plug.id))
+              }
               iconSize={20}
               containerStyles={{ padding: spaces.xs + spaces.xxxs }}
             />

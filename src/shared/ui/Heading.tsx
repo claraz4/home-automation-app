@@ -8,8 +8,7 @@ import {
 } from "react-native";
 import { fontStyle, headings, spaces, colors } from "../../theme";
 import AppLink from "@/src/shared/ui/AppLink";
-import { Href } from "expo-router";
-import { useNavigation } from "@react-navigation/native";
+import { Href, router } from "expo-router";
 import Entypo from "@expo/vector-icons/Entypo";
 import { ReactNode } from "react";
 
@@ -21,6 +20,7 @@ interface HeadingProps extends TextProps {
   href?: Href;
   linkPlaceholder?: string;
   hasBackButton?: boolean;
+  onBack?: () => void;
   containerStyles?: ViewStyle;
   hasCustomLinkComponent?: boolean;
   customLinkComponent?: ReactNode;
@@ -32,6 +32,7 @@ export function Heading({
   hasLink = false,
   href = "/",
   hasBackButton = false,
+  onBack,
   linkPlaceholder = "",
   containerStyles,
   hasCustomLinkComponent = false,
@@ -51,7 +52,15 @@ export function Heading({
       />
     </View>
   );
-  const navigation = useNavigation();
+
+  // Override the default go back if onBack provided
+  const back = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      router.back();
+    }
+  };
 
   return (
     <View
@@ -62,7 +71,7 @@ export function Heading({
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         {hasBackButton && (
-          <Pressable onPress={() => navigation.goBack()}>
+          <Pressable onPress={back}>
             <Entypo name="chevron-left" size={28} color={colors.text} />
           </Pressable>
         )}
