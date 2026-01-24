@@ -4,12 +4,11 @@ import { AppText } from "@/src/shared/ui/AppText";
 import PlugBox from "@/src/features/rooms/components/PlugBox";
 import { spaces } from "@/src/theme";
 import { SmallBasePlug } from "@/src/features/schedule/types/SmallBasePlug";
-import { Dispatch, SetStateAction } from "react";
 
 interface PlugsStateScheduleProps {
   isOn: boolean;
   plugs: SmallBasePlug[];
-  setPlugs: Dispatch<SetStateAction<SmallBasePlug[]>>;
+  setPlugs: (plugs: SmallBasePlug[]) => void;
 }
 
 export default function PlugsStateSchedule({
@@ -36,9 +35,7 @@ export default function PlugsStateSchedule({
               hasStatus={false}
               hasExtra={false}
               hasSwitch={false}
-              onRemove={() =>
-                setPlugs((prev) => prev.filter((p) => p.id !== plug.id))
-              }
+              onRemove={() => setPlugs(plugs.filter((p) => p.id !== plug.id))}
               iconSize={20}
               containerStyles={{ padding: spaces.xs + spaces.xxxs }}
             />

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import ScreenView from "@/src/shared/ui/ScreenView";
 import { Heading } from "@/src/shared/ui/Heading";

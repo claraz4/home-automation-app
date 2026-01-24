@@ -32,6 +32,8 @@ export default function DaySchedule({
                 scheduleId: schedule.id,
               },
             }}
+            hasStatus={true}
+            status={schedule.isActive}
             subtitleText={`${schedule.deviceCount} Plugs`}
           />
         ))}

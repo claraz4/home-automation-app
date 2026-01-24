@@ -1,10 +1,13 @@
-import { SingleScheduleDTO } from "@/src/features/schedule/types/SingleScheduleDTO";
+import {
+  SingleSchedule,
+  SingleScheduleDTO,
+} from "@/src/features/schedule/types/SingleScheduleDTO";
 import { BasePlug } from "@/src/shared/types/BasePlug";
 import dayjs from "dayjs";
 
 export function areSchedulesEqual(
-  schedule1: SingleScheduleDTO,
-  schedule2: SingleScheduleDTO,
+  schedule1: SingleSchedule,
+  schedule2: SingleSchedule,
 ): boolean {
   if (schedule1.id !== schedule2.id) return false;
   if (schedule1.name !== schedule2.name) return false;

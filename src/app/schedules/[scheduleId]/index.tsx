@@ -2,9 +2,11 @@ import ScreenView from "@/src/shared/ui/ScreenView";
 import { paddings, spaces } from "@/src/theme";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { SingleScheduleDTO } from "@/src/features/schedule/types/SingleScheduleDTO";
+import {
+  SingleSchedule,
+  SingleScheduleDTO,
+} from "@/src/features/schedule/types/SingleScheduleDTO";
 import dayjs from "dayjs";
-import { BasePlug } from "@/src/shared/types/BasePlug";
 import { areSchedulesEqual } from "@/src/features/schedule/utils/schedulesHelper";
 import useSchedules from "@/src/features/schedule/hooks/useSchedules";
 import ConfirmationMessagePopUp from "@/src/shared/components/ConfirmationMessagePopUp";
@@ -18,11 +20,15 @@ export default function SingleScheduleScreen() {
   );
   const [originalScheduleInfo, setOriginalScheduleInfo] =
     useState<SingleScheduleDTO>();
-  const [scheduleInfo, setScheduleInfo] = useState<SingleScheduleDTO>();
   const [isDeleteSchedule, setIsDeleteSchedule] = useState(false);
-  const [onPlugs, setOnPlugs] = useState<BasePlug[]>([]);
-  const [offPlugs, setOffPlugs] = useState<BasePlug[]>([]);
   const { date, setMode, setDate } = useScheduleDateEdit();
+  const [scheduleInfo, setScheduleInfo] = useState<SingleSchedule>({
+    name: "",
+    time: date?.toISOString() || dayjs().toISOString(),
+    onPlugs: [],
+    offPlugs: [],
+    isActive: true,
+  });
 
   // Set edit mode
   useEffect(() => {
@@ -45,51 +51,11 @@ export default function SingleScheduleScreen() {
 
       setOriginalScheduleInfo(res.data);
       setScheduleInfo(res.data);
-      setOnPlugs(res.data.onPlugs);
-      setOffPlugs(res.data.offPlugs);
       setDate(dayjs(res.data.time));
     };
 
     void fetchSchedule();
   }, [scheduleId]);
-
-  // Create the date to display
-  const day = scheduleInfo ? dayjs(scheduleInfo.time).toDate() : new Date();
-
-  // Edit the time
-  useFocusEffect(
-    useCallback(() => {
-      setScheduleInfo((prevState) => {
-        if (!prevState || !date) return prevState;
-
-        const newTime = date.toISOString();
-
-        if (prevState.time === newTime) {
-          return prevState; // no change
-        }
-
-        return {
-          ...prevState,
-          time: newTime,
-        };
-      });
-    }, [date]),
-  );
-
-  // Edit the on and off plug list
-  useFocusEffect(
-    useCallback(() => {
-      setScheduleInfo((prevState) => {
-        if (!prevState || !date) return prevState;
-
-        return {
-          ...prevState,
-          onPlugs,
-          offPlugs,
-        };
-      });
-    }, [onPlugs, offPlugs]),
-  );
 
   if (!originalScheduleInfo || !scheduleInfo) {
     return <ScreenView />;
@@ -98,13 +64,9 @@ export default function SingleScheduleScreen() {
   return (
     <ScreenView style={{ padding: paddings.page, rowGap: spaces.lg }}>
       <CreateEditSchedule
-        scheduleName={scheduleInfo.name}
-        onPlugs={onPlugs}
-        offPlugs={offPlugs}
+        schedule={scheduleInfo}
+        setSchedule={setScheduleInfo}
         isScheduleEdited={hasChanged}
-        setOnPlugs={setOnPlugs}
-        setOffPlugs={setOffPlugs}
-        onEdit={() => editSchedule(scheduleInfo)}
         setIsDeleteSchedule={setIsDeleteSchedule}
       />
       <ConfirmationMessagePopUp

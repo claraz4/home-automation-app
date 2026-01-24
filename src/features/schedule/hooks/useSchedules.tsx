@@ -1,9 +1,15 @@
 import { api } from "@/src/api/api";
 import { router } from "expo-router";
-import { SingleScheduleDTO } from "@/src/features/schedule/types/SingleScheduleDTO";
-import { SingleScheduleUploadDTO } from "@/src/features/schedule/types/SingleScheduleUploadDTO";
+import {
+  SingleSchedule,
+  SingleScheduleDTO,
+} from "@/src/features/schedule/types/SingleScheduleDTO";
+import {
+  SingleScheduleCreateDTO,
+  SingleScheduleEditDTO,
+} from "@/src/features/schedule/types/SingleScheduleEditDTO";
 
-export default function useSchedules(scheduleId: number) {
+export default function useSchedules(scheduleId?: number) {
   // Fetch the current schedule information
   const getSchedule = async () => {
     try {
@@ -23,25 +29,52 @@ export default function useSchedules(scheduleId: number) {
     }
   };
 
-  // Edit the current schedule
-  const editSchedule = async (editedSchedule: SingleScheduleDTO) => {
+  // Toggle the state of a schedule
+  const toggleSchedule = async (status: boolean) => {
     try {
-      const { id, name, time, onPlugs, offPlugs } = editedSchedule;
-      const onPlugIds: number[] = onPlugs.map((schedule) => schedule.id);
-      const offPlugIds: number[] = offPlugs.map((schedule) => schedule.id);
-
-      const scheduleDTO: SingleScheduleUploadDTO = {
-        id,
-        name,
-        time,
-        onPlugIds,
-        offPlugIds,
-      };
-      await api.put<SingleScheduleUploadDTO>("/schedules", scheduleDTO);
+      await api.put("/schedules/toggle", { scheduleId, isEnabled: status });
     } catch (error) {
       console.error(error);
     }
   };
 
-  return { getSchedule, editSchedule, deleteSchedule };
+  // Edit/Create the current schedule
+  const editSchedule = async (
+    editedSchedule: SingleSchedule,
+    isCreate = false,
+  ) => {
+    try {
+      const { id, name, time, onPlugs, offPlugs, isActive } = editedSchedule;
+      const onPlugIds: number[] = onPlugs.map((schedule) => schedule.id);
+      const offPlugIds: number[] = offPlugs.map((schedule) => schedule.id);
+
+      if (!name.trim() && !time) return;
+
+      if (onPlugs.length === 0 && offPlugs.length === 0) {
+        console.error("A schedule needs at least one plug");
+        return;
+      }
+
+      const scheduleDTO: SingleScheduleCreateDTO = {
+        name,
+        time,
+        onPlugIds,
+        offPlugIds,
+        isActive,
+      };
+
+      if (isCreate) {
+        await api.post<SingleScheduleCreateDTO>("/schedules", scheduleDTO);
+      } else {
+        await api.put<SingleScheduleEditDTO>("/schedules", {
+          ...scheduleDTO,
+          id,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return { getSchedule, editSchedule, deleteSchedule, toggleSchedule };
 }
