@@ -1,8 +1,6 @@
 import { colors, spaces } from "@/src/theme";
 import Button from "@/src/shared/components/Button";
-import { areSchedulesEqual } from "@/src/features/schedule/utils/schedulesHelper";
 import { View } from "react-native";
-import { SingleScheduleDTO } from "@/src/features/schedule/types/SingleScheduleDTO";
 
 interface ScheduleActionsProps {
   isScheduleEdited: boolean;

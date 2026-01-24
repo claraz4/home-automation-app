@@ -1,4 +1,3 @@
-import { StyleSheet } from "react-native";
 import ScreenView from "@/src/shared/ui/ScreenView";
 import { paddings, spaces } from "@/src/theme";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
