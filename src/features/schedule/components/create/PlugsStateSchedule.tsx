@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { Heading } from "@/src/shared/ui/Heading";
 import { AppText } from "@/src/shared/ui/AppText";
 import PlugBox from "@/src/features/rooms/components/PlugBox";
@@ -45,5 +45,3 @@ export default function PlugsStateSchedule({
     </View>
   );
 }
-
-const styles = StyleSheet.create({});

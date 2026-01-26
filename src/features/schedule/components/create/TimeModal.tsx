@@ -62,21 +62,3 @@ export default function TimeModal({
     </AppModal>
   );
 }
-
-const styles = StyleSheet.create({
-  headingContainer: {
-    justifyContent: "space-between",
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  subContainer: {
-    rowGap: spaces.xs,
-    marginTop: spaces.xs,
-  },
-  checkboxContainer: {
-    height: 165,
-    borderWidth: 1,
-    borderColor: colors.gray[200],
-    borderRadius: borderRadius.sm,
-  },
-});

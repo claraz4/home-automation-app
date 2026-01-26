@@ -8,8 +8,18 @@ import {
   SingleScheduleCreateDTO,
   SingleScheduleEditDTO,
 } from "@/src/features/schedule/types/SingleScheduleEditDTO";
+import { AllSchedulesDTO } from "@/src/features/schedule/types/AllSchedulesDTO";
 
 export default function useSchedules(scheduleId?: number) {
+  // Fetch all schedules
+  const getAllSchedules = async () => {
+    try {
+      return await api.get<AllSchedulesDTO>("/schedules");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   // Fetch the current schedule information
   const getSchedule = async () => {
     try {
@@ -76,5 +86,11 @@ export default function useSchedules(scheduleId?: number) {
     }
   };
 
-  return { getSchedule, editSchedule, deleteSchedule, toggleSchedule };
+  return {
+    getSchedule,
+    editSchedule,
+    deleteSchedule,
+    toggleSchedule,
+    getAllSchedules,
+  };
 }

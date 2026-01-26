@@ -1,7 +1,7 @@
 import ScreenView from "@/src/shared/ui/ScreenView";
 import { paddings, spaces } from "@/src/theme";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   SingleSchedule,
   SingleScheduleDTO,
@@ -15,9 +15,7 @@ import { useScheduleDateEdit } from "@/src/features/schedule/hooks/useScheduleDa
 
 export default function SingleScheduleScreen() {
   const { scheduleId } = useLocalSearchParams<{ scheduleId: string }>();
-  const { getSchedule, deleteSchedule, editSchedule } = useSchedules(
-    Number(scheduleId),
-  );
+  const { getSchedule, deleteSchedule } = useSchedules(Number(scheduleId));
   const [originalScheduleInfo, setOriginalScheduleInfo] =
     useState<SingleScheduleDTO>();
   const [isDeleteSchedule, setIsDeleteSchedule] = useState(false);

@@ -1,7 +1,6 @@
 import ScreenView from "@/src/shared/ui/ScreenView";
 import { paddings, spaces } from "@/src/theme";
 import { useEffect, useState } from "react";
-import { api } from "@/src/api/api";
 import dayjs from "dayjs";
 import { CreateEditSchedule } from "@/src/features/schedule/components/create/CreateEditSchedule";
 import { useScheduleDateEdit } from "@/src/features/schedule/hooks/useScheduleDateEdit";
@@ -16,6 +15,8 @@ export default function CreateSchedule() {
     offPlugs: [],
     isActive: true,
   });
+
+  // Set the necessary variables
   useEffect(() => {
     setMode("create");
 

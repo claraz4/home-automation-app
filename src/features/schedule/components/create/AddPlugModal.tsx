@@ -1,7 +1,6 @@
-import { Modal, View, Pressable, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { useEffect, useMemo, useState } from "react";
 import { Heading } from "@/src/shared/ui/Heading";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { borderRadius, colors, spaces } from "@/src/theme";
 import SegmentedControl from "@/src/shared/components/SegmentedControl";
 import Checkbox from "@/src/shared/components/Checkbox";
@@ -28,14 +27,17 @@ export default function AddPlugModal({
   setOnPlugs,
   setOffPlugs,
 }: AddPlugModalProps) {
-  const modes = ["Turn ON", "Turn OFF"];
+  const MODE_ON = "Turn ON";
+  const MODE_OFF = "Turn OFF";
+  const modes = [MODE_ON, MODE_OFF];
+
   const [allPlugs, setAllPlugs] = useState<AllPlugsDTO>();
   const [modeSelected, setModeSelected] = useState(modes[0]);
   const [plugsSelected, setPlugsSelected] = useState<SmallBasePlug[]>([]);
 
   // Update the selected plugs
   useEffect(() => {
-    if (modeSelected === modes[0]) {
+    if (modeSelected === MODE_ON) {
       setPlugsSelected(onPlugs);
     } else {
       setPlugsSelected(offPlugs);
@@ -46,28 +48,28 @@ export default function AddPlugModal({
   const filteredPlugs = useMemo(() => {
     if (!allPlugs) return [];
 
-    return modeSelected === modes[0]
+    return modeSelected === MODE_ON
       ? allPlugs.plugs.filter((plug) => !offPlugs.some((p) => p.id === plug.id))
       : allPlugs.plugs.filter((plug) => !onPlugs.some((p) => p.id === plug.id));
   }, [modeSelected, allPlugs, onPlugs, offPlugs]);
 
   // Get all plugs
-  const getPlugs = async () => {
-    try {
-      const res = await api.get<AllPlugsDTO>("/plugs");
-      setAllPlugs(res.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   useEffect(() => {
+    const getPlugs = async () => {
+      try {
+        const res = await api.get<AllPlugsDTO>("/plugs");
+        setAllPlugs(res.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     void getPlugs();
   }, []);
 
   // Add the new plugs
   const addPlugs = () => {
-    if (modeSelected === modes[0]) {
+    if (modeSelected === MODE_ON) {
       setOnPlugs(plugsSelected);
     } else {
       setOffPlugs(plugsSelected);
@@ -127,20 +129,6 @@ export default function AddPlugModal({
 }
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.3)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  sheet: {
-    width: "90%",
-    borderRadius: borderRadius.sm,
-    backgroundColor: "white",
-    paddingHorizontal: spaces.md,
-    paddingVertical: spaces.lg,
-    rowGap: spaces.sm,
-  },
   subContainer: {
     rowGap: spaces.xs,
     marginTop: spaces.xs,

@@ -5,7 +5,6 @@ import { Heading } from "@/src/shared/ui/Heading";
 import { colors, fontWeight, paddings, spaces } from "@/src/theme";
 import CalendarDays from "@/src/features/schedule/components/CalendarDays";
 import dayjs from "dayjs";
-import { api } from "@/src/api/api";
 import {
   AllSchedulesDTO,
   ScheduleDTO,
@@ -13,27 +12,28 @@ import {
 import DaySchedule from "@/src/features/schedule/components/DaySchedule";
 import { AppText } from "@/src/shared/ui/AppText";
 import { router, useFocusEffect } from "expo-router";
+import useSchedules from "@/src/features/schedule/hooks/useSchedules";
 
 export default function Schedules() {
   const [currentDay, setCurrentDay] = useState<dayjs.Dayjs>(
     dayjs().startOf("day"),
   );
   const [allSchedules, setAllSchedules] = useState<AllSchedulesDTO>();
+  const { getAllSchedules } = useSchedules();
+
+  const fetchSchedules = useCallback(async () => {
+    const res = await getAllSchedules();
+
+    if (res) {
+      setAllSchedules(res.data);
+    }
+  }, []);
 
   // Get all schedules
   useFocusEffect(
     useCallback(() => {
-      const getAllSchedules = async () => {
-        try {
-          const res = await api.get<AllSchedulesDTO>("/schedules");
-          setAllSchedules(res.data);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-
-      void getAllSchedules();
-    }, []),
+      void fetchSchedules();
+    }, [fetchSchedules]),
   );
 
   if (!allSchedules) return null;
