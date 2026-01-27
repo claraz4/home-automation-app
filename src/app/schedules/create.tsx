@@ -1,6 +1,6 @@
-import ScreenView from "@/src/shared/ui/ScreenView";
+import ScreenView, { ScreenViewRef } from "@/src/shared/ui/ScreenView";
 import { paddings, spaces } from "@/src/theme";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { CreateEditSchedule } from "@/src/features/schedule/components/create/CreateEditSchedule";
 import { useScheduleDateEdit } from "@/src/features/schedule/hooks/useScheduleDateEdit";
@@ -15,6 +15,7 @@ export default function CreateSchedule() {
     offPlugs: [],
     isActive: true,
   });
+  const screenRef = useRef<ScreenViewRef>(null);
 
   // Set the necessary variables
   useEffect(() => {
@@ -25,13 +26,21 @@ export default function CreateSchedule() {
     }
   }, []);
 
+  // Scroll to top
+  const scrollToTop = () => screenRef.current?.scrollToTop();
+
   return (
-    <ScreenView style={{ padding: paddings.page, rowGap: spaces.lg }}>
+    <ScreenView
+      style={{ padding: paddings.page, rowGap: spaces.lg }}
+      scroll
+      ref={screenRef}
+    >
       <CreateEditSchedule
         headingText={"Create Schedule"}
         schedule={schedule}
         setSchedule={setSchedule}
         setIsDeleteSchedule={() => {}}
+        scrollToTop={scrollToTop}
       />
     </ScreenView>
   );

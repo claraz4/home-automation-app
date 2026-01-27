@@ -8,6 +8,7 @@ interface AppTextInput {
   value: string;
   onChange: (value: string) => void;
   containerStyle?: ViewStyle;
+  hasError?: boolean;
 }
 
 export default function AppTextInput({
@@ -15,6 +16,7 @@ export default function AppTextInput({
   value,
   onChange,
   containerStyle,
+  hasError = false,
 }: AppTextInput) {
   const [focus, setFocus] = useState(false);
 
@@ -29,6 +31,7 @@ export default function AppTextInput({
         style={[
           styles.textInputContainer,
           focus && styles.textInputContainerOnFocus,
+          hasError && styles.errorBorders,
         ]}
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
@@ -51,5 +54,11 @@ const styles = StyleSheet.create({
   },
   textInputContainerOnFocus: {
     borderColor: colors.primary[400],
+    outlineColor: colors.primary[400],
+  },
+  errorBorders: {
+    borderColor: colors.status.fail,
+    borderWidth: 2,
+    outlineColor: colors.status.fail,
   },
 });

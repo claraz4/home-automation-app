@@ -28,6 +28,7 @@ export interface FeatureRowProps {
   iconContainerStyles?: StyleProp<ViewStyle>;
   onRemove?: () => void;
   containerStyles?: StyleProp<ViewStyle>;
+  hasError?: boolean;
 }
 
 export default function FeatureRow({
@@ -45,13 +46,20 @@ export default function FeatureRow({
   iconContainerStyles,
   containerStyles,
   onRemove,
+  hasError = false,
 }: FeatureRowProps) {
   if (hasExtra && onRemove) {
     throw new Error("ERROR: can't have extra and a remove button");
   }
 
   return (
-    <View style={[styles.controlContainer, containerStyles]}>
+    <View
+      style={[
+        styles.controlContainer,
+        containerStyles,
+        hasError && styles.errorBorders,
+      ]}
+    >
       <View style={styles.titleContainer}>
         {hasIcon && (
           <View style={[styles.iconContainer, iconContainerStyles]}>
@@ -156,5 +164,9 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: "white",
     lineHeight: 29,
+  },
+  errorBorders: {
+    borderColor: colors.status.fail,
+    borderWidth: 2,
   },
 });

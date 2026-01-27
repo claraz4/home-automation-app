@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import { ScrollView, StyleSheet, View, ViewProps } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../../theme";
@@ -9,39 +9,48 @@ interface ScreenViewProps extends ViewProps {
   children?: React.ReactNode;
 }
 
-export default function ScreenView({
-  style,
-  safe = true,
-  scroll = true,
-  children,
-  ...props
-}: ScreenViewProps) {
-  const Container = scroll ? ScrollView : View;
+export type ScreenViewRef = {
+  scrollToTop: () => void;
+};
 
-  if (safe) {
+const ScreenView = forwardRef<ScreenViewRef, ScreenViewProps>(
+  ({ style, safe = true, scroll = true, children, ...props }, ref) => {
+    const Container = scroll ? ScrollView : View;
+    const componentRef = useRef<ScrollView>(null);
+
+    useImperativeHandle(ref, () => ({
+      scrollToTop() {
+        componentRef.current?.scrollTo({ y: 0, animated: true });
+      },
+    }));
+
+    if (safe) {
+      return (
+        <SafeAreaView style={styles.safeArea}>
+          <Container
+            {...props}
+            style={styles.common}
+            contentContainerStyle={[scroll && styles.contentContainer, style]}
+            ref={scroll ? componentRef : undefined}
+          >
+            {children}
+          </Container>
+        </SafeAreaView>
+      );
+    }
+
     return (
-      <SafeAreaView style={styles.safeArea}>
-        <Container
-          {...props}
-          style={styles.common}
-          contentContainerStyle={[scroll && styles.contentContainer, style]}
-        >
-          {children}
-        </Container>
-      </SafeAreaView>
+      <Container
+        {...props}
+        style={[styles.common]}
+        contentContainerStyle={[scroll && styles.contentContainer, style]}
+        ref={scroll ? componentRef : undefined}
+      >
+        {children}
+      </Container>
     );
-  }
-
-  return (
-    <Container
-      {...props}
-      style={[styles.common]}
-      contentContainerStyle={[scroll && styles.contentContainer, style]}
-    >
-      {children}
-    </Container>
-  );
-}
+  },
+);
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1 },
@@ -54,3 +63,5 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
 });
+
+export default ScreenView;

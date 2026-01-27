@@ -13,6 +13,9 @@ export function AppText({
   ...props
 }: AppTextProps) {
   return (
-    <Text {...props} style={[text[variant], fontStyle, { opacity }, style]} />
+    <Text
+      {...props}
+      style={[text[variant], fontStyle, { opacity, flexShrink: 1 }, style]}
+    />
   );
 }

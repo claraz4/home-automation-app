@@ -9,6 +9,14 @@ import {
   SingleScheduleEditDTO,
 } from "@/src/features/schedule/types/SingleScheduleEditDTO";
 import { AllSchedulesDTO } from "@/src/features/schedule/types/AllSchedulesDTO";
+import {
+  DETAILS_TYPES,
+  ERROR_TYPES,
+  ErrorDTO,
+} from "@/src/shared/types/ErrorDTO";
+import { isErrorDTO } from "@/src/shared/utils/errorHelpers";
+import { FormError } from "@/src/shared/errors/FormError";
+import { isAxiosError } from "axios";
 
 export default function useSchedules(scheduleId?: number) {
   // Fetch all schedules
@@ -81,8 +89,22 @@ export default function useSchedules(scheduleId?: number) {
           id,
         });
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(error);
+
+      if (isAxiosError(error) && error.response) {
+        const { data } = error.response;
+
+        if (isErrorDTO(data) && data.type === ERROR_TYPES.ARGUMENT_EXCEPTION) {
+          if (data.detail.includes(DETAILS_TYPES.DUPLICATE_SCHEDULE_TIME)) {
+            throw new FormError("time", data.detail);
+          } else if (
+            data.detail.includes(DETAILS_TYPES.DUPLICATE_SCHEDULE_NAME)
+          ) {
+            throw new FormError("name", data.detail);
+          }
+        }
+      }
     }
   };
 
