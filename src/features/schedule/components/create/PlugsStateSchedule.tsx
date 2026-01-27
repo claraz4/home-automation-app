@@ -17,7 +17,7 @@ export default function PlugsStateSchedule({
   setPlugs,
 }: PlugsStateScheduleProps) {
   return (
-    <View style={{ rowGap: spaces.md }}>
+    <View style={{ rowGap: spaces.xs }}>
       <View>
         <Heading variant="h3">Plugs {isOn ? "ON" : "OFF"}</Heading>
         {plugs.length === 0 && (

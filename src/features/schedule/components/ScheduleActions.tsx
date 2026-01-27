@@ -3,13 +3,13 @@ import Button from "@/src/shared/components/Button";
 import { View } from "react-native";
 
 interface ScheduleActionsProps {
-  isScheduleEdited: boolean;
+  isSaveEnabled: boolean;
   onEdit: () => void;
   onDelete: () => void;
 }
 
 export default function ScheduleActions({
-  isScheduleEdited,
+  isSaveEnabled,
   onEdit,
   onDelete,
 }: ScheduleActionsProps) {
@@ -19,7 +19,7 @@ export default function ScheduleActions({
         text="Save Changes"
         invertColors
         onPress={onEdit}
-        disabled={!isScheduleEdited}
+        disabled={!isSaveEnabled}
       />
       <Button
         text="Delete Schedule"

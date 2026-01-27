@@ -172,6 +172,12 @@ export function CreateEditSchedule({
     setError(null);
   }, [schedule]);
 
+  // Enable the save changes button only if the schedule was edited and there is at least one plug in the schedule
+  const isSaveEnabled =
+    isScheduleEdited &&
+    schedule.offPlugs.length > 0 &&
+    schedule.onPlugs.length > 0;
+
   return (
     <View style={{ rowGap: spaces.md }}>
       <Heading variant="h2" hasBackButton={true}>
@@ -227,7 +233,7 @@ export function CreateEditSchedule({
                 hasError={error?.component === "time"}
               />
             </View>
-            <View style={{ rowGap: spaces.sm }}>
+            <View style={{ rowGap: spaces.md }}>
               <PlugsStateSchedule
                 isOn
                 plugs={onPlugs}
@@ -246,7 +252,7 @@ export function CreateEditSchedule({
             </View>
             {!isCreating && (
               <ScheduleActions
-                isScheduleEdited={isScheduleEdited}
+                isSaveEnabled={isSaveEnabled}
                 onEdit={() => onEdit(false)}
                 onDelete={() => setIsDeleteSchedule(true)}
               />
