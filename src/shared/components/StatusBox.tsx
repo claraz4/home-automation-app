@@ -24,8 +24,17 @@ export default function StatusBox({
   const titleStatus = !title || title === "" ? "Error" : title;
 
   return (
-    <View style={[styles.container, isError && styles.errorContainer]}>
-      <MaterialIcons name="error" size={50} color="white" />
+    <View
+      style={[
+        styles.container,
+        isError ? styles.errorContainer : styles.successContainer,
+      ]}
+    >
+      {isError ? (
+        <MaterialIcons name="error" size={50} color="white" />
+      ) : (
+        <MaterialIcons name="check-circle" size={50} color="white" />
+      )}
       <View style={styles.subContainer}>
         <View style={styles.headingContainer}>
           <Heading variant="h4" style={{ color: "white" }}>
@@ -67,5 +76,8 @@ const styles = StyleSheet.create({
   },
   errorContainer: {
     backgroundColor: colors.status.fail,
+  },
+  successContainer: {
+    backgroundColor: colors.status.success,
   },
 });

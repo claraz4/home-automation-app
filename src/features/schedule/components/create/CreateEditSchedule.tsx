@@ -23,7 +23,6 @@ import useSchedules from "@/src/features/schedule/hooks/useSchedules";
 import { useFocusEffect } from "expo-router";
 import { FormError } from "@/src/shared/errors/FormError";
 import StatusBox from "@/src/shared/components/StatusBox";
-import { AppText } from "@/src/shared/ui/AppText";
 
 interface StatusBoxInfo {
   isVisible: boolean;
@@ -59,8 +58,8 @@ export function CreateEditSchedule({
   scrollToTop,
 }: CreateEditScheduleProps) {
   const { date, mode } = useScheduleDateEdit();
-  const { formattedDate, formattedTime } = getFormattedDateTime(dayjs(date));
   const isCreating = mode === "create";
+  const { formattedDate, formattedTime } = getFormattedDateTime(dayjs(date));
   const { name, onPlugs, offPlugs, id, isActive } = schedule;
   const { editSchedule, toggleSchedule } = useSchedules(id);
 
@@ -122,9 +121,25 @@ export function CreateEditSchedule({
   );
 
   // Define the edit function
-  const onEdit = async (isCreating: boolean = false) => {
+  const onEdit = async (isCreating: boolean) => {
     try {
       await editSchedule(schedule, isCreating);
+      setStatusBoxProps({
+        isVisible: true,
+        isError: false,
+        title: "Success",
+        message: `Your schedule was ${isCreating ? "created" : "saved"} successfully!`,
+      });
+
+      if (isCreating) {
+        setSchedule({
+          name: "",
+          time: date?.toISOString() || dayjs().toISOString(),
+          onPlugs: [],
+          offPlugs: [],
+          isActive: true,
+        });
+      }
     } catch (error) {
       if (error instanceof FormError) {
         setError(error);
@@ -137,14 +152,24 @@ export function CreateEditSchedule({
         if (scrollToTop) {
           scrollToTop();
         }
+      } else {
+        setStatusBoxProps({
+          isVisible: true,
+          isError: true,
+          title: "Error",
+          message: "An error occurred while creating your schedule",
+        });
       }
     }
   };
 
   // Clear the error on change of schedule
   useEffect(() => {
+    if (error) {
+      setStatusBoxProps(statusBoxInfoClean);
+    }
+
     setError(null);
-    setStatusBoxProps(statusBoxInfoClean);
   }, [schedule]);
 
   return (
@@ -222,7 +247,7 @@ export function CreateEditSchedule({
             {!isCreating && (
               <ScheduleActions
                 isScheduleEdited={isScheduleEdited}
-                onEdit={() => editSchedule(schedule)}
+                onEdit={() => onEdit(false)}
                 onDelete={() => setIsDeleteSchedule(true)}
               />
             )}

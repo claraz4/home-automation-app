@@ -22,7 +22,12 @@ export default function useSchedules(scheduleId?: number) {
   // Fetch all schedules
   const getAllSchedules = async () => {
     try {
-      return await api.get<AllSchedulesDTO>("/schedules");
+      return await api.get<AllSchedulesDTO>("/schedules", {
+        params: {
+          pageSize: 15,
+          page: 1,
+        },
+      });
     } catch (error) {
       console.error(error);
     }
@@ -84,6 +89,7 @@ export default function useSchedules(scheduleId?: number) {
       if (isCreate) {
         await api.post<SingleScheduleCreateDTO>("/schedules", scheduleDTO);
       } else {
+        console.log("here");
         await api.put<SingleScheduleEditDTO>("/schedules", {
           ...scheduleDTO,
           id,
