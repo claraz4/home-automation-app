@@ -89,7 +89,6 @@ export default function useSchedules(scheduleId?: number) {
       if (isCreate) {
         await api.post<SingleScheduleCreateDTO>("/schedules", scheduleDTO);
       } else {
-        console.log("here");
         await api.put<SingleScheduleEditDTO>("/schedules", {
           ...scheduleDTO,
           id,

@@ -4,39 +4,20 @@ import FeatureRow from "@/src/shared/components/FeatureRow";
 import { colors, fontWeight, spaces } from "@/src/theme";
 import { getFormattedDateTime } from "@/src/features/schedule/utils/daysHelper";
 import dayjs from "dayjs";
-import PlugsStateSchedule from "@/src/features/schedule/components/create/PlugsStateSchedule";
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import ScheduleActions from "@/src/features/schedule/components/ScheduleActions";
 import Button from "@/src/shared/components/Button";
-import AddPlugModal from "@/src/features/schedule/components/create/AddPlugModal";
 import { useScheduleDateEdit } from "@/src/features/schedule/hooks/useScheduleDateEdit";
 import AppTextInput from "@/src/shared/components/AppTextInput";
 import { SingleSchedule } from "@/src/features/schedule/types/SingleScheduleDTO";
-import { SmallBasePlug } from "@/src/features/schedule/types/SmallBasePlug";
-import useSchedules from "@/src/features/schedule/hooks/useSchedules";
-import { useFocusEffect } from "expo-router";
 import { FormError } from "@/src/shared/errors/FormError";
 import StatusBox from "@/src/shared/components/StatusBox";
-
-interface StatusBoxInfo {
-  isVisible: boolean;
-  isError: boolean;
-  title?: string;
-  message: string;
-}
-
-const statusBoxInfoClean = {
-  isVisible: false,
-  isError: false,
-  title: "",
-  message: "",
-};
+import { SchedulePlugsList } from "@/src/features/schedule/components/create/SchedulePlugsList";
+import { useCreateEditSchedule } from "@/src/features/schedule/hooks/useCreateEditSchedule";
+import {
+  StatusBoxInfo,
+  statusBoxInfoClean,
+} from "@/src/features/schedule/types/ScheduleUI";
 
 interface CreateEditScheduleProps {
   headingText?: string;
@@ -60,108 +41,20 @@ export function CreateEditSchedule({
   const { date, mode } = useScheduleDateEdit();
   const isCreating = mode === "create";
   const { formattedDate, formattedTime } = getFormattedDateTime(dayjs(date));
-  const { name, onPlugs, offPlugs, id, isActive } = schedule;
-  const { editSchedule, toggleSchedule } = useSchedules(id);
+  const { name, onPlugs, offPlugs, isActive } = schedule;
 
-  const [showAddPlug, setShowAddPlug] = useState(false);
   const [error, setError] = useState<FormError | null>(null);
   const [statusBoxProps, setStatusBoxProps] =
     useState<StatusBoxInfo>(statusBoxInfoClean);
-
-  // Update the name
-  const updateName = (name: string) =>
-    setSchedule((prevState) => ({ ...prevState, name }));
-
-  // Toggle the schedule status
-  const toggleStatus = async () => {
-    const isActive = !schedule.isActive;
-    const updatedSchedule = {
-      ...schedule,
-      isActive,
-    };
-
-    setSchedule(updatedSchedule);
-
-    try {
-      await toggleSchedule(isActive);
-      if (fetchSchedule) {
-        void fetchSchedule();
-      }
-    } catch (error) {
-      // rollback on failure
-      setSchedule(schedule);
-    }
-  };
-
-  // Update plug lists
-  const updateOnPlugs = (plugs: SmallBasePlug[]) =>
-    setSchedule((prevState) => ({ ...prevState, onPlugs: plugs }));
-
-  const updateOffPlugs = (plugs: SmallBasePlug[]) =>
-    setSchedule((prevState) => ({ ...prevState, offPlugs: plugs }));
-
-  // Edit the time
-  useFocusEffect(
-    useCallback(() => {
-      setSchedule((prevState) => {
-        if (!prevState || !date) return prevState;
-
-        const newTime = date.toISOString();
-
-        if (prevState.time === newTime) {
-          return prevState; // no change
-        }
-
-        return {
-          ...prevState,
-          time: newTime,
-        };
-      });
-    }, [date]),
-  );
-
-  // Define the edit function
-  const onEdit = async (isCreating: boolean) => {
-    try {
-      await editSchedule(schedule, isCreating);
-      setStatusBoxProps({
-        isVisible: true,
-        isError: false,
-        title: "Success",
-        message: `Your schedule was ${isCreating ? "created" : "saved"} successfully!`,
-      });
-
-      if (isCreating) {
-        setSchedule({
-          name: "",
-          time: date?.toISOString() || dayjs().toISOString(),
-          onPlugs: [],
-          offPlugs: [],
-          isActive: true,
-        });
-      }
-    } catch (error) {
-      if (error instanceof FormError) {
-        setError(error);
-        setStatusBoxProps({
-          isVisible: true,
-          message: error.message,
-          isError: true,
-        });
-
-        if (scrollToTop) {
-          scrollToTop();
-        }
-      } else {
-        setStatusBoxProps({
-          isVisible: true,
-          isError: true,
-          title: "Error",
-          message: "An error occurred while creating your schedule",
-        });
-      }
-    }
-  };
+  const { updateName, updateOnPlugs, updateOffPlugs, toggleStatus, onEdit } =
+    useCreateEditSchedule({
+      schedule,
+      setSchedule,
+      fetchSchedule,
+      setError,
+      setStatusBoxProps,
+      scrollToTop,
+    });
 
   // Clear the error on change of schedule
   useEffect(() => {
@@ -173,10 +66,13 @@ export function CreateEditSchedule({
   }, [schedule]);
 
   // Enable the save changes button only if the schedule was edited and there is at least one plug in the schedule
-  const isSaveEnabled =
-    isScheduleEdited &&
-    schedule.offPlugs.length > 0 &&
-    schedule.onPlugs.length > 0;
+  const isSaveEnabled = useMemo(
+    () =>
+      isScheduleEdited &&
+      schedule.offPlugs.length > 0 &&
+      schedule.onPlugs.length > 0,
+    [isScheduleEdited, schedule.offPlugs.length, schedule.onPlugs.length],
+  );
 
   return (
     <View style={{ rowGap: spaces.md }}>
@@ -193,7 +89,6 @@ export function CreateEditSchedule({
           onClose={() => setStatusBoxProps(statusBoxInfoClean)}
         />
       )}
-
       <View style={{ rowGap: spaces.lg }}>
         {!isCreating && (
           <FeatureRow
@@ -233,23 +128,14 @@ export function CreateEditSchedule({
                 hasError={error?.component === "time"}
               />
             </View>
-            <View style={{ rowGap: spaces.md }}>
-              <PlugsStateSchedule
-                isOn
-                plugs={onPlugs}
-                setPlugs={updateOnPlugs}
-              />
-              <PlugsStateSchedule
-                isOn={false}
-                plugs={offPlugs}
-                setPlugs={updateOffPlugs}
-              />
-              <Button
-                text="+ Add Plugs"
-                onPress={() => setShowAddPlug(true)}
-                textStyle={{ fontFamily: fontWeight[600] }}
-              />
-            </View>
+
+            <SchedulePlugsList
+              onPlugs={onPlugs}
+              offPlugs={offPlugs}
+              updateOnPlugs={updateOnPlugs}
+              updateOffPlugs={updateOffPlugs}
+            />
+
             {!isCreating && (
               <ScheduleActions
                 isSaveEnabled={isSaveEnabled}
@@ -271,14 +157,6 @@ export function CreateEditSchedule({
             )}
           </View>
         )}
-        <AddPlugModal
-          visible={showAddPlug}
-          setVisible={setShowAddPlug}
-          onPlugs={onPlugs}
-          offPlugs={offPlugs}
-          setOnPlugs={updateOnPlugs}
-          setOffPlugs={updateOffPlugs}
-        />
       </View>
     </View>
   );
