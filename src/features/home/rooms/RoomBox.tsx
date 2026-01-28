@@ -1,8 +1,9 @@
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { spaces, colors, borderRadius } from "@/src/theme";
 import { AppText } from "@/src/shared/ui/AppText";
 import { roomIcons } from "@/src/shared/data/roomIcons";
 import { RoomDTO } from "@/src/features/home/types/RoomDTO";
+import { router } from "expo-router";
 
 interface RoomBoxProps {
   room: RoomDTO;
@@ -16,7 +17,16 @@ export default function RoomBox({
   room,
 }: RoomBoxProps) {
   return (
-    <View style={roomBoxStyles.roomBoxContainer} key={room.roomId}>
+    <Pressable
+      onPress={() =>
+        router.push({
+          pathname: "/rooms/[roomId]",
+          params: { roomId: room.roomId },
+        })
+      }
+      style={roomBoxStyles.roomBoxContainer}
+      key={room.roomId}
+    >
       <View style={roomBoxStyles.roomIconContainer}>
         {roomIcons(color, size)[room.roomType]}
       </View>
@@ -26,14 +36,13 @@ export default function RoomBox({
           {room.totalPlugsCount} devices
         </AppText>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
 const roomBoxStyles = StyleSheet.create({
   roomBoxContainer: {
     flexDirection: "column",
-    justifyContent: "center",
     alignItems: "center",
     columnGap: spaces.sm,
     backgroundColor: colors.primary[500],
@@ -42,6 +51,7 @@ const roomBoxStyles = StyleSheet.create({
     borderRadius: borderRadius.md,
     width: spaces.xl * 4.5,
     rowGap: spaces.sm,
+    height: 185,
   },
   roomInfoContainer: {
     flexDirection: "column",

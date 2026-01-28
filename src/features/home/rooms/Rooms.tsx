@@ -14,14 +14,16 @@ export default function Rooms({ style }: RoomsProps) {
 
   useEffect(() => {
     // Get the general rooms info
-    const getRoomsInfo = () => {
-      householdApi
-        .get("/rooms/plugs/details")
-        .then((res) => setRoomsInfo(res.data.rooms))
-        .catch((err) => console.error("Failed to fetch rooms info:", err));
+    const getRoomsInfo = async () => {
+      try {
+        const res = await householdApi.get("/rooms/plugs/details");
+        setRoomsInfo(res.data.rooms);
+      } catch (error) {
+        console.error(error);
+      }
     };
 
-    getRoomsInfo();
+    void getRoomsInfo();
   }, []);
 
   return (
