@@ -34,10 +34,11 @@ const styles = StyleSheet.create({
   statsContainer: {
     flexDirection: "row",
     rowGap: spaces.sm,
+    columnGap: spaces.sm,
     flex: 4,
     justifyContent: "space-between",
   },
   statsSubContainer: {
-    width: "49%",
+    flex: 1,
   },
 });
