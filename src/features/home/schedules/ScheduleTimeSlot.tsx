@@ -26,10 +26,14 @@ const styles = StyleSheet.create({
   },
   heading: {
     color: colors.primary["500"],
-    width: 60,
+    width: 67,
     borderRightColor: colors.primary["500"],
     borderRightWidth: 2,
     paddingTop: 2 * spaces.xxs,
+    marginTop: spaces.xxs,
+    height: 45,
+    textAlign: "right",
+    paddingRight: spaces.xs,
   },
   childrenContainer: {
     flexDirection: "column",

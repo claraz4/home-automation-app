@@ -9,7 +9,7 @@ export default function NoConsumptionData() {
   return (
     <View style={styles.container}>
       <FontAwesome6 name="chart-simple" size={50} color={colors.gray[300]} />
-      <View>
+      <View style={{ alignItems: "center" }}>
         <Heading variant="h5" style={{ textAlign: "center" }}>
           No data yet
         </Heading>

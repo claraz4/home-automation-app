@@ -25,6 +25,6 @@ const styles = StyleSheet.create({
   },
   subContainer: {
     flexDirection: "column",
-    rowGap: spaces.md,
+    rowGap: spaces.xxxs,
   },
 });
