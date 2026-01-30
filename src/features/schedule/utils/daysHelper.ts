@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { spaces } from "@/src/theme";
-import { ScheduleDTO } from "@/src/features/schedule/types/AllSchedulesDTO";
+import { ScheduleDTO } from "@/src/features/schedule/types/DaySchedulesDTO";
 
 export const LIST_SEPARATOR = spaces.md;
 export const DAYS_AFTER = 30;
@@ -25,10 +25,10 @@ export function daysGenerator(): dayjs.Dayjs[] {
 
 export function isDayScheduled(
   currentDay: dayjs.Dayjs,
-  schedules: Set<string>,
+  schedules: string[],
 ): boolean {
   const currentDayFormatted = dayjs(currentDay).format("YYYY-MM-DD");
-  return schedules.has(currentDayFormatted);
+  return schedules.includes(currentDayFormatted);
 }
 
 export function getFormattedDateTime(day: dayjs.Dayjs): {

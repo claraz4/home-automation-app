@@ -16,7 +16,7 @@ interface DayItem {
 interface CalendarDaysProps {
   currentDay: dayjs.Dayjs;
   setCurrentDay: (day: dayjs.Dayjs) => void;
-  allSchedules: Set<string>;
+  allSchedules: string[];
 }
 
 export default function CalendarDays({

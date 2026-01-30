@@ -5,10 +5,7 @@ import { Heading } from "@/src/shared/ui/Heading";
 import { colors, fontWeight, paddings, spaces } from "@/src/theme";
 import CalendarDays from "@/src/features/schedule/components/CalendarDays";
 import dayjs from "dayjs";
-import {
-  AllSchedulesDTO,
-  ScheduleDTO,
-} from "@/src/features/schedule/types/AllSchedulesDTO";
+import { DaySchedulesDTO } from "@/src/features/schedule/types/DaySchedulesDTO";
 import DaySchedule from "@/src/features/schedule/components/DaySchedule";
 import { AppText } from "@/src/shared/ui/AppText";
 import { router, useFocusEffect } from "expo-router";
@@ -18,43 +15,45 @@ export default function Schedules() {
   const [currentDay, setCurrentDay] = useState<dayjs.Dayjs>(
     dayjs().startOf("day"),
   );
-  const [allSchedules, setAllSchedules] = useState<AllSchedulesDTO>();
-  const { getAllSchedules } = useSchedules();
+  const [scheduledDays, setScheduledDays] = useState<string[]>([]);
+  const [currentDaySchedules, setCurrentDaySchedules] =
+    useState<DaySchedulesDTO>({ schedules: [] });
+  const { getScheduledDays, getCurrentDaySchedules } = useSchedules();
 
-  const fetchSchedules = useCallback(async () => {
-    const res = await getAllSchedules();
+  // Get all days with  schedules
+  const fetchScheduledDays = useCallback(async () => {
+    const res = await getScheduledDays();
 
     if (res) {
-      setAllSchedules(res.data);
+      setScheduledDays(res.data.scheduledDates);
     }
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      void fetchScheduledDays();
+    }, [fetchScheduledDays]),
+  );
+
+  // Get all the schedules of the selected day
+  const fetchDaySchedules = useCallback(async () => {
+    setCurrentDaySchedules({ schedules: [] });
+    let currentDayFormatted = currentDay.format("YYYY-MM-DD");
+    const res = await getCurrentDaySchedules(currentDayFormatted);
+
+    if (res) {
+      setCurrentDaySchedules(res.data);
+    }
+  }, [currentDay]);
 
   // Get all schedules
   useFocusEffect(
     useCallback(() => {
-      void fetchSchedules();
-    }, [fetchSchedules]),
+      void fetchDaySchedules();
+    }, [fetchDaySchedules, currentDay]),
   );
 
-  if (!allSchedules) return null;
-
-  // Get all the days
-  const scheduledDates = new Set(
-    allSchedules.days
-      .filter((day) => day.schedules.length > 0)
-      .map((day) => day.date),
-  );
-
-  // Get the schedules for the current day
-  const getCurrentDaySchedules = (currentDay: dayjs.Dayjs): ScheduleDTO[] => {
-    const key = currentDay.format("YYYY-MM-DD");
-
-    return (
-      allSchedules.days.find(
-        (day) => dayjs(day.date).format("YYYY-MM-DD") === key,
-      )?.schedules ?? []
-    );
-  };
+  if (!scheduledDays && !currentDaySchedules) return null;
 
   return (
     <ScreenView style={styles.container}>
@@ -76,11 +75,11 @@ export default function Schedules() {
       <CalendarDays
         currentDay={currentDay}
         setCurrentDay={setCurrentDay}
-        allSchedules={scheduledDates}
+        allSchedules={scheduledDays}
       />
       <DaySchedule
         currentDay={currentDay}
-        schedules={getCurrentDaySchedules(currentDay)}
+        schedules={currentDaySchedules.schedules}
       />
     </ScreenView>
   );

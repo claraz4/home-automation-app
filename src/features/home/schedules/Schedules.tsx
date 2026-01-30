@@ -7,7 +7,7 @@ import { spaces } from "@/src/theme";
 import { useFocusEffect } from "expo-router";
 import useSchedules from "@/src/features/schedule/hooks/useSchedules";
 import { useCallback, useState } from "react";
-import { AllSchedulesDTO } from "@/src/features/schedule/types/AllSchedulesDTO";
+// import { AllSchedulesDTO } from "@/src/features/schedule/types/DaySchedulesDTO";
 import dayjs from "dayjs";
 import { AppText } from "@/src/shared/ui/AppText";
 
@@ -16,26 +16,26 @@ interface SchedulesProps {
 }
 
 export default function Schedules({ style }: SchedulesProps) {
-  const { getAllSchedules } = useSchedules();
-  const [schedules, setSchedules] = useState<AllSchedulesDTO>();
+  // const { getAllSchedules } = useSchedules();
+  const [schedules, setSchedules] = useState();
 
-  const fetchAllSchedules = async () => {
-    try {
-      const res = await getAllSchedules();
+  // const fetchAllSchedules = async () => {
+  //   try {
+  //     const res = await getAllSchedules();
+  //
+  //     if (res) {
+  //       setSchedules(res.data);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
-      if (res) {
-        setSchedules(res.data);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      void fetchAllSchedules();
-    }, []),
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     void fetchAllSchedules();
+  //   }, []),
+  // );
 
   return (
     <View>

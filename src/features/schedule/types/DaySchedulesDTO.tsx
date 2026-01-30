@@ -7,14 +7,5 @@ export interface ScheduleDTO {
 }
 
 export interface DaySchedulesDTO {
-  date: string; // YYYY-MM-DD
   schedules: ScheduleDTO[];
-}
-
-export interface AllSchedulesDTO {
-  page: number;
-  pageSize: number;
-  totalDays: number;
-  totalPages: number;
-  days: DaySchedulesDTO[];
 }

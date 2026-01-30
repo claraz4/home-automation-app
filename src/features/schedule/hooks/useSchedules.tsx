@@ -8,7 +8,6 @@ import {
   SingleScheduleCreateDTO,
   SingleScheduleEditDTO,
 } from "@/src/features/schedule/types/SingleScheduleEditDTO";
-import { AllSchedulesDTO } from "@/src/features/schedule/types/AllSchedulesDTO";
 import {
   DETAILS_TYPES,
   ERROR_TYPES,
@@ -17,16 +16,25 @@ import {
 import { isErrorDTO } from "@/src/shared/utils/errorHelpers";
 import { FormError } from "@/src/shared/errors/FormError";
 import { isAxiosError } from "axios";
+import { DaySchedulesDTO } from "@/src/features/schedule/types/DaySchedulesDTO";
 
 export default function useSchedules(scheduleId?: number) {
   // Fetch all schedules
-  const getAllSchedules = async () => {
+  const getScheduledDays = async () => {
     try {
-      return await api.get<AllSchedulesDTO>("/schedules", {
-        params: {
-          pageSize: 15,
-          page: 1,
-        },
+      return await api.get<{ scheduledDates: string[] }>("/schedules");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Fetch the current day schedule
+  const getCurrentDaySchedules = async (currentDay: string) => {
+    try {
+      if (!currentDay) throw new Error("No date was provided");
+
+      return await api.get<DaySchedulesDTO>("/schedules/day", {
+        params: { date: currentDay },
       });
     } catch (error) {
       console.error(error);
@@ -118,6 +126,7 @@ export default function useSchedules(scheduleId?: number) {
     editSchedule,
     deleteSchedule,
     toggleSchedule,
-    getAllSchedules,
+    getScheduledDays,
+    getCurrentDaySchedules,
   };
 }
