@@ -57,6 +57,15 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
+        name="automation"
+        options={{
+          title: "Automation",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="flash" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="analytics"
         options={{
           title: "Analytics",

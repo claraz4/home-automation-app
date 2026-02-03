@@ -10,6 +10,7 @@ import DaySchedule from "@/src/features/schedule/components/DaySchedule";
 import { AppText } from "@/src/shared/ui/AppText";
 import { router, useFocusEffect } from "expo-router";
 import useSchedules from "@/src/features/schedule/hooks/useSchedules";
+import AddButton from "@/src/shared/components/AddButton";
 
 export default function Schedules() {
   const [currentDay, setCurrentDay] = useState<dayjs.Dayjs>(
@@ -62,12 +63,7 @@ export default function Schedules() {
         hasBackButton={true}
         hasCustomLinkComponent={true}
         customLinkComponent={
-          <Pressable
-            style={styles.addButton}
-            onPress={() => router.push("/schedules/create")}
-          >
-            <AppText style={styles.addButtonText}>+</AppText>
-          </Pressable>
+          <AddButton onPress={() => router.push("/schedules/create")} />
         }
       >
         Schedules
@@ -89,19 +85,5 @@ const styles = StyleSheet.create({
   container: {
     padding: paddings.page,
     rowGap: spaces.lg,
-  },
-  addButton: {
-    backgroundColor: colors.primary[500],
-    borderRadius: "50%",
-    height: 36,
-    width: 36,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  addButtonText: {
-    color: "white",
-    fontSize: 30,
-    fontFamily: fontWeight[500],
-    lineHeight: 40,
   },
 });
