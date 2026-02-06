@@ -8,7 +8,12 @@ import { Dispatch, SetStateAction } from "react";
 import { SchedulePlugsList } from "@/src/features/schedule/components/create/SchedulePlugsList";
 import { BasePlug } from "@/src/shared/types/BasePlug";
 import PolicyConditions from "@/src/features/automation/components/create/PolicyConditions";
-import { PolicyDTO } from "@/src/features/automation/types/PolicyDTO";
+import {
+  PolicyCreateDTO,
+  PolicyDTO,
+} from "@/src/features/automation/types/PolicyDTO";
+import Button from "@/src/shared/components/Button";
+import { api } from "@/src/api/api";
 
 interface CreateEditPolicyProps {
   policy: PolicyDTO;
@@ -27,7 +32,14 @@ export default function CreateEditPolicy({
 }: CreateEditPolicyProps) {
   const { mode } = useLocalSearchParams();
   const isCreating = mode === "create";
-  const { name, onPlugs, offPlugs } = policy;
+  const {
+    name,
+    onPlugs,
+    offPlugs,
+    powerSourceId,
+    tempGreaterThan,
+    tempLessThan,
+  } = policy;
 
   // Update the name
   const updateName = (name: string) => setPolicy((prev) => ({ ...prev, name }));
@@ -63,6 +75,28 @@ export default function CreateEditPolicy({
 
       return next;
     });
+  };
+  console.log(policy);
+
+  // Create the policy
+  const createPolicy = async () => {
+    const newPolicy: PolicyCreateDTO = {
+      isActive: true,
+      name: name,
+      offPlugIds: offPlugs.map((plug) => plug.id),
+      onPlugIds: onPlugs.map((plug) => plug.id),
+      powerSourceId: powerSourceId ?? null,
+      tempGreaterThan,
+      tempLessThan,
+    };
+
+    try {
+      await api.post<PolicyCreateDTO>("/policy", {
+        ...newPolicy,
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -101,6 +135,13 @@ export default function CreateEditPolicy({
           updateOffPlugs={updateOffPlugs}
           containerStyles={{ zIndex: -1 }}
         />
+        {isCreating && (
+          <Button
+            text="Create New Policy"
+            onPress={createPolicy}
+            invertColors={true}
+          />
+        )}
       </View>
     </View>
   );

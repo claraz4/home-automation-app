@@ -12,3 +12,13 @@ export interface PolicyDTO {
   numOfPlugs: number;
   isActive: boolean;
 }
+
+export interface PolicyCreateDTO {
+  name: string;
+  onPlugIds: number[];
+  offPlugIds: number[];
+  powerSourceId: number | null;
+  tempGreaterThan: number | null;
+  tempLessThan: number | null;
+  isActive: boolean;
+}
