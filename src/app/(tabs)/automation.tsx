@@ -1,17 +1,35 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import ScreenView from "@/src/shared/ui/ScreenView";
 import { paddings, spaces } from "@/src/theme";
 import { Heading } from "@/src/shared/ui/Heading";
 import AddButton from "@/src/shared/components/AddButton";
 import PolicyBox from "@/src/features/automation/components/PolicyBox";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
+import {
+  PolicyCreateDTO,
+  PolicyDTO,
+} from "@/src/features/automation/types/PolicyDTO";
+import { api } from "@/src/api/api";
 
 export default function Automation() {
-  const policies = [
-    { name: "Policy Name 1", isActive: false, plugs: 2 },
-    { name: "Policy Name 2", isActive: true, plugs: 3 },
-  ];
+  const [policies, setPolicies] = useState<PolicyDTO[]>([]);
+
+  // Get all policies
+  const getPolicies = async () => {
+    try {
+      const res = await api.get("/policy");
+      setPolicies(res.data.policies);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      void getPolicies();
+    }, []),
+  );
 
   return (
     <ScreenView style={{ padding: paddings.page, rowGap: spaces.md }}>
@@ -34,11 +52,7 @@ export default function Automation() {
       </Heading>
       <View style={{ rowGap: spaces.sm }}>
         {policies.map((policy) => (
-          <PolicyBox
-            name={policy.name}
-            status={policy.isActive}
-            plugNumber={policy.plugs}
-          />
+          <PolicyBox policy={policy} />
         ))}
       </View>
     </ScreenView>

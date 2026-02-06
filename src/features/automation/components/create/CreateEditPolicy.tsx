@@ -76,7 +76,6 @@ export default function CreateEditPolicy({
       return next;
     });
   };
-  console.log(policy);
 
   // Create the policy
   const createPolicy = async () => {
