@@ -16,6 +16,19 @@ interface AddConditionProps {
 
 export default function AddCondition({ editPolicy }: AddConditionProps) {
   const [showOptions, setShowOptions] = useState(false);
+
+  // Temperature box click
+  const onClickTemp = () => {
+    editPolicy(undefined, 20);
+    setShowOptions(false);
+  };
+
+  // Source box click
+  const onClickSource = () => {
+    editPolicy(1);
+    setShowOptions(false);
+  };
+
   return (
     <View style={{ position: "relative" }}>
       <Button
@@ -34,12 +47,12 @@ export default function AddCondition({ editPolicy }: AddConditionProps) {
                 color="white"
               />
             }
-            onClick={() => editPolicy(undefined, 20)}
+            onClick={onClickTemp}
           />
           <AddConditionBox
             condition="Source"
             icon={<Ionicons name="flash" size={20} color="white" />}
-            onClick={() => editPolicy(1)}
+            onClick={onClickSource}
           />
         </View>
       )}

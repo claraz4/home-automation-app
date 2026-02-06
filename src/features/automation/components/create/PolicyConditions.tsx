@@ -32,7 +32,7 @@ export default function PolicyConditions({
             editPolicy={editPolicy}
           />
         )}
-        {(tempLessThan || tempGreaterThan) && (
+        {(tempLessThan !== null || tempGreaterThan !== null) && (
           <TemperatureCondition
             tempLessThan={tempLessThan}
             tempGreaterThan={tempGreaterThan}

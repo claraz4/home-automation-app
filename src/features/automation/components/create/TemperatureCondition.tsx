@@ -31,34 +31,39 @@ export default function TemperatureCondition({
     { label: "Greater than", value: "gt" },
     { label: "Between", value: "bt" },
   ];
-  const tempCondition =
-    tempLessThan && tempGreaterThan ? "bt" : tempLessThan ? "lt" : "gt";
+  const hasGt = tempGreaterThan != null;
+  const hasLt = tempLessThan != null;
+  const tempCondition = hasGt && hasLt ? "bt" : hasLt ? "lt" : "gt";
+
   const [selectedCondition, setSelectedCondition] = useState<
     TSelectedItem | TSelectedItem[]
   >(tempCondition);
 
-  const setTemperatureLessThan = (temp: number | null) => {
-    editPolicy(undefined, undefined, temp);
+  const setTemperatureGreaterThan = (temp: number | null) => {
+    editPolicy(undefined, temp, tempLessThan);
   };
 
-  const setTemperatureGreaterThan = (temp: number | null) => {
-    editPolicy(undefined, temp);
+  const setTemperatureLessThan = (temp: number | null) => {
+    editPolicy(undefined, tempGreaterThan, temp);
   };
 
   // Change the selected option
   const changeSelectedOption = (option: TSelectedItem | TSelectedItem[]) => {
     setSelectedCondition(option);
 
-    const gtValue = !tempGreaterThan
-      ? !tempLessThan
-        ? DEFAULT_TEMP
-        : tempLessThan
-      : tempGreaterThan;
-    const ltValue = !tempLessThan
-      ? !tempGreaterThan
-        ? DEFAULT_TEMP
-        : tempGreaterThan
-      : tempLessThan;
+    const gtValue =
+      tempGreaterThan === null
+        ? tempLessThan === null
+          ? DEFAULT_TEMP
+          : tempLessThan
+        : tempGreaterThan;
+
+    const ltValue =
+      tempLessThan === null
+        ? tempGreaterThan === null
+          ? DEFAULT_TEMP
+          : tempGreaterThan
+        : tempLessThan;
 
     switch (option) {
       case "gt":
@@ -106,7 +111,7 @@ export default function TemperatureCondition({
             columnGap: spaces.xxs,
           }}
         >
-          {tempGreaterThan && (
+          {tempGreaterThan !== null && (
             <AppTextInput
               value={tempGreaterThan + "" || ""}
               onChange={(value) => setTemperatureGreaterThan(Number(value))}
@@ -117,10 +122,10 @@ export default function TemperatureCondition({
               keyboardType={"numeric"}
             />
           )}
-          {tempGreaterThan && tempLessThan && (
+          {tempGreaterThan !== null && tempLessThan !== null && (
             <AppText style={{ fontSize: 16 }}>and</AppText>
           )}
-          {tempLessThan && (
+          {tempLessThan !== null && (
             <AppTextInput
               value={tempLessThan + "" || ""}
               onChange={(value) => setTemperatureLessThan(Number(value))}
