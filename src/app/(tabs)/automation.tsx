@@ -20,7 +20,14 @@ export default function Automation() {
         hasBackButton={true}
         hasCustomLinkComponent={true}
         customLinkComponent={
-          <AddButton onPress={() => router.push("/automation/create")} />
+          <AddButton
+            onPress={() =>
+              router.push({
+                pathname: "/automation/create",
+                params: { mode: "create" },
+              })
+            }
+          />
         }
       >
         Automation

@@ -1,14 +1,23 @@
-import { StyleSheet, TextInput, View, ViewStyle } from "react-native";
+import {
+  KeyboardTypeOptions,
+  StyleSheet,
+  TextInput,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
 import { Heading } from "@/src/shared/ui/Heading";
 import { borderRadius, colors, spaces } from "@/src/theme";
 import { useState } from "react";
 
 interface AppTextInput {
-  label: string;
+  label?: string;
   value: string;
   onChange: (value: string) => void;
   containerStyle?: ViewStyle;
+  inputContainerStyle?: TextStyle;
   hasError?: boolean;
+  keyboardType?: KeyboardTypeOptions;
 }
 
 export default function AppTextInput({
@@ -16,22 +25,28 @@ export default function AppTextInput({
   value,
   onChange,
   containerStyle,
+  inputContainerStyle,
   hasError = false,
+  keyboardType = "default",
 }: AppTextInput) {
   const [focus, setFocus] = useState(false);
 
   return (
     <View style={[styles.container, containerStyle]}>
-      <Heading variant="h6" style={{ color: colors.gray[700] }}>
-        {label}
-      </Heading>
+      {label && (
+        <Heading variant="h6" style={{ color: colors.gray[700] }}>
+          {label}
+        </Heading>
+      )}
       <TextInput
         value={value}
+        keyboardType={keyboardType}
         onChangeText={onChange}
         style={[
           styles.textInputContainer,
           focus && styles.textInputContainerOnFocus,
           hasError && styles.errorBorders,
+          inputContainerStyle,
         ]}
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
@@ -49,7 +64,7 @@ const styles = StyleSheet.create({
     borderColor: colors.gray[300],
     padding: spaces.xs + spaces.xxs,
     borderRadius: borderRadius.sm,
-    borderWidth: 1.5,
+    borderWidth: 1,
     fontSize: 18,
   },
   textInputContainerOnFocus: {

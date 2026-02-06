@@ -1,13 +1,12 @@
 import React, { useCallback, useState } from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import ScreenView from "@/src/shared/ui/ScreenView";
 import { Heading } from "@/src/shared/ui/Heading";
-import { colors, fontWeight, paddings, spaces } from "@/src/theme";
+import { paddings, spaces } from "@/src/theme";
 import CalendarDays from "@/src/features/schedule/components/CalendarDays";
 import dayjs from "dayjs";
 import { DaySchedulesDTO } from "@/src/features/schedule/types/DaySchedulesDTO";
 import DaySchedule from "@/src/features/schedule/components/DaySchedule";
-import { AppText } from "@/src/shared/ui/AppText";
 import { router, useFocusEffect } from "expo-router";
 import useSchedules from "@/src/features/schedule/hooks/useSchedules";
 import AddButton from "@/src/shared/components/AddButton";
