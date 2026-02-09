@@ -1,4 +1,7 @@
-import { PolicyDTO } from "@/src/features/automation/types/PolicyDTO";
+import {
+  PolicyCreateDTO,
+  PolicyDTO,
+} from "@/src/features/automation/types/PolicyDTO";
 import { arePlugArraysEqual } from "@/src/shared/utils/arePlugsArrayEqual";
 
 export const arePoliciesEqual = (policy1: PolicyDTO, policy2: PolicyDTO) => {
@@ -27,3 +30,13 @@ const haveSameKeys = (a: object, b: object): boolean => {
 
   return keysA.every((key) => key in b);
 };
+
+export const buildPolicyPayload = (policy: PolicyDTO): PolicyCreateDTO => ({
+  name: policy.name,
+  offPlugIds: policy.offPlugs.map((p) => p.id),
+  onPlugIds: policy.onPlugs.map((p) => p.id),
+  tempGreaterThan: policy.tempGreaterThan,
+  tempLessThan: policy.tempLessThan,
+  powerSourceId: policy.powerSourceId ?? null,
+  isActive: policy.isActive,
+});

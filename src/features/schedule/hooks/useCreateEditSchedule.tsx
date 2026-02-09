@@ -7,6 +7,7 @@ import { useScheduleDateEdit } from "@/src/features/schedule/hooks/useScheduleDa
 import { FormError } from "@/src/shared/errors/FormError";
 import dayjs from "dayjs";
 import { StatusBoxInfo } from "@/src/features/schedule/types/ScheduleUI";
+import { showSuccess } from "@/src/shared/utils/messagesUtils";
 
 interface HookProps {
   schedule: SingleSchedule;
@@ -88,18 +89,8 @@ export function useCreateEditSchedule({
     }, [date]),
   );
 
-  // Show success message
-  const showSuccess = (isCreating: boolean) => {
-    setStatusBoxProps({
-      isVisible: true,
-      isError: false,
-      title: "Success",
-      message: `Your schedule was ${isCreating ? "created" : "saved"} successfully!`,
-    });
-  };
-
   // Reset schedule if created
-  const resetScheduleIfCreated = () => {
+  const resetSchedule = () => {
     setSchedule({
       name: "",
       time: date?.toISOString() || dayjs().toISOString(),
@@ -136,10 +127,10 @@ export function useCreateEditSchedule({
   const onEdit = async (isCreating: boolean) => {
     try {
       await editSchedule(schedule, isCreating);
-      showSuccess(isCreating);
+      setStatusBoxProps(showSuccess(isCreating));
 
       if (isCreating) {
-        resetScheduleIfCreated();
+        resetSchedule();
       }
     } catch (error) {
       handleEditError(error);

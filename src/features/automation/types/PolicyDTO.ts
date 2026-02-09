@@ -5,8 +5,8 @@ export interface PolicyDTO {
   name: string;
   onPlugs: BasePlug[];
   offPlugs: BasePlug[];
-  powerSourceId?: number | null;
-  powerSourceName: string | null;
+  powerSourceId: number | null;
+  powerSourceName?: string | null;
   tempGreaterThan: number | null;
   tempLessThan: number | null;
   numOfPlugs?: number;

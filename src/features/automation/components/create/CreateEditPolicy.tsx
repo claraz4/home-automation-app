@@ -4,18 +4,18 @@ import { useLocalSearchParams } from "expo-router";
 import FeatureRow from "@/src/shared/components/FeatureRow";
 import AppTextInput from "@/src/shared/components/AppTextInput";
 import { spaces } from "@/src/theme";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { SchedulePlugsList } from "@/src/features/schedule/components/create/SchedulePlugsList";
 import PolicyConditions from "@/src/features/automation/components/create/PolicyConditions";
-import {
-  PolicyCreateDTO,
-  PolicyDTO,
-} from "@/src/features/automation/types/PolicyDTO";
+import { PolicyDTO } from "@/src/features/automation/types/PolicyDTO";
 import Button from "@/src/shared/components/Button";
-import { api } from "@/src/api/api";
 import useCreateEditPolicy from "@/src/features/automation/hooks/useCreateEditPolicy";
-import usePolicies from "@/src/features/automation/hooks/usePolicies";
-import { arePoliciesEqual } from "@/src/features/automation/utils/policiesHelper";
+import { FormError } from "@/src/shared/errors/FormError";
+import {
+  StatusBoxInfo,
+  statusBoxInfoClean,
+} from "@/src/features/schedule/types/ScheduleUI";
+import StatusBox from "@/src/shared/components/StatusBox";
 
 interface CreateEditPolicyProps {
   policy: PolicyDTO;
@@ -36,40 +36,70 @@ export default function CreateEditPolicy({
 }: CreateEditPolicyProps) {
   const { mode } = useLocalSearchParams();
   const isCreating = mode === "create";
-  const { name, isActive, onPlugs, offPlugs } = policy;
-  const { createPolicy, editPolicy } = usePolicies();
+  const {
+    name,
+    isActive,
+    onPlugs,
+    offPlugs,
+    tempGreaterThan,
+    tempLessThan,
+    powerSourceId,
+  } = policy;
 
+  const [error, setError] = useState<FormError | null>(null);
+  const [statusBoxProps, setStatusBoxProps] =
+    useState<StatusBoxInfo>(statusBoxInfoClean);
   const {
     updateName,
     updateOnPlugs,
     updateOffPlugs,
     editPolicyUI,
     toggleStatus,
-  } = useCreateEditPolicy({ setPolicy, fetchSinglePolicy });
+    onEdit,
+  } = useCreateEditPolicy({
+    setPolicy,
+    setError,
+    scrollToTop,
+    setStatusBoxProps,
+    fetchSinglePolicy,
+  });
 
-  // Create a policy
-  const createNewPolicy = async () => {
-    try {
-      await createPolicy(policy);
-    } catch (error) {
-      console.error(error);
+  // Clear the error on change of schedule
+  useEffect(() => {
+    if (error) {
+      setStatusBoxProps(statusBoxInfoClean);
     }
-  };
 
-  // Edit a policy
-  const editOldPolicy = async () => {
-    try {
-      await editPolicy(policy);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    setError(null);
+  }, [policy]);
+
+  // Check basic conditions before sending request to backend
+  const isSaveEnabled = useMemo(
+    () =>
+      (tempGreaterThan !== null ||
+        tempLessThan !== null ||
+        powerSourceId !== null) &&
+      name !== "" &&
+      (onPlugs.length !== 0 || offPlugs.length !== 0),
+    [tempLessThan, tempGreaterThan, powerSourceId, name, onPlugs, offPlugs],
+  );
 
   return (
     <View>
       <Heading variant="h2" hasBackButton={true}>
         {isCreating ? headingText : name}
       </Heading>
+
+      {statusBoxProps.isVisible && (
+        <StatusBox
+          title={statusBoxProps.title}
+          isError={statusBoxProps.isError}
+          message={statusBoxProps.message}
+          hasClose={true}
+          onClose={() => setStatusBoxProps(statusBoxInfoClean)}
+        />
+      )}
+
       <View style={{ rowGap: spaces.md }}>
         {!isCreating && (
           <FeatureRow
@@ -86,7 +116,7 @@ export default function CreateEditPolicy({
             value={name}
             onChange={updateName}
             containerStyle={{ marginTop: spaces.md }}
-            // hasError={error?.component === "name"}
+            hasError={error?.component === "name"}
           />
         )}
         {isActive && (
@@ -109,15 +139,16 @@ export default function CreateEditPolicy({
         {isCreating ? (
           <Button
             text="Create New Policy"
-            onPress={createNewPolicy}
+            onPress={() => onEdit(policy)}
             invertColors={true}
+            disabled={!isSaveEnabled}
           />
         ) : (
           <Button
             text="Edit Policy"
-            onPress={editOldPolicy} // TODO
+            onPress={() => onEdit(policy)}
             invertColors={true}
-            disabled={!isScheduleEdited}
+            disabled={!isScheduleEdited || !isSaveEnabled}
           />
         )}
       </View>

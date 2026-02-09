@@ -1,6 +1,7 @@
 export const DETAILS_TYPES = {
   DUPLICATE_SCHEDULE_NAME: "There already exists a schedule with name",
   DUPLICATE_SCHEDULE_TIME: "There already exists a schedule at time",
+  DUPLICATE_POLICY_NAME: "There already exists a policy with name",
 };
 
 export const ERROR_TYPES = {

@@ -4,6 +4,11 @@ import {
   PolicyDTO,
   PolicyEditDTO,
 } from "@/src/features/automation/types/PolicyDTO";
+import { buildPolicyPayload } from "@/src/features/automation/utils/policiesHelper";
+import { isAxiosError } from "axios";
+import { isErrorDTO } from "@/src/shared/utils/errorHelpers";
+import { DETAILS_TYPES, ERROR_TYPES } from "@/src/shared/types/ErrorDTO";
+import { FormError } from "@/src/shared/errors/FormError";
 
 export default function usePolicies() {
   // Get all policies
@@ -35,57 +40,38 @@ export default function usePolicies() {
     }
   };
 
-  // Create the policy
-  const createPolicy = async (policy: PolicyDTO) => {
-    const newPolicy: PolicyCreateDTO = {
-      isActive: true,
-      name: policy.name,
-      offPlugIds: policy.offPlugs.map((plug) => plug.id),
-      onPlugIds: policy.onPlugs.map((plug) => plug.id),
-      powerSourceId: policy.powerSourceId ?? null,
-      tempGreaterThan: policy.tempGreaterThan,
-      tempLessThan: policy.tempLessThan,
-    };
+  // Save policy
+  const savePolicy = async (policy: PolicyDTO) => {
+    const payload = buildPolicyPayload(policy);
 
     try {
-      await api.post<PolicyCreateDTO>("/policy", {
-        ...newPolicy,
-      });
-    } catch (error) {
-      console.error(error);
+      if (policy.id) {
+        await api.put<PolicyEditDTO>("/policy", {
+          ...payload,
+          id: policy.id,
+        });
+      } else {
+        await api.post<PolicyCreateDTO>("/policy", {
+          ...payload,
+          isActive: true,
+        });
+      }
+    } catch (error: unknown) {
+      if (isAxiosError(error) && error.response) {
+        const { data } = error.response;
+
+        if (isErrorDTO(data) && data.type === ERROR_TYPES.ARGUMENT_EXCEPTION) {
+          if (data.detail.includes(DETAILS_TYPES.DUPLICATE_POLICY_NAME)) {
+            throw new FormError("name", data.detail);
+          }
+        }
+      }
     }
   };
-
-  // Edit the policy
-  const editPolicy = async (policy: PolicyDTO) => {
-    if (!policy.id) {
-      return;
-    }
-
-    const newPolicy: PolicyEditDTO = {
-      name: policy.name,
-      id: policy.id,
-      offPlugIds: policy.offPlugs.map((plug) => plug.id),
-      onPlugIds: policy.onPlugs.map((plug) => plug.id),
-      powerSourceId: policy.powerSourceId ?? null,
-      tempGreaterThan: policy.tempGreaterThan,
-      tempLessThan: policy.tempLessThan,
-    };
-
-    try {
-      await api.put<PolicyEditDTO>("/policy", {
-        ...newPolicy,
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return {
     getPolicies,
     getSinglePolicy,
     togglePolicy,
-    createPolicy,
-    editPolicy,
+    savePolicy,
   };
 }
