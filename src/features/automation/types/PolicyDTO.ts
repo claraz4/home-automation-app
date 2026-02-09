@@ -9,7 +9,7 @@ export interface PolicyDTO {
   powerSourceName: string | null;
   tempGreaterThan: number | null;
   tempLessThan: number | null;
-  numOfPlugs: number;
+  numOfPlugs?: number;
   isActive: boolean;
 }
 
@@ -21,4 +21,14 @@ export interface PolicyCreateDTO {
   tempGreaterThan: number | null;
   tempLessThan: number | null;
   isActive: boolean;
+}
+
+export interface PolicyEditDTO {
+  id: number;
+  name: string;
+  powerSourceId: number | null;
+  tempGreaterThan: number | null;
+  tempLessThan: number | null;
+  onPlugIds: number[];
+  offPlugIds: number[];
 }

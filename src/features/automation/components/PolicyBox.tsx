@@ -16,8 +16,6 @@ export default function PolicyBox({ policy }: PolicyBoxProps) {
     tempGreaterThan,
     tempLessThan,
     id,
-    offPlugs,
-    onPlugs,
     numOfPlugs,
     isActive,
   } = policy;
@@ -29,6 +27,10 @@ export default function PolicyBox({ policy }: PolicyBoxProps) {
         hasStatus={true}
         status={isActive}
         hasExtra={true}
+        extraScreen={{
+          pathname: "/automation/[policyId]",
+          params: { policyId: id + "" },
+        }}
         containerStyles={{ padding: 0, rowGap: 0 }}
       />
       <View style={styles.conditionsContainer}>

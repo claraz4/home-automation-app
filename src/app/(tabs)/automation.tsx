@@ -6,28 +6,25 @@ import { Heading } from "@/src/shared/ui/Heading";
 import AddButton from "@/src/shared/components/AddButton";
 import PolicyBox from "@/src/features/automation/components/PolicyBox";
 import { router, useFocusEffect } from "expo-router";
-import {
-  PolicyCreateDTO,
-  PolicyDTO,
-} from "@/src/features/automation/types/PolicyDTO";
-import { api } from "@/src/api/api";
+import { PolicyDTO } from "@/src/features/automation/types/PolicyDTO";
+import usePolicies from "@/src/features/automation/hooks/usePolicies";
 
 export default function Automation() {
   const [policies, setPolicies] = useState<PolicyDTO[]>([]);
+  const { getPolicies } = usePolicies();
 
   // Get all policies
-  const getPolicies = async () => {
-    try {
-      const res = await api.get("/policy");
-      setPolicies(res.data.policies);
-    } catch (error) {
-      console.error(error);
+  const fetchPolicies = useCallback(async () => {
+    const res = await getPolicies();
+
+    if (res) {
+      setPolicies(res);
     }
-  };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
-      void getPolicies();
+      void fetchPolicies();
     }, []),
   );
 

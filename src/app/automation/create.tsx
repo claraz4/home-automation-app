@@ -7,12 +7,11 @@ import { PolicyDTO } from "@/src/features/automation/types/PolicyDTO";
 export default function CreatePolicy() {
   const screenRef = useRef<ScreenViewRef>(null);
   const [policy, setPolicy] = useState<PolicyDTO>({
-    isActive: false,
-    numOfPlugs: 0,
-    powerSourceId: 1,
-    powerSourceName: "edl",
-    tempGreaterThan: 2,
-    tempLessThan: 7,
+    isActive: true,
+    powerSourceId: null,
+    powerSourceName: null,
+    tempGreaterThan: null,
+    tempLessThan: null,
     name: "",
     onPlugs: [],
     offPlugs: [],
@@ -31,7 +30,6 @@ export default function CreatePolicy() {
         scrollToTop={scrollToTop}
         policy={policy}
         setPolicy={setPolicy}
-        isActive={true}
         headingText={"Create Policy"}
       />
     </ScreenView>

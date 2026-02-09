@@ -6,7 +6,6 @@ import AppTextInput from "@/src/shared/components/AppTextInput";
 import { spaces } from "@/src/theme";
 import { Dispatch, SetStateAction } from "react";
 import { SchedulePlugsList } from "@/src/features/schedule/components/create/SchedulePlugsList";
-import { BasePlug } from "@/src/shared/types/BasePlug";
 import PolicyConditions from "@/src/features/automation/components/create/PolicyConditions";
 import {
   PolicyCreateDTO,
@@ -14,85 +13,53 @@ import {
 } from "@/src/features/automation/types/PolicyDTO";
 import Button from "@/src/shared/components/Button";
 import { api } from "@/src/api/api";
+import useCreateEditPolicy from "@/src/features/automation/hooks/useCreateEditPolicy";
+import usePolicies from "@/src/features/automation/hooks/usePolicies";
+import { arePoliciesEqual } from "@/src/features/automation/utils/policiesHelper";
 
 interface CreateEditPolicyProps {
   policy: PolicyDTO;
   setPolicy: Dispatch<SetStateAction<PolicyDTO>>;
-  isActive: boolean;
   headingText?: string;
   scrollToTop: () => void;
+  fetchSinglePolicy?: () => void;
+  isScheduleEdited?: boolean;
 }
 
 export default function CreateEditPolicy({
   policy,
   setPolicy,
-  isActive,
   scrollToTop,
   headingText,
+  fetchSinglePolicy,
+  isScheduleEdited = false,
 }: CreateEditPolicyProps) {
   const { mode } = useLocalSearchParams();
   const isCreating = mode === "create";
+  const { name, isActive, onPlugs, offPlugs } = policy;
+  const { createPolicy, editPolicy } = usePolicies();
+
   const {
-    name,
-    onPlugs,
-    offPlugs,
-    powerSourceId,
-    tempGreaterThan,
-    tempLessThan,
-  } = policy;
+    updateName,
+    updateOnPlugs,
+    updateOffPlugs,
+    editPolicyUI,
+    toggleStatus,
+  } = useCreateEditPolicy({ setPolicy, fetchSinglePolicy });
 
-  // Update the name
-  const updateName = (name: string) => setPolicy((prev) => ({ ...prev, name }));
-
-  // Update the plugs that are on
-  const updateOnPlugs = (onPlugs: BasePlug[]) =>
-    setPolicy((prev) => ({ ...prev, onPlugs }));
-
-  // Update the plugs that are off
-  const updateOffPlugs = (offPlugs: BasePlug[]) =>
-    setPolicy((prev) => ({ ...prev, offPlugs }));
-
-  // Add/edit policy
-  const editPolicy = (
-    powerSourceId?: number | null,
-    tempGreaterThan?: number | null,
-    tempLessThan?: number | null,
-  ) => {
-    setPolicy((prev) => {
-      const next = { ...prev };
-
-      if (powerSourceId !== undefined) {
-        next.powerSourceId = powerSourceId;
-      }
-
-      if (tempGreaterThan !== undefined) {
-        next.tempGreaterThan = tempGreaterThan;
-      }
-
-      if (tempLessThan !== undefined) {
-        next.tempLessThan = tempLessThan;
-      }
-
-      return next;
-    });
+  // Create a policy
+  const createNewPolicy = async () => {
+    try {
+      await createPolicy(policy);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  // Create the policy
-  const createPolicy = async () => {
-    const newPolicy: PolicyCreateDTO = {
-      isActive: true,
-      name: name,
-      offPlugIds: offPlugs.map((plug) => plug.id),
-      onPlugIds: onPlugs.map((plug) => plug.id),
-      powerSourceId: powerSourceId ?? null,
-      tempGreaterThan,
-      tempLessThan,
-    };
-
+  // Edit a policy
+  const editOldPolicy = async () => {
     try {
-      await api.post<PolicyCreateDTO>("/policy", {
-        ...newPolicy,
-      });
+      await editPolicy(policy);
     } catch (error) {
       console.error(error);
     }
@@ -108,8 +75,9 @@ export default function CreateEditPolicy({
           <FeatureRow
             headingText="Current State"
             hasSwitch
-            status={isActive}
-            setStatus={() => {}} // TODO: add this function
+            status={policy.isActive}
+            setStatus={() => toggleStatus(policy)}
+            containerStyles={{ marginTop: spaces.md }}
           />
         )}
         {isCreating && (
@@ -121,24 +89,35 @@ export default function CreateEditPolicy({
             // hasError={error?.component === "name"}
           />
         )}
-        <PolicyConditions
-          powerSourceId={policy.powerSourceId}
-          tempLessThan={policy.tempLessThan}
-          tempGreaterThan={policy.tempGreaterThan}
-          editPolicy={editPolicy}
-        />
-        <SchedulePlugsList
-          onPlugs={onPlugs}
-          offPlugs={offPlugs}
-          updateOnPlugs={updateOnPlugs}
-          updateOffPlugs={updateOffPlugs}
-          containerStyles={{ zIndex: -1 }}
-        />
-        {isCreating && (
+        {isActive && (
+          <View style={{ rowGap: spaces.md }}>
+            <PolicyConditions
+              powerSourceId={policy.powerSourceId}
+              tempLessThan={policy.tempLessThan}
+              tempGreaterThan={policy.tempGreaterThan}
+              editPolicy={editPolicyUI}
+            />
+            <SchedulePlugsList
+              onPlugs={onPlugs}
+              offPlugs={offPlugs}
+              updateOnPlugs={updateOnPlugs}
+              updateOffPlugs={updateOffPlugs}
+              containerStyles={{ zIndex: -1 }}
+            />
+          </View>
+        )}
+        {isCreating ? (
           <Button
             text="Create New Policy"
-            onPress={createPolicy}
+            onPress={createNewPolicy}
             invertColors={true}
+          />
+        ) : (
+          <Button
+            text="Edit Policy"
+            onPress={editOldPolicy} // TODO
+            invertColors={true}
+            disabled={!isScheduleEdited}
           />
         )}
       </View>
