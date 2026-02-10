@@ -2,33 +2,61 @@ import { Heading } from "@/src/shared/ui/Heading";
 import { View, StyleSheet } from "react-native";
 import PlugScheduleRow from "@/src/features/plugs/components/PlugScheduleRow";
 import { spaces } from "@/src/theme";
+import useSchedules from "@/src/features/schedule/hooks/useSchedules";
+import { useCallback, useState } from "react";
+import { UpcomingSchedulesDTO } from "@/src/features/schedule/types/UpcomingSchedulesDTO";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { AppText } from "@/src/shared/ui/AppText";
 
-export default function PlugSchedules() {
-  const schedules = [
-    { id: 1, scheduleName: "Schedule 1", action: "Turn off", time: "Monday" },
-    {
-      id: 2,
-      scheduleName: "Schedule 2",
-      action: "Turn on",
-      time: "Wednesday",
-    },
-  ];
+interface PlugSchedulesProps {
+  includeHeading?: boolean;
+}
+
+export default function PlugSchedules({
+  includeHeading = true,
+}: PlugSchedulesProps) {
+  const { getUpcomingSchedules } = useSchedules();
+  const [schedules, setSchedules] = useState<UpcomingSchedulesDTO>([]);
+  const { plugId } = useLocalSearchParams<{ plugId?: string }>();
+
+  const fetchUpcomingSchedules = async () => {
+    try {
+      const res = await getUpcomingSchedules(plugId ?? plugId);
+
+      if (res) {
+        setSchedules(res);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      void fetchUpcomingSchedules();
+    }, []),
+  );
 
   return (
     <View>
-      <Heading variant="h3" hasLink={true} linkPlaceholder={"Manage"}>
-        Schedules
-      </Heading>
-      <View style={styles.schedulesContainer}>
-        {schedules.map((schedule) => (
-          <PlugScheduleRow
-            key={schedule.id}
-            scheduleName={schedule.scheduleName}
-            action={schedule.action}
-            time={schedule.time}
-          />
-        ))}
-      </View>
+      {includeHeading && (
+        <Heading variant="h3" hasLink={true} linkPlaceholder={"Manage"}>
+          Schedules
+        </Heading>
+      )}
+      {schedules && schedules.length !== 0 ? (
+        <View style={styles.schedulesContainer}>
+          {schedules.map((scheduleDate) =>
+            scheduleDate.schedules.map((schedule) => (
+              <PlugScheduleRow key={schedule.id} schedule={schedule} />
+            )),
+          )}
+        </View>
+      ) : (
+        <AppText variant="bodySecondary">
+          There are no schedules planned.
+        </AppText>
+      )}
     </View>
   );
 }

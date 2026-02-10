@@ -28,7 +28,7 @@ export default function RoomBox({
       key={room.roomId}
     >
       <View style={roomBoxStyles.roomIconContainer}>
-        {roomIcons(color, size)[room.roomType]}
+        {roomIcons(color, size)[room.roomType.toLowerCase()]}
       </View>
       <View style={roomBoxStyles.roomInfoContainer}>
         <AppText variant="bodyWhite">{room.name}</AppText>

@@ -11,7 +11,7 @@ import { AppText } from "@/src/shared/ui/AppText";
 import { borderRadius, colors, fontWeight, spaces } from "@/src/theme";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Href, router } from "expo-router";
-import React, { ReactNode } from "react";
+import React, { ElementType, ReactNode } from "react";
 
 export interface FeatureRowProps {
   headingText?: string;
@@ -52,13 +52,23 @@ export default function FeatureRow({
     throw new Error("ERROR: can't have extra and a remove button");
   }
 
+  const Container: ElementType = hasExtra ? Pressable : View;
+
   return (
-    <View
+    <Container
       style={[
         styles.controlContainer,
         containerStyles,
         hasError && styles.errorBorders,
       ]}
+      onPress={
+        hasExtra
+          ? () => {
+              setIsExtraClicked(true);
+              if (extraScreen) router.push(extraScreen);
+            }
+          : undefined
+      }
     >
       <View style={styles.titleContainer}>
         {hasIcon && (
@@ -86,15 +96,7 @@ export default function FeatureRow({
         />
       )}
       {hasExtra && (
-        <Pressable
-          style={styles.statusContainer}
-          onPress={() => {
-            setIsExtraClicked(true);
-            if (extraScreen) {
-              router.push(extraScreen);
-            }
-          }}
-        >
+        <View style={styles.statusContainer}>
           {hasStatus && (
             <AppText
               variant="bodySecondary"
@@ -111,14 +113,14 @@ export default function FeatureRow({
             size={30}
             color={colors.gray[400]}
           />
-        </Pressable>
+        </View>
       )}
       {onRemove && (
         <Pressable onPress={onRemove} style={styles.removeContainer}>
           <AppText style={styles.removeText}>-</AppText>
         </Pressable>
       )}
-    </View>
+    </Container>
   );
 }
 

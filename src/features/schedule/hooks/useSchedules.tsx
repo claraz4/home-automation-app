@@ -16,13 +16,32 @@ import {
 import { isErrorDTO } from "@/src/shared/utils/errorHelpers";
 import { FormError } from "@/src/shared/errors/FormError";
 import { isAxiosError } from "axios";
-import { DaySchedulesDTO } from "@/src/features/schedule/types/DaySchedulesDTO";
+import {
+  DaySchedulesDTO,
+  ScheduleDTO,
+} from "@/src/features/schedule/types/DaySchedulesDTO";
+import { UpcomingSchedulesDTO } from "@/src/features/schedule/types/UpcomingSchedulesDTO";
 
 export default function useSchedules(scheduleId?: number) {
   // Fetch all schedules
   const getScheduledDays = async () => {
     try {
       return await api.get<{ scheduledDates: string[] }>("/schedules");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Fetch upcoming schedules
+  const getUpcomingSchedules = async (plugId?: string) => {
+    try {
+      const res = await api.get<{ days: UpcomingSchedulesDTO }>(
+        "/schedules/days/upcoming",
+        {
+          params: plugId ? { plugId } : undefined,
+        },
+      );
+      return res.data.days;
     } catch (error) {
       console.error(error);
     }
@@ -128,5 +147,6 @@ export default function useSchedules(scheduleId?: number) {
     toggleSchedule,
     getScheduledDays,
     getCurrentDaySchedules,
+    getUpcomingSchedules,
   };
 }
