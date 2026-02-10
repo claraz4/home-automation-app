@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions, Pressable, View } from "react-native";
+import { StyleSheet, Dimensions, Pressable } from "react-native";
 import dayjs from "dayjs";
 import { Heading } from "@/src/shared/ui/Heading";
 import { AppText } from "@/src/shared/ui/AppText";

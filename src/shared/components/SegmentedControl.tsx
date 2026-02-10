@@ -6,7 +6,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { AppText } from "@/src/shared/ui/AppText";
-import { borderRadius, boxShadow, colors, spaces } from "@/src/theme";
+import { borderRadius, colors, spaces } from "@/src/theme";
 
 interface SegmentedControlProps {
   options: string[];

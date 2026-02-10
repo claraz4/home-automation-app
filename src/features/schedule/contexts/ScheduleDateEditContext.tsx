@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 
 export interface ScheduleDateEditState {
   scheduleId: string | null;

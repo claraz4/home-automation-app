@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 import { spaces } from "@/src/theme";
-import { ScheduleDTO } from "@/src/features/schedule/types/DaySchedulesDTO";
 
 export const LIST_SEPARATOR = spaces.md;
 export const DAYS_AFTER = 30;

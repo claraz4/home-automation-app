@@ -1,5 +1,4 @@
-import { StyleSheet } from "react-native";
-import { borderRadius, colors, spaces } from "@/src/theme";
+import { spaces } from "@/src/theme";
 import AppModal from "@/src/shared/components/AppModal";
 import { useState } from "react";
 import CustomTimeSelection from "@/src/features/timeout/components/CustomTimeSelection";

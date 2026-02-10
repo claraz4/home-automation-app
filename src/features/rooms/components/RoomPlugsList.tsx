@@ -1,7 +1,7 @@
 import { View, StyleSheet, Pressable } from "react-native";
 import { useEffect, useState } from "react";
 import PlugBox from "@/src/features/rooms/components/PlugBox";
-import { Href, router, useLocalSearchParams, usePathname } from "expo-router";
+import { Href, router, useLocalSearchParams } from "expo-router";
 import { borderRadius, spaces } from "@/src/theme";
 import { api } from "@/src/api/api";
 import { RoomPlugsDTO } from "../types/RoomPlugsDTO";

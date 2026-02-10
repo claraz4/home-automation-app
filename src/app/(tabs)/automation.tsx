@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useCallback, useState } from "react";
+import { View } from "react-native";
 import ScreenView from "@/src/shared/ui/ScreenView";
 import { paddings, spaces } from "@/src/theme";
 import { Heading } from "@/src/shared/ui/Heading";
@@ -55,5 +55,3 @@ export default function Automation() {
     </ScreenView>
   );
 }
-
-const styles = StyleSheet.create({});

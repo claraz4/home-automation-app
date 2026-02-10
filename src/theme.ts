@@ -1,4 +1,4 @@
-import { StyleSheet, TextStyle, Platform } from "react-native";
+import { StyleSheet, TextStyle } from "react-native";
 
 export const fontWeight = {
   100: "Poppins_100Thin",
@@ -81,7 +81,6 @@ export const spaces = {
   xxl: 40,
   xxxl: 48,
 };
-export type Space = keyof typeof spaces;
 
 export const fontStyle: TextStyle = {
   // fontFamily: Platform.select({

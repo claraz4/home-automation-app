@@ -7,11 +7,6 @@ import { colors, spaces } from "@/src/theme";
 import { StyleSheet, ViewStyle } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 
-export interface Option {
-  label: string;
-  value: string;
-}
-
 interface AppDropdownProps {
   label?: string;
   options: TFlatList;

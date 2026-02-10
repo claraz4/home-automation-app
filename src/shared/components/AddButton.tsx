@@ -1,4 +1,3 @@
-import { router } from "expo-router";
 import { AppText } from "@/src/shared/ui/AppText";
 import { Pressable, StyleSheet } from "react-native";
 import React from "react";

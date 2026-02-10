@@ -8,18 +8,11 @@ import {
   SingleScheduleCreateDTO,
   SingleScheduleEditDTO,
 } from "@/src/features/schedule/types/SingleScheduleEditDTO";
-import {
-  DETAILS_TYPES,
-  ERROR_TYPES,
-  ErrorDTO,
-} from "@/src/shared/types/ErrorDTO";
+import { DETAILS_TYPES, ERROR_TYPES } from "@/src/shared/types/ErrorDTO";
 import { isErrorDTO } from "@/src/shared/utils/errorHelpers";
 import { FormError } from "@/src/shared/errors/FormError";
 import { isAxiosError } from "axios";
-import {
-  DaySchedulesDTO,
-  ScheduleDTO,
-} from "@/src/features/schedule/types/DaySchedulesDTO";
+import { DaySchedulesDTO } from "@/src/features/schedule/types/DaySchedulesDTO";
 import { UpcomingSchedulesDTO } from "@/src/features/schedule/types/UpcomingSchedulesDTO";
 
 export default function useSchedules(scheduleId?: number) {

@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, View } from "react-native";
-import { spaces, colors, borderRadius, boxShadow } from "@/src/theme";
+import { spaces, colors, borderRadius } from "@/src/theme";
 import { AppText } from "@/src/shared/ui/AppText";
 import { roomIcons } from "@/src/shared/data/roomIcons";
 import { RoomDTO } from "@/src/features/home/types/RoomDTO";

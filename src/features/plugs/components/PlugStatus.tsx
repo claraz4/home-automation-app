@@ -1,9 +1,5 @@
 import { colors } from "@/src/theme";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useEffect } from "react";
-import { api } from "@/src/api/api";
-import { PlugStatusCommandPayloadDTO } from "@/src/features/plugs/types/PlugStatusCommandPayloadDTO";
-import { PlugDTO } from "@/src/features/plugs/types/PlugDTO";
 import { Pressable } from "react-native";
 
 interface PlugStatusProps {

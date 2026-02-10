@@ -1,13 +1,8 @@
 import { View, StyleSheet } from "react-native";
-import { RoomType } from "@/src/features/home/types/RoomDTO";
 import { spaces } from "@/src/theme";
 import InfoBox from "@/src/shared/components/InfoBox";
 
-interface RoomHeaderProps {
-  roomType: RoomType;
-}
-
-export default function RoomHeader({ roomType }: RoomHeaderProps) {
+export default function RoomHeader() {
   return (
     <View style={styles.container}>
       <View style={styles.statsContainer}>

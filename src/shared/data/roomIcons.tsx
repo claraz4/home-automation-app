@@ -1,7 +1,6 @@
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { JSX } from "react";
-import { RoomType } from "@/src/features/home/types/RoomDTO";
 
 export const roomIcons = (
   color: string,

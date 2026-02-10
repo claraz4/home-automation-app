@@ -21,7 +21,7 @@ WebBrowser.maybeCompleteAuthSession({
 import "expo-router/entry";
 
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({
+  useFonts({
     Poppins_100Thin,
     Poppins_200ExtraLight,
     Poppins_300Light,
