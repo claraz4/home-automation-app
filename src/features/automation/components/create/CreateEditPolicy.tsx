@@ -85,7 +85,7 @@ export default function CreateEditPolicy({
   );
 
   return (
-    <View>
+    <View style={{ rowGap: spaces.md }}>
       <Heading variant="h2" hasBackButton={true}>
         {isCreating ? headingText : name}
       </Heading>
@@ -107,7 +107,6 @@ export default function CreateEditPolicy({
             hasSwitch
             status={policy.isActive}
             setStatus={() => toggleStatus(policy)}
-            containerStyles={{ marginTop: spaces.md }}
           />
         )}
         {isCreating && (

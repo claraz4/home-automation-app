@@ -128,7 +128,7 @@ export default function useCreateEditPolicy({
   // Edit or create a schedule
   const onEdit = async (policy: PolicyDTO) => {
     try {
-      const isCreating = policy.id !== 0 && !!policy.id;
+      const isCreating = policy.id === null || policy.id === undefined;
 
       await savePolicy(policy);
       if (setStatusBoxProps) {
@@ -137,6 +137,10 @@ export default function useCreateEditPolicy({
 
       if (isCreating) {
         resetPolicy();
+      }
+
+      if (scrollToTop) {
+        scrollToTop();
       }
     } catch (error) {
       handleEditError(error);
