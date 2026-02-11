@@ -41,12 +41,15 @@ export default function useSchedules(scheduleId?: number) {
   };
 
   // Fetch the current day schedule
-  const getCurrentDaySchedules = async (currentDay: string) => {
+  const getCurrentDaySchedules = async (
+    currentDay: string,
+    plugIds?: number[],
+  ) => {
     try {
       if (!currentDay) throw new Error("No date was provided");
 
       return await api.get<DaySchedulesDTO>("/schedules/day", {
-        params: { date: currentDay },
+        params: { date: currentDay, plugIds },
       });
     } catch (error) {
       console.error(error);
