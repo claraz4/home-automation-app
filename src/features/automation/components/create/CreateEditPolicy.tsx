@@ -3,7 +3,7 @@ import { Heading } from "@/src/shared/ui/Heading";
 import { useLocalSearchParams } from "expo-router";
 import FeatureRow from "@/src/shared/components/FeatureRow";
 import AppTextInput from "@/src/shared/components/AppTextInput";
-import { spaces } from "@/src/theme";
+import { colors, spaces } from "@/src/theme";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { SchedulePlugsList } from "@/src/features/schedule/components/create/SchedulePlugsList";
 import PolicyConditions from "@/src/features/automation/components/create/PolicyConditions";
@@ -23,7 +23,8 @@ interface CreateEditPolicyProps {
   headingText?: string;
   scrollToTop: () => void;
   fetchSinglePolicy?: () => void;
-  isScheduleEdited?: boolean;
+  isPolicyEdited?: boolean;
+  setIsDeletePolicy?: (state: boolean) => void;
 }
 
 export default function CreateEditPolicy({
@@ -32,7 +33,8 @@ export default function CreateEditPolicy({
   scrollToTop,
   headingText,
   fetchSinglePolicy,
-  isScheduleEdited = false,
+  isPolicyEdited = false,
+  setIsDeletePolicy,
 }: CreateEditPolicyProps) {
   const { mode } = useLocalSearchParams();
   const isCreating = mode === "create";
@@ -64,7 +66,7 @@ export default function CreateEditPolicy({
     fetchSinglePolicy,
   });
 
-  // Clear the error on change of schedule
+  // Clear the error on change of policy
   useEffect(() => {
     if (error) {
       setStatusBoxProps(statusBoxInfoClean);
@@ -143,12 +145,21 @@ export default function CreateEditPolicy({
             disabled={!isSaveEnabled}
           />
         ) : (
-          <Button
-            text="Edit Policy"
-            onPress={() => onEdit(policy)}
-            invertColors={true}
-            disabled={!isScheduleEdited || !isSaveEnabled}
-          />
+          <View style={{ rowGap: spaces.sm, marginTop: spaces.sm }}>
+            <Button
+              text="Edit Policy"
+              onPress={() => onEdit(policy)}
+              invertColors={true}
+              disabled={!isPolicyEdited || !isSaveEnabled}
+            />
+            {setIsDeletePolicy && (
+              <Button
+                text="Delete Policy"
+                onPress={() => setIsDeletePolicy(true)}
+                textStyle={{ color: colors.status.fail }}
+              />
+            )}
+          </View>
         )}
       </View>
     </View>

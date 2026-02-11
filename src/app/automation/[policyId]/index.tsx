@@ -3,9 +3,11 @@ import { paddings } from "@/src/theme";
 import CreateEditPolicy from "@/src/features/automation/components/create/CreateEditPolicy";
 import { useCallback, useRef, useState } from "react";
 import { PolicyDTO } from "@/src/features/automation/types/PolicyDTO";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import usePolicies from "@/src/features/automation/hooks/usePolicies";
 import { arePoliciesEqual } from "@/src/features/automation/utils/policiesHelper";
+import ConfirmationMessagePopUp from "@/src/shared/components/ConfirmationMessagePopUp";
+import { api } from "@/src/api/api";
 
 const emptyPolicy = {
   isActive: true,
@@ -24,6 +26,7 @@ export default function SinglePolicy() {
   const { getSinglePolicy } = usePolicies();
   const [originalPolicy, setOriginalPolicy] = useState<PolicyDTO>(emptyPolicy);
   const [policy, setPolicy] = useState<PolicyDTO>(emptyPolicy);
+  const [isDeletePolicy, setIsDeletePolicy] = useState<boolean>(false);
 
   // Scroll to top
   const scrollToTop = () => screenRef.current?.scrollToTop();
@@ -44,6 +47,16 @@ export default function SinglePolicy() {
     }, []),
   );
 
+  // Delete the current schedule
+  const deletePolicy = async () => {
+    try {
+      await api.delete(`/policy/${policyId}`);
+      router.push("/automation");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <ScreenView style={{ padding: paddings.page }} scroll ref={screenRef}>
       <CreateEditPolicy
@@ -51,7 +64,15 @@ export default function SinglePolicy() {
         setPolicy={setPolicy}
         scrollToTop={scrollToTop}
         fetchSinglePolicy={fetchSinglePolicy}
-        isScheduleEdited={!arePoliciesEqual(policy, originalPolicy)}
+        isPolicyEdited={!arePoliciesEqual(policy, originalPolicy)}
+        setIsDeletePolicy={setIsDeletePolicy}
+      />
+      <ConfirmationMessagePopUp
+        headingText="Delete Policy"
+        message={`Are you sure you want to delete ${policy.name}?`}
+        onConfirm={deletePolicy}
+        visible={isDeletePolicy}
+        setVisible={setIsDeletePolicy}
       />
     </ScreenView>
   );
