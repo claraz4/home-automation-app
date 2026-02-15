@@ -14,16 +14,20 @@ import { FormError } from "@/src/shared/errors/FormError";
 import { isAxiosError } from "axios";
 import { DaySchedulesDTO } from "@/src/features/schedule/types/DaySchedulesDTO";
 import { UpcomingSchedulesDTO } from "@/src/features/schedule/types/UpcomingSchedulesDTO";
+import arrayToParams from "@/src/shared/utils/paramsParser";
+import { useCallback } from "react";
 
 export default function useSchedules(scheduleId?: number) {
   // Fetch all schedules
-  const getScheduledDays = async () => {
+  const getScheduledDays = useCallback(async (plugIds?: number[]) => {
     try {
-      return await api.get<{ scheduledDates: string[] }>("/schedules");
+      return await api.get<{ scheduledDates: string[] }>("/schedules", {
+        params: arrayToParams("PlugIds", plugIds),
+      });
     } catch (error) {
       console.error(error);
     }
-  };
+  }, []);
 
   // Fetch upcoming schedules
   const getUpcomingSchedules = async (plugId?: string) => {
@@ -48,8 +52,11 @@ export default function useSchedules(scheduleId?: number) {
     try {
       if (!currentDay) throw new Error("No date was provided");
 
+      const params = arrayToParams("PlugIds", plugIds);
+      params.append("date", currentDay);
+
       return await api.get<DaySchedulesDTO>("/schedules/day", {
-        params: { date: currentDay, plugIds },
+        params,
       });
     } catch (error) {
       console.error(error);

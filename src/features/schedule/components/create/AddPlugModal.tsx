@@ -4,11 +4,10 @@ import { Heading } from "@/src/shared/ui/Heading";
 import { borderRadius, colors, spaces } from "@/src/theme";
 import SegmentedControl from "@/src/shared/components/SegmentedControl";
 import Checkbox from "@/src/shared/components/Checkbox";
-import { AllPlugsDTO } from "@/src/features/schedule/types/AllPlugsDTO";
-import { api } from "@/src/api/api";
 import Button from "@/src/shared/components/Button";
 import { SmallBasePlug } from "@/src/features/schedule/types/SmallBasePlug";
 import AppModal from "@/src/shared/components/AppModal";
+import usePlugs from "@/src/hooks/usePlugs";
 
 interface AddPlugModalProps {
   visible: boolean;
@@ -31,9 +30,10 @@ export default function AddPlugModal({
   const MODE_OFF = "Turn OFF";
   const modes = [MODE_ON, MODE_OFF];
 
-  const [allPlugs, setAllPlugs] = useState<AllPlugsDTO>();
   const [modeSelected, setModeSelected] = useState(modes[0]);
   const [plugsSelected, setPlugsSelected] = useState<SmallBasePlug[]>([]);
+
+  const { allPlugs, getAllPlugs } = usePlugs();
 
   // Update the selected plugs
   useEffect(() => {
@@ -55,16 +55,7 @@ export default function AddPlugModal({
 
   // Get all plugs
   useEffect(() => {
-    const getPlugs = async () => {
-      try {
-        const res = await api.get<AllPlugsDTO>("/plugs");
-        setAllPlugs(res.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    void getPlugs();
+    void getAllPlugs();
   }, []);
 
   // Add the new plugs

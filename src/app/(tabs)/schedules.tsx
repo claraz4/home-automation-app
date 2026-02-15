@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { StyleSheet } from "react-native";
 import ScreenView from "@/src/shared/ui/ScreenView";
 import { Heading } from "@/src/shared/ui/Heading";
@@ -11,9 +11,8 @@ import { router, useFocusEffect } from "expo-router";
 import useSchedules from "@/src/features/schedule/hooks/useSchedules";
 import AddButton from "@/src/shared/components/AddButton";
 import AppSingleFilter from "@/src/shared/components/AppSingleFilter";
-import { api } from "@/src/api/api";
-import { AllPlugsDTO } from "@/src/features/schedule/types/AllPlugsDTO";
-import { TSelectedItem } from "react-native-input-select/src/types/index.types";
+import { DropdownOption } from "@/src/shared/types/DropdownOption";
+import usePlugs from "@/src/hooks/usePlugs";
 
 export default function Schedules() {
   const [currentDay, setCurrentDay] = useState<dayjs.Dayjs>(
@@ -22,62 +21,59 @@ export default function Schedules() {
   const [scheduledDays, setScheduledDays] = useState<string[]>([]);
   const [currentDaySchedules, setCurrentDaySchedules] =
     useState<DaySchedulesDTO>({ schedules: [] });
+  const [selectedPlugs, setSelectedPlugs] = useState<DropdownOption[] | null>(
+    null,
+  );
+
   const { getScheduledDays, getCurrentDaySchedules } = useSchedules();
-  const [plugs, setPlugs] = useState<AllPlugsDTO>({ plugs: [] });
-  const [selectedPlugs, setSelectedPlugs] = useState<
-    TSelectedItem | TSelectedItem[]
-  >("All");
+  const { allPlugs, getAllPlugs } = usePlugs();
+
+  // Derive the plugIds array
+  const plugIds = useMemo<number[] | undefined>(() => {
+    if (!selectedPlugs || selectedPlugs.some((p) => p.value === "All")) {
+      return undefined;
+    }
+
+    return selectedPlugs.map((p) => Number(p.value));
+  }, [selectedPlugs]);
 
   // Get all days with  schedules
   const fetchScheduledDays = useCallback(async () => {
-    const res = await getScheduledDays();
+    const res = await getScheduledDays(plugIds);
 
     if (res) {
       setScheduledDays(res.data.scheduledDates);
     }
-  }, []);
+  }, [getScheduledDays, plugIds]);
 
+  // Get all the schedules of the selected day
+  const fetchDaySchedules = useCallback(async () => {
+    setCurrentDaySchedules({ schedules: [] });
+    const currentDayFormatted = currentDay.format("YYYY-MM-DD");
+
+    const res = await getCurrentDaySchedules(currentDayFormatted, plugIds);
+
+    if (res) {
+      setCurrentDaySchedules(res.data);
+    }
+  }, [currentDay, plugIds, getCurrentDaySchedules]);
+
+  // Fetch all plugs
+  useEffect(() => {
+    void getAllPlugs();
+  }, [getAllPlugs]);
+
+  // Refresh scheduled days on focus
   useFocusEffect(
     useCallback(() => {
       void fetchScheduledDays();
     }, [fetchScheduledDays]),
   );
 
-  // Get all the schedules of the selected day
-  const fetchDaySchedules = useCallback(async () => {
-    setCurrentDaySchedules({ schedules: [] });
-    let currentDayFormatted = currentDay.format("YYYY-MM-DD");
-    const res = await getCurrentDaySchedules(currentDayFormatted);
-
-    if (res) {
-      setCurrentDaySchedules(res.data);
-    }
-  }, [currentDay, plugs]);
-
-  // Get all schedules
-  useFocusEffect(
-    useCallback(() => {
-      void fetchDaySchedules();
-    }, [fetchDaySchedules, currentDay]),
-  );
-
-  const getPlugs = async () => {
-    try {
-      const res = await api.get<AllPlugsDTO>("/plugs");
-      setPlugs(res.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  // Get all plugs
-  useFocusEffect(
-    useCallback(() => {
-      void getPlugs();
-    }, []),
-  );
-
-  if (!scheduledDays && !currentDaySchedules) return null;
+  // Fetch schedules reactively
+  useEffect(() => {
+    void fetchDaySchedules();
+  }, [currentDay, plugIds]);
 
   return (
     <ScreenView style={styles.container}>
@@ -100,13 +96,13 @@ export default function Schedules() {
         filterTitle="Filter Plugs"
         filterOptions={[
           { value: "All", label: "All" },
-          ...plugs.plugs.map((plug) => ({
+          ...allPlugs.plugs.map((plug) => ({
             value: plug.id + "",
             label: plug.name,
           })),
         ]}
-        selectedOption={selectedPlugs}
-        setSelectedOption={(option) => setSelectedPlugs(option)}
+        selectedOptions={selectedPlugs}
+        setSelectedOptions={setSelectedPlugs}
       />
       <DaySchedule
         currentDay={currentDay}

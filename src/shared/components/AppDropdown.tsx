@@ -1,63 +1,141 @@
-import Dropdown from "react-native-input-select";
-import {
-  TFlatList,
-  TSelectedItem,
-} from "react-native-input-select/src/types/index.types";
-import { colors, spaces } from "@/src/theme";
-import { StyleSheet, ViewStyle } from "react-native";
+import { borderRadius, colors, spaces } from "@/src/theme";
+import { FlatList, Modal, Pressable, StyleSheet, View } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { AppText } from "@/src/shared/ui/AppText";
+import { DropdownOption } from "@/src/shared/types/DropdownOption";
+import Checkbox from "@/src/shared/components/Checkbox";
 
 interface AppDropdownProps {
-  label?: string;
-  options: TFlatList;
-  setOptions: (options: TSelectedItem | TSelectedItem[]) => void;
-  selectedOption: TSelectedItem | TSelectedItem[];
-  dropdownContainerStyle?: ViewStyle;
-  dropdownStyle?: ViewStyle;
+  selectedOptions: DropdownOption[] | null;
+  setSelectedOptions: Dispatch<SetStateAction<DropdownOption[] | null>>;
+  options: DropdownOption[];
+  hasDefault?: boolean;
+  defaultVal?: string;
 }
 
 export default function AppDropdown({
-  label,
+  selectedOptions,
+  setSelectedOptions,
   options,
-  setOptions,
-  selectedOption,
-  dropdownContainerStyle,
-  dropdownStyle,
+  defaultVal = "All",
+  hasDefault = true,
 }: AppDropdownProps) {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  // Add the default value
+  useEffect(() => {
+    if (hasDefault) {
+      setSelectedOptions((prev) =>
+        prev
+          ? [...prev, { value: defaultVal, label: defaultVal }]
+          : [
+              {
+                value: defaultVal,
+                label: defaultVal,
+              },
+            ],
+      );
+    }
+  }, [hasDefault]);
+
+  // Set the selected options
+  const setIsSelected = (isSelected: boolean, item: DropdownOption) =>
+    setSelectedOptions((prev) => {
+      const safePrev = prev ?? [];
+      let newOptions = [...safePrev];
+
+      // Remove the default value if something else is selected
+      if (!isSelected && safePrev.some((o) => o.value === defaultVal)) {
+        newOptions = newOptions.filter((o) => o.value !== defaultVal);
+      }
+
+      // Remove all options if the default value is selected
+      if (item.value === defaultVal && !isSelected) {
+        newOptions = [];
+      }
+
+      // Add the selected option if nothing is selected
+      if (isSelected && newOptions.length === 1) {
+        newOptions = [...newOptions, { value: defaultVal, label: defaultVal }];
+      }
+
+      return isSelected
+        ? newOptions.filter((o) => o.value !== item.value)
+        : [...newOptions, item];
+    });
+
+  if (!selectedOptions) {
+    return;
+  }
+
   return (
-    <Dropdown
-      label={label}
-      placeholder="Select an option"
-      options={options}
-      selectedValue={selectedOption}
-      onValueChange={(value) => setOptions(value)}
-      primaryColor={colors.primary[500]}
-      dropdownContainerStyle={StyleSheet.flatten([
-        styles.containerStyle,
-        dropdownContainerStyle,
-      ])}
-      dropdownStyle={StyleSheet.flatten([styles.dropdownStyle, dropdownStyle])} // for the box before selecting the dropdown
-      dropdownIconStyle={styles.dropdownIcon}
-      dropdownIcon={<Entypo name="chevron-down" size={24} color="black" />}
-    />
+    <View style={styles.container}>
+      <Pressable
+        onPress={() => setIsModalVisible(true)}
+        style={styles.dropdownBoxContainer}
+      >
+        <AppText>
+          {selectedOptions[0].value === defaultVal
+            ? selectedOptions[0].label
+            : `${selectedOptions.length} Selected`}
+        </AppText>
+        <Entypo name="chevron-down" size={24} color={colors.gray[400]} />
+      </Pressable>
+      <Modal transparent visible={isModalVisible} animationType="fade">
+        <Pressable
+          style={styles.overlay}
+          onPress={() => setIsModalVisible(false)}
+        >
+          <View style={styles.sheet}>
+            <FlatList
+              data={options}
+              keyExtractor={(item) => item.label}
+              renderItem={({ item }) => {
+                const isSelected = selectedOptions.some(
+                  (option) => option.label === item.label,
+                );
+
+                return (
+                  <Checkbox
+                    value={item.label}
+                    isSelected={isSelected}
+                    setIsSelected={() => setIsSelected(isSelected, item)}
+                  />
+                );
+              }}
+            />
+          </View>
+        </Pressable>
+      </Modal>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  dropdownStyle: {
-    paddingHorizontal: spaces.md,
-    paddingVertical: spaces.xs,
-    minHeight: 1,
-    borderWidth: 1,
-    backgroundColor: "white",
-    borderColor: colors.gray[300],
-  },
-  dropdownIcon: {
-    top: 6,
-    right: spaces.md,
-  },
-  containerStyle: {
+  container: {
     flex: 1,
-    marginBottom: 0,
+  },
+  dropdownBoxContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: colors.gray[100],
+    paddingHorizontal: spaces.sm,
+    paddingVertical: spaces.xxs,
+    borderRadius: borderRadius.sm,
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.25)",
+    justifyContent: "flex-end",
+  },
+  sheet: {
+    backgroundColor: "white",
+    padding: spaces.sm,
+    borderTopLeftRadius: borderRadius.lg,
+    borderTopRightRadius: borderRadius.lg,
+    maxHeight: "70%",
   },
 });

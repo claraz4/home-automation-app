@@ -1,22 +1,22 @@
 import { StyleSheet, View } from "react-native";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { borderRadius, colors, spaces } from "@/src/theme";
-import { FilterOption } from "@/src/shared/types/FilterOption";
+import { DropdownOption } from "@/src/shared/types/DropdownOption";
 import { AppText } from "@/src/shared/ui/AppText";
 import AppDropdown from "@/src/shared/components/AppDropdown";
-import { TSelectedItem } from "react-native-input-select/src/types/index.types";
+import { Dispatch, SetStateAction } from "react";
 
 interface AppSingleFilterProps {
   filterTitle: string;
-  filterOptions: FilterOption[];
-  selectedOption: TSelectedItem | TSelectedItem[];
-  setSelectedOption: (selectedOption: TSelectedItem | TSelectedItem[]) => void;
+  filterOptions: DropdownOption[];
+  selectedOptions: DropdownOption[] | null;
+  setSelectedOptions: Dispatch<SetStateAction<DropdownOption[] | null>>;
 }
 
 export default function AppSingleFilter({
   filterTitle,
-  setSelectedOption,
-  selectedOption,
+  setSelectedOptions,
+  selectedOptions,
   filterOptions,
 }: AppSingleFilterProps) {
   return (
@@ -24,9 +24,9 @@ export default function AppSingleFilter({
       <FontAwesome5 name="filter" size={20} color={colors.primary[500]} />
       <AppText>{filterTitle}</AppText>
       <AppDropdown
+        selectedOptions={selectedOptions}
+        setSelectedOptions={setSelectedOptions}
         options={filterOptions}
-        setOptions={setSelectedOption}
-        selectedOption={selectedOption}
       />
     </View>
   );
@@ -37,9 +37,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "white",
     borderRadius: borderRadius.sm,
-    padding: spaces.sm,
+    padding: spaces.xs,
     alignItems: "center",
     columnGap: spaces.sm,
-    paddingVertical: spaces.xs + spaces.xxxs,
+    width: "100%",
   },
 });
