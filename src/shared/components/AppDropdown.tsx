@@ -1,5 +1,12 @@
 import { borderRadius, colors, spaces } from "@/src/theme";
-import { FlatList, Modal, Pressable, StyleSheet, View } from "react-native";
+import {
+  FlatList,
+  Modal,
+  Pressable,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { AppText } from "@/src/shared/ui/AppText";
@@ -12,6 +19,8 @@ interface AppDropdownProps {
   options: DropdownOption[];
   hasDefault?: boolean;
   defaultVal?: string;
+  hasSingleValue?: boolean;
+  dropdownContainerStyle?: ViewStyle;
 }
 
 export default function AppDropdown({
@@ -20,6 +29,8 @@ export default function AppDropdown({
   options,
   defaultVal = "All",
   hasDefault = true,
+  hasSingleValue = false,
+  dropdownContainerStyle,
 }: AppDropdownProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -39,8 +50,8 @@ export default function AppDropdown({
     }
   }, [hasDefault]);
 
-  // Set the selected options
-  const setIsSelected = (isSelected: boolean, item: DropdownOption) =>
+  // Set the selected options when multiple accepted
+  const setMultipleIsSelected = (item: DropdownOption, isSelected: boolean) =>
     setSelectedOptions((prev) => {
       const safePrev = prev ?? [];
       let newOptions = [...safePrev];
@@ -65,6 +76,20 @@ export default function AppDropdown({
         : [...newOptions, item];
     });
 
+  // Set the new selected option when only value is acceptable
+  const setSingleIsSelected = (item: DropdownOption) => {
+    setSelectedOptions((prev) => [item]);
+  };
+
+  // Decide what is selected function to use
+  const setIsSelected = (item: DropdownOption, isSelected?: boolean) => {
+    if (hasSingleValue) {
+      setSingleIsSelected(item);
+    } else if (isSelected !== undefined) {
+      setMultipleIsSelected(item, isSelected);
+    }
+  };
+
   if (!selectedOptions) {
     return;
   }
@@ -73,12 +98,14 @@ export default function AppDropdown({
     <View style={styles.container}>
       <Pressable
         onPress={() => setIsModalVisible(true)}
-        style={styles.dropdownBoxContainer}
+        style={[styles.dropdownBoxContainer, dropdownContainerStyle]}
       >
         <AppText>
-          {selectedOptions[0].value === defaultVal
-            ? selectedOptions[0].label
-            : `${selectedOptions.length} Selected`}
+          {hasSingleValue && selectedOptions[0].label}
+          {!hasSingleValue &&
+            (selectedOptions[0].value === defaultVal
+              ? selectedOptions[0].label
+              : `${selectedOptions.length} Selected`)}
         </AppText>
         <Entypo name="chevron-down" size={24} color={colors.gray[400]} />
       </Pressable>
@@ -100,7 +127,12 @@ export default function AppDropdown({
                   <Checkbox
                     value={item.label}
                     isSelected={isSelected}
-                    setIsSelected={() => setIsSelected(isSelected, item)}
+                    setIsSelected={() =>
+                      setIsSelected(
+                        item,
+                        hasSingleValue ? undefined : isSelected,
+                      )
+                    }
                   />
                 );
               }}

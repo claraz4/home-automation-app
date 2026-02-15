@@ -7,6 +7,7 @@ import AppDropdown from "@/src/shared/components/AppDropdown";
 import ConditionHeader from "@/src/features/automation/components/create/ConditionHeader";
 import { SourceDTO } from "@/src/features/automation/types/SourceDTO";
 import { api } from "@/src/api/api";
+import { DropdownOption } from "@/src/shared/types/DropdownOption";
 
 interface SourceConditionProps {
   powerSourceId: number;
@@ -22,15 +23,19 @@ export default function SourceCondition({
   editPolicy,
 }: SourceConditionProps) {
   const [sources, setSources] = useState<SourceDTO[]>([]);
-  const [selectedSource, setSelectedSource] = useState<
-    TSelectedItem | TSelectedItem[] | null
-  >(powerSourceId);
+  const [selectedSource, setSelectedSource] = useState<DropdownOption[] | null>(
+    null,
+  );
 
   // Get power sources
   const getPowerSources = async () => {
     try {
       const res = await api.get<{ sources: SourceDTO[] }>("/mains/sources");
-      setSources(res.data.sources);
+      const { sources: sourcesData } = res.data;
+      setSources(sourcesData);
+      setSelectedSource([
+        { value: sourcesData[0].id + "", label: sourcesData[0].name },
+      ]);
     } catch (error) {
       console.error(error);
     }
@@ -40,16 +45,11 @@ export default function SourceCondition({
     void getPowerSources();
   }, []);
 
-  // Set a default source value
-  useEffect(() => {
-    if (sources.length !== 0 && selectedSource === null) {
-      setSelectedSource(sources[0].id);
-    }
-  }, [sources]);
-
   // Change the current power source id
   useEffect(() => {
-    editPolicy(Number(selectedSource));
+    if (selectedSource) {
+      editPolicy(Number(selectedSource[0].value));
+    }
   }, [selectedSource]);
 
   if (sources.length === 0 && selectedSource === null) {
@@ -65,13 +65,13 @@ export default function SourceCondition({
       />
       <AppDropdown
         options={sources.map((source) => ({
-          value: source.id,
+          value: source.id + "",
           label: source.name,
         }))}
-        setOptions={setSelectedSource}
-        selectedOption={selectedSource as TSelectedItem}
-        dropdownStyle={{ width: 220 }}
-        dropdownContainerStyle={{ width: 220, flex: 0 }}
+        selectedOptions={selectedSource}
+        setSelectedOptions={setSelectedSource}
+        hasDefault={false}
+        hasSingleValue={true}
       />
     </View>
   );

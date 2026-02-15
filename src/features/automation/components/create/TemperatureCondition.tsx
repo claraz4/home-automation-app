@@ -2,12 +2,13 @@ import { StyleSheet, View } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { conditionStyles } from "@/src/features/automation/styles/conditionStyles";
 import AppDropdown from "@/src/shared/components/AppDropdown";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TSelectedItem } from "react-native-input-select/src/types/index.types";
 import AppTextInput from "@/src/shared/components/AppTextInput";
 import { spaces } from "@/src/theme";
 import ConditionHeader from "@/src/features/automation/components/create/ConditionHeader";
 import { AppText } from "@/src/shared/ui/AppText";
+import { DropdownOption } from "@/src/shared/types/DropdownOption";
 
 const DEFAULT_TEMP = 20;
 
@@ -26,18 +27,23 @@ export default function TemperatureCondition({
   tempLessThan,
   editPolicy,
 }: TemperatureConditionProps) {
-  const temperatureConditions = [
+  const temperatureConditions: DropdownOption[] = [
     { label: "Less than", value: "lt" },
     { label: "Greater than", value: "gt" },
     { label: "Between", value: "bt" },
   ];
   const hasGt = tempGreaterThan != null;
   const hasLt = tempLessThan != null;
-  const tempCondition = hasGt && hasLt ? "bt" : hasLt ? "lt" : "gt";
+  const tempCondition =
+    hasGt && hasLt
+      ? temperatureConditions[2]
+      : hasLt
+        ? temperatureConditions[0]
+        : temperatureConditions[1];
 
   const [selectedCondition, setSelectedCondition] = useState<
-    TSelectedItem | TSelectedItem[]
-  >(tempCondition);
+    DropdownOption[] | null
+  >([tempCondition]);
 
   const setTemperatureGreaterThan = (temp: number | null) => {
     editPolicy(undefined, temp, tempLessThan);
@@ -47,9 +53,9 @@ export default function TemperatureCondition({
     editPolicy(undefined, tempGreaterThan, temp);
   };
 
-  // Change the selected option
-  const changeSelectedOption = (option: TSelectedItem | TSelectedItem[]) => {
-    setSelectedCondition(option);
+  // Change the selected options
+  useEffect(() => {
+    if (selectedCondition === null) return;
 
     const gtValue =
       tempGreaterThan === null
@@ -65,7 +71,7 @@ export default function TemperatureCondition({
           : tempGreaterThan
         : tempLessThan;
 
-    switch (option) {
+    switch (selectedCondition[0].value) {
       case "gt":
         editPolicy(undefined, gtValue, null);
         break;
@@ -78,7 +84,7 @@ export default function TemperatureCondition({
         editPolicy(undefined, gtValue, gtValue + 10);
         break;
     }
-  };
+  }, [selectedCondition]);
 
   return (
     <View style={conditionStyles.container}>
@@ -96,29 +102,18 @@ export default function TemperatureCondition({
       <View style={styles.conditionContainer}>
         <AppDropdown
           options={temperatureConditions}
-          setOptions={changeSelectedOption}
-          selectedOption={selectedCondition}
-          dropdownStyle={{ width: selectedCondition === "bt" ? 120 : 150 }}
-          dropdownContainerStyle={{
-            width: selectedCondition === "bt" ? 120 : 150,
-            flex: 0,
-          }}
+          selectedOptions={selectedCondition}
+          setSelectedOptions={setSelectedCondition}
+          hasDefault={false}
+          hasSingleValue={true}
         />
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            columnGap: spaces.xxs,
-          }}
-        >
+        <View style={styles.inputContainer}>
           {tempGreaterThan !== null && (
             <AppTextInput
               value={tempGreaterThan + "" || ""}
               onChange={(value) => setTemperatureGreaterThan(Number(value))}
               inputContainerStyle={styles.inputStyle}
-              containerStyle={{
-                width: 44,
-              }}
+              containerStyle={{ width: 44 }}
               keyboardType={"numeric"}
             />
           )}
@@ -153,5 +148,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     alignItems: "center",
     justifyContent: "center",
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    columnGap: spaces.xxs,
   },
 });
