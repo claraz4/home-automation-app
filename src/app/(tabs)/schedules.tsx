@@ -7,7 +7,7 @@ import CalendarDays from "@/src/features/schedule/components/CalendarDays";
 import dayjs from "dayjs";
 import { DaySchedulesDTO } from "@/src/features/schedule/types/DaySchedulesDTO";
 import DaySchedule from "@/src/features/schedule/components/DaySchedule";
-import { router, useFocusEffect } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import useSchedules from "@/src/features/schedule/hooks/useSchedules";
 import AddButton from "@/src/shared/components/AddButton";
 import AppSingleFilter from "@/src/shared/components/AppSingleFilter";
@@ -27,6 +27,17 @@ export default function Schedules() {
 
   const { getScheduledDays, getCurrentDaySchedules } = useSchedules();
   const { allPlugs, getAllPlugs } = usePlugs();
+  const { plugId, plugName } = useLocalSearchParams<{
+    plugId?: string;
+    plugName?: string;
+  }>();
+
+  // Add the plugId if found in the params
+  useEffect(() => {
+    if (plugId && plugName) {
+      setSelectedPlugs([{ label: plugName, value: plugId }]);
+    }
+  }, [plugId]);
 
   // Derive the plugIds array
   const plugIds = useMemo<number[] | undefined>(() => {

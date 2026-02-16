@@ -40,7 +40,7 @@ export default function DaySchedule({
               }}
               hasStatus={true}
               status={schedule.isActive}
-              subtitleText={`${schedule.deviceCount} Plugs`}
+              subtitleText={`${schedule.deviceCount} Plug${schedule.deviceCount === 1 ? "" : "s"}`}
             />
           ))
         )}

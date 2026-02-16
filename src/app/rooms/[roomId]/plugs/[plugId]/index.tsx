@@ -32,7 +32,7 @@ export default function Plug() {
             isDeviceConnected={plugInfo.isDeviceConnected}
           />
           <PlugAutomation timeout={plugInfo.timeout} />
-          <PlugSchedules />
+          <PlugSchedules plugName={plugInfo.name} />
         </View>
       )}
     </ScreenView>

@@ -9,10 +9,12 @@ import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { AppText } from "@/src/shared/ui/AppText";
 
 interface PlugSchedulesProps {
+  plugName: string;
   includeHeading?: boolean;
 }
 
 export default function PlugSchedules({
+  plugName,
   includeHeading = true,
 }: PlugSchedulesProps) {
   const { getUpcomingSchedules } = useSchedules();
@@ -40,7 +42,12 @@ export default function PlugSchedules({
   return (
     <View>
       {includeHeading && (
-        <Heading variant="h3" hasLink={true} linkPlaceholder={"Manage"}>
+        <Heading
+          variant="h3"
+          hasLink={true}
+          linkPlaceholder={"Manage"}
+          href={{ pathname: "/schedules", params: { plugId, plugName } }}
+        >
           Schedules
         </Heading>
       )}
