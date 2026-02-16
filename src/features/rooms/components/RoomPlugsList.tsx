@@ -1,7 +1,12 @@
 import { View, StyleSheet, Pressable } from "react-native";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import PlugBox from "@/src/features/rooms/components/PlugBox";
-import { Href, router, useLocalSearchParams } from "expo-router";
+import {
+  Href,
+  router,
+  useFocusEffect,
+  useLocalSearchParams,
+} from "expo-router";
 import { borderRadius, spaces } from "@/src/theme";
 import { api } from "@/src/api/api";
 import { RoomPlugsDTO } from "../types/RoomPlugsDTO";
@@ -11,20 +16,20 @@ export default function RoomPlugsList() {
 
   const [roomPlugs, setRoomPlugs] = useState<RoomPlugsDTO>({ plugs: [] });
 
-  useEffect(() => {
-    if (!roomId) return;
-
-    const getRoomPlugs = async () => {
-      try {
-        const { data } = await api.get<RoomPlugsDTO>(`/rooms/${roomId}/plugs`);
-        setRoomPlugs(data);
-      } catch (e) {
-        console.error(e);
-      }
-    };
-
-    void getRoomPlugs();
+  const getRoomPlugs = useCallback(async () => {
+    try {
+      const { data } = await api.get<RoomPlugsDTO>(`/rooms/${roomId}/plugs`);
+      setRoomPlugs(data);
+    } catch (e) {
+      console.error(e);
+    }
   }, [roomId]);
+
+  useFocusEffect(
+    useCallback(() => {
+      void getRoomPlugs();
+    }, [getRoomPlugs]),
+  );
 
   return (
     <View style={styles.container}>

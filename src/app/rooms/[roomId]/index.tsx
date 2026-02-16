@@ -12,7 +12,7 @@ export default function RoomPlugs() {
         Room 1
       </Heading>
       <View style={styles.componentsContainer}>
-        <RoomHeader roomType={"kitchen"} />
+        <RoomHeader />
         <View>
           <Heading variant="h3" style={{ marginVertical: spaces.sm }}>
             Plugs
