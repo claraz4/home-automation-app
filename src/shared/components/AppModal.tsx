@@ -1,4 +1,11 @@
-import { Modal, View, Pressable, StyleSheet } from "react-native";
+import {
+  Modal,
+  View,
+  Pressable,
+  StyleSheet,
+  ViewStyle,
+  TextStyle,
+} from "react-native";
 import { ReactNode } from "react";
 import { borderRadius, colors, spaces } from "@/src/theme";
 import { Heading, Variant } from "@/src/shared/ui/Heading";
@@ -12,6 +19,10 @@ interface AppModalProps {
   headingVariant?: Variant;
   headingText?: string;
   hasCloseButton?: boolean;
+  headingContainerStyle?: ViewStyle;
+  headingStyle?: TextStyle;
+  containerStyle?: ViewStyle;
+  iconColor?: string;
 }
 
 export default function AppModal({
@@ -22,6 +33,10 @@ export default function AppModal({
   headingVariant = "h4",
   headingText = "Add Plug to Schedule",
   hasCloseButton = true,
+  headingContainerStyle,
+  containerStyle,
+  headingStyle,
+  iconColor = colors.primary[500],
 }: AppModalProps) {
   return (
     <Modal
@@ -31,15 +46,19 @@ export default function AppModal({
       onRequestClose={() => setVisible(false)}
     >
       <View style={[styles.backdrop, isBottom && styles.backdropBottom]}>
-        <View style={[styles.sheet, isBottom && styles.sheetBottom]}>
-          <View style={styles.headingContainer}>
-            <Heading variant={headingVariant}>{headingText}</Heading>
+        <View
+          style={[styles.sheet, isBottom && styles.sheetBottom, containerStyle]}
+        >
+          <View style={[styles.headingContainer, headingContainerStyle]}>
+            <Heading variant={headingVariant} style={headingStyle}>
+              {headingText}
+            </Heading>
             {hasCloseButton && (
               <Pressable onPress={() => setVisible(false)}>
                 <Ionicons
                   name="close-circle-outline"
                   size={32}
-                  color={colors.primary[500]}
+                  color={iconColor}
                 />
               </Pressable>
             )}

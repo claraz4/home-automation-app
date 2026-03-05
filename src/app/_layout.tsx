@@ -19,6 +19,10 @@ WebBrowser.maybeCompleteAuthSession({
 });
 
 import "expo-router/entry";
+import ChatbotButton from "@/src/features/chatbot/components/ChatbotButton";
+import { useState } from "react";
+import ChatbotModal from "@/src/features/chatbot/components/ChatbotModal";
+import { useAuth } from "@/src/auth/useAuth";
 
 export default function RootLayout() {
   useFonts({
@@ -35,11 +39,30 @@ export default function RootLayout() {
 
   return (
     <Providers>
+      <RootLayoutContent />
+    </Providers>
+  );
+}
+
+function RootLayoutContent() {
+  const [showChat, setShowChat] = useState(false);
+  const { state } = useAuth(); // to be able to use it, the wrapper should be around this component
+  const { isSignedIn } = state;
+
+  return (
+    <>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="rooms/index" />
         <Stack.Screen name="(auth)/login" />
       </Stack>
-    </Providers>
+
+      {isSignedIn && (
+        <>
+          <ChatbotButton onPress={() => setShowChat(true)} />
+          <ChatbotModal isVisible={showChat} setIsVisible={setShowChat} />
+        </>
+      )}
+    </>
   );
 }
