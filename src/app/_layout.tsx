@@ -27,9 +27,8 @@ import ChatbotModal from "@/src/features/chatbot/components/ChatbotModal";
 import { useAuth } from "@/src/auth/useAuth";
 import {
   registerForPushNotificationsAsync,
-  schedulePushNotification,
+  sendToken,
 } from "@/src/features/notifications/utils/notificationsHelper";
-import { Platform } from "react-native";
 
 export default function RootLayout() {
   useFonts({
@@ -55,43 +54,20 @@ function RootLayoutContent() {
   const [showChat, setShowChat] = useState(false);
   const { state } = useAuth(); // to be able to use it, the wrapper should be around this component
   const { isSignedIn } = state;
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [channels, setChannels] = useState<Notifications.NotificationChannel[]>(
-    [],
-  ); // for android only
-  const [notification, setNotification] = useState<
-    Notifications.Notification | undefined
-  >(undefined);
 
   useEffect(() => {
     if (!isSignedIn) {
       return;
     }
 
-    registerForPushNotificationsAsync().then(
-      (token) => token && setExpoPushToken(token),
-    );
+    void registerForPushNotificationsAsync();
 
-    if (Platform.OS === "android") {
-      Notifications.getNotificationChannelsAsync().then((value) =>
-        setChannels(value ?? []),
-      );
-    }
-
-    const notificationListener = Notifications.addNotificationReceivedListener(
-      (notification) => {
-        setNotification(notification);
-      },
-    );
-
-    const responseListener =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      }); // this is how apps navigate to a screen after tapping a notification
+    const pushTokenListener = Notifications.addPushTokenListener(({ data }) => {
+      void sendToken(data);
+    });
 
     return () => {
-      notificationListener.remove();
-      responseListener.remove();
+      pushTokenListener.remove();
     };
   }, [isSignedIn]);
 
@@ -106,9 +82,6 @@ function RootLayoutContent() {
       {isSignedIn && (
         <>
           <ChatbotButton onPress={() => setShowChat(true)} />
-          {/*<ChatbotButton*/}
-          {/*  onPress={async () => await schedulePushNotification()}*/}
-          {/*/>*/}
           <ChatbotModal isVisible={showChat} setIsVisible={setShowChat} />
         </>
       )}

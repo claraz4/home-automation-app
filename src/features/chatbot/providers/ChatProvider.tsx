@@ -2,10 +2,12 @@ import React, { createContext, useState, ReactNode } from "react";
 import { ChatMessage } from "@/src/features/chatbot/types/ChatMessage";
 import { ChatContext } from "@/src/features/chatbot/contexts/ChatContext";
 import { api } from "@/src/api/api";
+import * as Crypto from "expo-crypto";
 
 export function ChatProvider({ children }: { children: ReactNode }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
+  const [sessionId] = useState(Crypto.randomUUID());
 
   function addMessage(message: ChatMessage) {
     setMessages((prev) => [...prev, message]);
@@ -13,7 +15,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   async function sendPrompt(prompt: string) {
     const userMessage: ChatMessage = {
-      id: Date.now().toString(),
+      id: Crypto.randomUUID(),
       role: "user",
       text: prompt,
       createdAt: new Date(),
@@ -25,10 +27,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
       const { data } = await api.post("/llm/chat", {
         prompt,
+        sessionId,
       });
 
       const assistantMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
+        id: Crypto.randomUUID(),
         role: "assistant",
         text: data.answer,
         createdAt: new Date(),
@@ -36,6 +39,12 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
       addMessage(assistantMessage);
     } catch (err) {
+      addMessage({
+        id: Crypto.randomUUID(),
+        role: "assistant",
+        text: "Something went wrong. Please try again.",
+        createdAt: new Date(),
+      });
       console.error(err);
     } finally {
       setLoading(false);

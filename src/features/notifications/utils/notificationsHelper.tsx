@@ -2,6 +2,10 @@ import { Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
+import { api } from "@/src/api/api";
+import { storage } from "@/src/shared/utils/storage";
+
+const STORAGE_KEY = "notificationToken";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -11,20 +15,6 @@ Notifications.setNotificationHandler({
     shouldShowList: true,
   }),
 });
-
-export async function schedulePushNotification() {
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: "You've got mail! 📬",
-      body: "Here is the notification body",
-      data: { data: "goes here", test: { test1: "more data" } },
-    },
-    trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-      seconds: 2,
-    },
-  });
-}
 
 export async function registerForPushNotificationsAsync() {
   let token;
@@ -48,7 +38,7 @@ export async function registerForPushNotificationsAsync() {
     }
 
     if (finalStatus !== "granted") {
-      alert("Failed to get push token for push notification!");
+      console.warn("Failed to get push token for push notification!");
       return;
     }
 
@@ -66,13 +56,29 @@ export async function registerForPushNotificationsAsync() {
           projectId,
         })
       ).data;
-      console.log(token);
+
+      await sendToken(token);
     } catch (e) {
-      token = `${e}`;
+      console.error("Push token error:", e);
     }
   } else {
-    alert("Must use physical device for Push Notifications");
+    console.warn("Must use physical device for Push Notifications");
   }
 
   return token;
 }
+
+export const sendToken = async (token: string) => {
+  const storedToken = await storage.get(STORAGE_KEY);
+  if (storedToken === null || storedToken !== token) {
+    await storage.set(STORAGE_KEY, token);
+
+    try {
+      await api.post("/notifications/token", {
+        token,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+};
