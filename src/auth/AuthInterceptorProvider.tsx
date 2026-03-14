@@ -6,6 +6,8 @@ import {
   logoutLocal,
 } from "@/src/auth/keycloakRefresh";
 import { useAuth } from "@/src/auth/useAuth";
+import { detectBackend } from "@/src/api/backendUtils";
+import NetInfo from "@react-native-community/netinfo";
 
 export function AuthInterceptorProvider({ children }: { children: ReactNode }) {
   const { signOut } = useAuth();
@@ -37,6 +39,24 @@ export function AuthInterceptorProvider({ children }: { children: ReactNode }) {
         (res: any) => res,
         async (error: any) => {
           const { config, response } = error;
+
+          if (!response) {
+            const net = await NetInfo.fetch();
+
+            // There is no internet connection
+            if (!net.isConnected || net.isInternetReachable === false) {
+              console.log("Device has no internet connection");
+              throw error;
+            }
+
+            const currentBase = instance.defaults.baseURL;
+
+            if (currentBase.includes(process.env.EXPO_PUBLIC_BACKEND_URL)) {
+              // we are on the local backend
+              await detectBackend();
+              return instance(config);
+            }
+          }
 
           if (!config || response?.status !== 401) {
             // not an error related to authentication
