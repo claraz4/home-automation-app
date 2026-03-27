@@ -2,7 +2,6 @@ import { View } from "react-native";
 import { conditionStyles } from "@/src/features/automation/styles/conditionStyles";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useState } from "react";
-import { TSelectedItem } from "react-native-input-select/src/types/index.types";
 import AppDropdown from "@/src/shared/components/AppDropdown";
 import ConditionHeader from "@/src/features/automation/components/create/ConditionHeader";
 import { SourceDTO } from "@/src/features/automation/types/SourceDTO";

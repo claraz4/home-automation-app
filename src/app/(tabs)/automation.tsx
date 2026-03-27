@@ -48,8 +48,8 @@ export default function Automation() {
         Automation
       </Heading>
       <View style={{ rowGap: spaces.sm }}>
-        {policies.map((policy) => (
-          <PolicyBox policy={policy} />
+        {policies.map((policy, idx) => (
+          <PolicyBox key={idx} policy={policy} />
         ))}
       </View>
     </ScreenView>

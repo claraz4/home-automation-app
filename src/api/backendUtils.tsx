@@ -14,7 +14,6 @@ export async function detectBackend() {
 }
 
 function setBackend(isLocal: boolean) {
-  console.log("is local: " + isLocal);
   if (isLocal) {
     api.defaults.baseURL = process.env.EXPO_PUBLIC_BACKEND_URL;
     householdApi.defaults.baseURL = `${process.env.EXPO_PUBLIC_BACKEND_URL}/mains`;

@@ -1,24 +1,28 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
+import BasicStats from "@/src/features/analytics/components/overview/BasicStats";
+import { Heading } from "@/src/shared/ui/Heading";
+import ScreenView from "@/src/shared/ui/ScreenView";
+import { paddings, spaces } from "@/src/theme";
+import PowerSourceDistribution from "@/src/features/analytics/components/overview/PowerSourceDistribution";
+import Timeline from "@/src/features/analytics/components/overview/Timeline";
 
 export default function Analytics() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Analytics</Text>
-      <Text>Try.</Text>
-    </View>
+    <ScreenView style={styles.container}>
+      <Heading variant="h2" hasBackButton={true}>
+        Analytics
+      </Heading>
+      <BasicStats />
+      <PowerSourceDistribution />
+      <Timeline />
+    </ScreenView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
-    fontSize: 24,
-    marginBottom: 10,
+    padding: paddings.page,
+    rowGap: spaces.md,
   },
 });
