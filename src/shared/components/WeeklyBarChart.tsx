@@ -5,6 +5,7 @@ const idxToDay = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 interface WeeklyBarChartProps {
   data: number[];
+  data2?: number[];
   selectedIndex: number;
   setSelectedIndex: (index: number) => void;
 }
@@ -13,23 +14,47 @@ const HEIGHT = 100;
 
 export default function WeeklyBarChart({
   data,
+  data2,
   selectedIndex,
   setSelectedIndex,
 }: WeeklyBarChartProps) {
-  const barData = idxToDay.map((day, i) => ({
+  const isStacked = !!data2;
+
+  const singleData = idxToDay.map((day, i) => ({
     value: data[i] ?? 0,
     label: day,
     frontColor: i === selectedIndex ? colors.primary[500] : colors.primary[200],
   }));
-  const maxValue = Math.max(...data);
+
+  const stackedData = idxToDay.map((day, i) => ({
+    label: day,
+    stacks: [
+      {
+        value: data[i] ?? 0,
+        color: i === selectedIndex ? colors.primary[500] : colors.primary[200],
+      },
+      {
+        value: data2?.[i] ?? 0,
+        color:
+          i === selectedIndex ? colors.extra.pink[400] : colors.extra.pink[200],
+        borderTopLeftRadius: 3,
+        borderTopRightRadius: 3,
+      },
+    ],
+  }));
+
+  const maxValue = isStacked
+    ? Math.max(...data.map((v, i) => (v ?? 0) + (data2?.[i] ?? 0)))
+    : Math.max(...data);
 
   return (
     <BarChart
-      data={barData}
+      data={!isStacked ? singleData : undefined}
+      stackData={isStacked ? stackedData : undefined}
       barWidth={spaces.xl}
       spacing={spaces.xs}
-      barBorderTopLeftRadius={4}
-      barBorderTopRightRadius={4}
+      barBorderTopLeftRadius={!isStacked ? 4 : 0}
+      barBorderTopRightRadius={!isStacked ? 4 : 0}
       hideRules
       xAxisThickness={0}
       yAxisThickness={0}
@@ -42,8 +67,8 @@ export default function WeeklyBarChart({
       isAnimated
       maxValue={maxValue + 2}
       height={HEIGHT}
-      stepHeight={HEIGHT / maxValue}
-      onPress={(item: any, idx: number) => setSelectedIndex(idx)}
+      stepHeight={!isStacked ? HEIGHT / maxValue : undefined}
+      onPress={(item: any, index: number) => setSelectedIndex(index)}
     />
   );
 }

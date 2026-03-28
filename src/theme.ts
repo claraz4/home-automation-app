@@ -48,6 +48,22 @@ export const colors = {
     800: "#B37B1E",
     900: "#99671A",
   },
+  extra: {
+    pink: {
+      200: "#fab6c6",
+      300: "#FFA5BA",
+      400: "#f88ba0",
+      500: "#FF7F97",
+    },
+    cyan: {
+      300: "#93FCF8",
+      500: "#3BE9DE",
+    },
+    purple: {
+      300: "#BDB2FA",
+      500: "#8F80F3",
+    },
+  },
   text: "#323232",
   background: "#fff",
   gray: {

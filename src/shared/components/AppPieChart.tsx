@@ -9,9 +9,18 @@ const COLORS_USED = [
     gradientCenterColor: colors.primary[500],
     color: colors.primary[300],
   },
-  { color: "#FFA5BA", gradientCenterColor: "#FF7F97" },
-  { color: "#93FCF8", gradientCenterColor: "#3BE9DE" },
-  { color: "#BDB2FA", gradientCenterColor: "#8F80F3" },
+  {
+    color: colors.extra.pink[300],
+    gradientCenterColor: colors.extra.pink[500],
+  },
+  {
+    color: colors.extra.cyan[300],
+    gradientCenterColor: colors.extra.cyan[500],
+  },
+  {
+    color: colors.extra.purple[300],
+    gradientCenterColor: colors.extra.purple[500],
+  },
 ];
 
 type DataItem = {
