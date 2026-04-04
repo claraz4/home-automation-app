@@ -43,7 +43,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
-    columnGap: spaces.sm,
+    columnGap: spaces.xs,
     marginBottom: spaces.md,
+    marginTop: -spaces.xs,
   },
 });

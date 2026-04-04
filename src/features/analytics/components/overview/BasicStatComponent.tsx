@@ -8,8 +8,8 @@ interface BasicStatComponentProps {
   title: string;
   subtitle: string;
   subtitleSecondary?: string;
-  isIncreasing: boolean;
-  percent: number;
+  isIncreasing?: boolean;
+  percent?: number;
 }
 
 export default function BasicStatComponent({
@@ -23,14 +23,16 @@ export default function BasicStatComponent({
     <View>
       <View style={styles.titleContainer}>
         <AppText style={styles.title}>{title.toUpperCase()}</AppText>
-        <View style={styles.titleIndicator}>
-          <FontAwesome6
-            name={`arrow-trend-${isIncreasing ? "up" : "down"}`}
-            size={20}
-            color="white"
-          />
-          <AppText variant="bodyWhite">{percent}%</AppText>
-        </View>
+        {isIncreasing && percent !== null && (
+          <View style={styles.titleIndicator}>
+            <FontAwesome6
+              name={`arrow-trend-${isIncreasing ? "up" : "down"}`}
+              size={20}
+              color="white"
+            />
+            <AppText variant="bodyWhite">{percent}%</AppText>
+          </View>
+        )}
       </View>
       <View style={styles.subtitleContainer}>
         <Heading variant="h1" style={styles.subtitle}>

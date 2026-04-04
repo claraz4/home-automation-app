@@ -18,22 +18,10 @@ interface ConsumptionHierarchyProps {
 export default function ConsumptionHierarchy({
   items,
 }: ConsumptionHierarchyProps) {
-  let highest: ConsumptionHierarchyItem | null = null;
-  let secondHighest: ConsumptionHierarchyItem | null = null;
-  let thirdHighest: ConsumptionHierarchyItem | null = null;
-
-  items.forEach((item) => {
-    if (!highest || item.percent > highest.percent) {
-      thirdHighest = secondHighest;
-      secondHighest = highest;
-      highest = item;
-    } else if (!secondHighest || item.percent > secondHighest.percent) {
-      thirdHighest = secondHighest;
-      secondHighest = item;
-    } else if (!thirdHighest || item.percent > thirdHighest.percent) {
-      thirdHighest = item;
-    }
-  });
+  const sortedItems = items.sort((a, b) => b.percent - a.percent);
+  const highest = sortedItems[0];
+  const secondHighest = sortedItems[1];
+  const thirdHighest = sortedItems[2];
 
   return (
     <View style={styles.container}>

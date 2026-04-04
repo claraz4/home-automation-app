@@ -42,7 +42,9 @@ export default function ConsumptionHierarchyBox({
               HIGHEST USAGE
             </AppText>
           )}
-          <Heading variant={isHighest ? "h2" : "h3"}>{item.percent}%</Heading>
+          <Heading variant={isHighest ? "h2" : "h3"}>
+            {Math.round(item.percent)}%
+          </Heading>
         </View>
       </View>
       <View>

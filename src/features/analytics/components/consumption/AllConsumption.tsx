@@ -3,8 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { spaces } from "@/src/theme";
 import SegmentedControl from "@/src/shared/components/SegmentedControl";
 import React, { useState } from "react";
-import ConsumptionPerRoom from "@/src/features/analytics/components/consumption/ConsumptionPerRoom";
-import ConsumptionPerAppliance from "@/src/features/analytics/components/consumption/ConsumptionPerAppliance";
+import ConsumptionPerElement from "@/src/features/analytics/components/consumption/ConsumptionPerElement";
 
 export default function AllConsumption() {
   const segmentedControlOptions = ["Rooms", "Plugs"];
@@ -26,8 +25,12 @@ export default function AllConsumption() {
             backgroundColor: "white",
           }}
         />
-        {selectedOption === "Rooms" && <ConsumptionPerRoom />}
-        {selectedOption === "Plugs" && <ConsumptionPerAppliance />}
+        {selectedOption === "Rooms" && (
+          <ConsumptionPerElement element="rooms" />
+        )}
+        {selectedOption === "Plugs" && (
+          <ConsumptionPerElement element="plugs" />
+        )}
       </View>
     </View>
   );

@@ -40,7 +40,7 @@ export default function AppPieChart({
   showLegend = true,
 }: AppPieChartProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
-
+  console.log(data);
   const pieData = data.map((item, index) => ({
     value: item.value,
     color: COLORS_USED[index % COLORS_USED.length].color,

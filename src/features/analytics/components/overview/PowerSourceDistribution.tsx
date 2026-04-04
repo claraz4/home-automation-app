@@ -1,8 +1,15 @@
 import AppPieChart from "@/src/shared/components/AppPieChart";
 import { StyleSheet } from "react-native";
 import { Heading } from "@/src/shared/ui/Heading";
+import usePowerSourceDistribution from "@/src/features/analytics/hooks/usePowerDistribution";
 
 export default function PowerSourceDistribution() {
+  const { cleanedPowerSourceDistribution } = usePowerSourceDistribution();
+
+  if (!cleanedPowerSourceDistribution) {
+    return;
+  }
+
   return (
     <AppPieChart
       title={
@@ -16,11 +23,7 @@ export default function PowerSourceDistribution() {
           Sources
         </Heading>
       }
-      data={[
-        { value: 40, label: "Generator" },
-        { value: 40, label: "Private" },
-        { value: 20, label: "Solar" },
-      ]}
+      data={cleanedPowerSourceDistribution}
       showLegend={false}
     />
   );

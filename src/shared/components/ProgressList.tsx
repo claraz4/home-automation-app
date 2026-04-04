@@ -10,10 +10,14 @@ export type ProgressListItem = {
 };
 
 interface ProgressListProps {
-  data: ProgressListItem[];
+  data: ProgressListItem[] | null;
 }
 
 export default function ProgressList({ data }: ProgressListProps) {
+  if (!data) {
+    return;
+  }
+
   return (
     <View style={styles.container}>
       {data.map((item, index) => {
