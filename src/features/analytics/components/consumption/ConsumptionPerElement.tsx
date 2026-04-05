@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { api } from "@/src/api/api";
 import { RoomsDailyConsumptionDTO } from "@/src/features/analytics/types/RoomsDailyConsumptionDTO";
 import { useFocusEffect } from "expo-router";
-import { ConsumptionDTO } from "@/src/features/analytics/types/RoomConsumptionDTO";
+import { ConsumptionDTO } from "@/src/features/analytics/types/ConsumptionDTO";
 import { PlugsDailyConsumptionDTO } from "@/src/features/analytics/types/PlugsDailyConsumptionDTO";
 
 interface ConsumptionPerElementProps {
@@ -22,12 +22,12 @@ export default function ConsumptionPerElement({
     try {
       if (element === "rooms") {
         const { data } = await api.get<RoomsDailyConsumptionDTO>(
-          `/analytics/${element}/daily`,
+          `/analytics/${element}/daily/consumptions`,
         );
         setConsumptions(data.rooms);
       } else {
         const { data } = await api.get<PlugsDailyConsumptionDTO>(
-          `/analytics/${element}/daily`,
+          `/analytics/${element}/daily/consumptions`,
         );
         setConsumptions(data.plugs);
       }

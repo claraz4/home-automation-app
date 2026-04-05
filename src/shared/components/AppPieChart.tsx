@@ -40,7 +40,7 @@ export default function AppPieChart({
   showLegend = true,
 }: AppPieChartProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  console.log(data);
+
   const pieData = data.map((item, index) => ({
     value: item.value,
     color: COLORS_USED[index % COLORS_USED.length].color,
@@ -73,12 +73,15 @@ export default function AppPieChart({
                   { color: COLORS_USED[selectedIndex].gradientCenterColor },
                 ]}
               >
-                {data[selectedIndex].value}%
+                {Math.round(data[selectedIndex].value)}%
               </AppText>
               <AppText
                 style={[
                   styles.centerLabelText,
-                  { color: COLORS_USED[selectedIndex].gradientCenterColor },
+                  {
+                    color: COLORS_USED[selectedIndex].gradientCenterColor,
+                    textAlign: "center",
+                  },
                 ]}
               >
                 {data[selectedIndex].label}

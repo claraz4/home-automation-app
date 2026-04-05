@@ -4,7 +4,7 @@ import ScreenView from "@/src/shared/ui/ScreenView";
 import React from "react";
 import { paddings, spaces } from "@/src/theme";
 import ProgressList from "@/src/shared/components/ProgressList";
-import SourceBarChart from "@/src/features/analytics/components/consumption/SourceBarChart";
+import SourceBarChart from "@/src/features/analytics/components/consumption/WeeklyHourChart";
 import AllConsumption from "@/src/features/analytics/components/consumption/AllConsumption";
 import usePowerSourceDistribution from "@/src/features/analytics/hooks/usePowerDistribution";
 

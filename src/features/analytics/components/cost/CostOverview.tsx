@@ -3,23 +3,48 @@ import { colors, fontWeight, spaces } from "@/src/theme";
 import { AppText } from "@/src/shared/ui/AppText";
 import { Heading } from "@/src/shared/ui/Heading";
 import CostPerSource from "@/src/features/analytics/components/cost/CostPerSource";
-import React from "react";
+import React, { useCallback, useState } from "react";
+import { api } from "@/src/api/api";
+import { MonthlyBillDTO } from "@/src/features/analytics/types/MonthlyBillDTO";
+import { useFocusEffect } from "expo-router";
 
 export default function CostOverview() {
+  const [monthlyBill, setMonthlyBill] = useState<MonthlyBillDTO | null>(null);
+
+  const getMonthlyBill = async () => {
+    try {
+      const { data } = await api.get("/analytics/mains/monthly/bill");
+      setMonthlyBill(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      void getMonthlyBill();
+    }, []),
+  );
+
+  if (!monthlyBill) {
+    return;
+  }
+
   return (
     <View>
       <View style={{ padding: spaces.sm }}>
         <AppText style={styles.monthlyBillTitle}>CURRENT MONTHLY BILL</AppText>
-        <Heading variant="h1">217.98$</Heading>
+        <Heading variant="h1">${monthlyBill?.totalCost.toFixed(2)}</Heading>
       </View>
       <View style={styles.totalCostsContainer}>
-        <CostPerSource sourceName="EDL" message="192 kWh total" cost={42} />
-        <CostPerSource
-          sourceName="Generator"
-          message="10A subscription"
-          cost={123}
-          invert={true}
-        />
+        {monthlyBill.powerSources.map((powerSource, idx) => (
+          <CostPerSource
+            key={idx}
+            sourceName={powerSource.name}
+            message={`${powerSource.kwh.toFixed(2)} kWh this month`}
+            cost={powerSource.cost}
+          />
+        ))}
       </View>
     </View>
   );

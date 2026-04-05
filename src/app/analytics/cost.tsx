@@ -5,7 +5,7 @@ import { StyleSheet } from "react-native";
 import { paddings, spaces } from "@/src/theme";
 import CostOverview from "@/src/features/analytics/components/cost/CostOverview";
 import AllCosts from "@/src/features/analytics/components/cost/AllCosts";
-import WeeklyCostsChart from "@/src/features/analytics/components/cost/WeeklyCostsChart";
+import WeeklyCostChart from "@/src/features/analytics/components/cost/WeeklyCostChart";
 
 export default function Cost() {
   return (
@@ -14,7 +14,7 @@ export default function Cost() {
         Cost Analysis
       </Heading>
       <CostOverview />
-      <WeeklyCostsChart />
+      <WeeklyCostChart />
       <AllCosts />
     </ScreenView>
   );

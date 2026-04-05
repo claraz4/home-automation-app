@@ -4,9 +4,8 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useState } from "react";
 import AppDropdown from "@/src/shared/components/AppDropdown";
 import ConditionHeader from "@/src/features/automation/components/create/ConditionHeader";
-import { SourceDTO } from "@/src/features/automation/types/SourceDTO";
-import { api } from "@/src/api/api";
 import { DropdownOption } from "@/src/shared/types/DropdownOption";
+import useSources from "@/src/hooks/useSources";
 
 interface SourceConditionProps {
   powerSourceId: number;
@@ -21,28 +20,18 @@ export default function SourceCondition({
   powerSourceId,
   editPolicy,
 }: SourceConditionProps) {
-  const [sources, setSources] = useState<SourceDTO[]>([]);
   const [selectedSource, setSelectedSource] = useState<DropdownOption[] | null>(
     null,
   );
-
-  // Get power sources
-  const getPowerSources = async () => {
-    try {
-      const res = await api.get<{ sources: SourceDTO[] }>("/mains/sources");
-      const { sources: sourcesData } = res.data;
-      setSources(sourcesData);
-      setSelectedSource([
-        { value: sourcesData[0].id + "", label: sourcesData[0].name },
-      ]);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const { sources } = useSources();
 
   useEffect(() => {
-    void getPowerSources();
-  }, []);
+    if (sources.length !== 0 && !selectedSource) {
+      setSelectedSource([
+        { value: sources[0].id + "", label: sources[0].name },
+      ]);
+    }
+  }, [sources]);
 
   // Change the current power source id
   useEffect(() => {

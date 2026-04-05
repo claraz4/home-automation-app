@@ -28,7 +28,9 @@ export default function ProgressList({ data }: ProgressListProps) {
           <View key={index} style={styles.row}>
             <View style={styles.header}>
               <AppText style={styles.label}>{item.label}</AppText>
-              <AppText style={[styles.value, { color }]}>{safeValue}%</AppText>
+              <AppText style={[styles.value, { color }]}>
+                {Math.round(safeValue)}%
+              </AppText>
             </View>
 
             <View style={styles.barBackground}>

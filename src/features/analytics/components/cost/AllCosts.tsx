@@ -3,8 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { spaces } from "@/src/theme";
 import SegmentedControl from "@/src/shared/components/SegmentedControl";
 import React, { useState } from "react";
-import CostPerRoom from "@/src/features/analytics/components/cost/CostPerRoom";
-import CostPerAppliance from "@/src/features/analytics/components/cost/CostPerAppliance";
+import CostPerElement from "@/src/features/analytics/components/cost/CostPerElement";
 
 export default function AllCosts() {
   const segmentedControlOptions = ["Rooms", "Plugs"];
@@ -26,8 +25,8 @@ export default function AllCosts() {
             backgroundColor: "white",
           }}
         />
-        {selectedOption === "Rooms" && <CostPerRoom />}
-        {selectedOption === "Plugs" && <CostPerAppliance />}
+        {selectedOption === "Rooms" && <CostPerElement element="rooms" />}
+        {selectedOption === "Plugs" && <CostPerElement element="plugs" />}
       </View>
     </View>
   );

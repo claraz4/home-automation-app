@@ -1,37 +1,15 @@
 import { View, StyleSheet } from "react-native";
 import { borderRadius, colors, spaces } from "@/src/theme";
 import BasicStatComponent from "@/src/features/analytics/components/overview/BasicStatComponent";
-import { useCallback, useState } from "react";
-import { MainsMonthlySummaryDTO } from "@/src/features/analytics/types/MainsMonthlySummaryDTO";
-import { api } from "@/src/api/api";
-import { useFocusEffect } from "expo-router";
+import useMainsSummary from "@/src/features/analytics/hooks/useMainsSummary";
 
 export default function BasicStats() {
-  const [mainsSummary, setMainsSummary] =
-    useState<MainsMonthlySummaryDTO | null>(null);
-
-  const getMainsSummary = useCallback(async () => {
-    try {
-      const { data } = await api.get<MainsMonthlySummaryDTO>(
-        "/analytics/mains/monthly",
-      );
-      setMainsSummary(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      void getMainsSummary();
-    }, []),
-  );
-
-  const totalConsumption = mainsSummary?.totalConsumptionThisMonth ?? 0;
-  const consumptionDiff = mainsSummary?.differenceFromLastMonth ?? null;
-
-  const totalCost = mainsSummary?.totalCostThisMonth ?? 0;
-  const costDiff = mainsSummary?.costDifferenceFromLastMonth ?? null;
+  const {
+    totalConsumptionThisMonth: totalConsumption,
+    differenceFromLastMonth: consumptionDiff,
+    totalCostThisMonth: totalCost,
+    costDifferenceFromLastMonth: costDiff,
+  } = useMainsSummary();
 
   return (
     <View style={styles.container}>
@@ -42,7 +20,9 @@ export default function BasicStats() {
         isIncreasing={
           consumptionDiff !== null ? consumptionDiff > 0 : undefined
         }
-        percent={consumptionDiff !== null ? Math.abs(consumptionDiff) : 0}
+        percent={
+          consumptionDiff !== null ? Math.round(Math.abs(consumptionDiff)) : 0
+        }
       />
 
       <View style={styles.hr} />
@@ -51,7 +31,7 @@ export default function BasicStats() {
         title="Current Cost"
         subtitle={`$${totalCost.toFixed(2)}`}
         isIncreasing={costDiff !== null ? costDiff > 0 : undefined}
-        percent={costDiff !== null ? Math.abs(costDiff) : 0}
+        percent={costDiff !== null ? Math.round(Math.abs(costDiff)) : 0}
       />
     </View>
   );

@@ -32,13 +32,15 @@ export default function CostPerSource({
           <Ionicons name="flash" size={20} color={mainColor} />
         </View>
 
-        <Heading variant="h6" style={{ color: mainColor }}>
-          {sourceName}
-        </Heading>
+        <View style={{ flex: 1 }}>
+          <Heading variant="h6" style={{ color: mainColor }} numberOfLines={2}>
+            {sourceName}
+          </Heading>
+        </View>
       </View>
       <View>
         <Heading variant="h2" style={{ color: textColor }}>
-          ${cost}
+          ${cost.toFixed(2)}
         </Heading>
         <AppText style={{ color: secondaryColor }}>{message}</AppText>
       </View>
@@ -53,12 +55,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: spaces.xxs,
     paddingVertical: spaces.xs,
+    height: 40,
   },
   container: {
     borderRadius: borderRadius.md,
     padding: spaces.sm,
     rowGap: spaces.sm,
     flex: 1,
+    justifyContent: "space-between",
   },
   containerTitle: {
     flexDirection: "row",

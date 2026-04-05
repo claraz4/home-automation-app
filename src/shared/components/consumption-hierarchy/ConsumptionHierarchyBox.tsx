@@ -55,7 +55,8 @@ export default function ConsumptionHierarchyBox({
           {item.title}
         </Heading>
         <AppText style={{ color: colors.gray[500] }}>
-          {item.consumption} {item.unit} {isHighest ? "total today" : ""}
+          {Math.round(item.consumption)} {item.unit}{" "}
+          {isHighest ? "total today" : ""}
         </AppText>
       </View>
       {!isHighest && (
