@@ -10,6 +10,7 @@ import { ReactNode } from "react";
 import { borderRadius, colors, spaces } from "@/src/theme";
 import { Heading, Variant } from "@/src/shared/ui/Heading";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface AppModalProps {
   visible: boolean;
@@ -45,27 +46,33 @@ export default function AppModal({
       visible={visible}
       onRequestClose={() => setVisible(false)}
     >
-      <View style={[styles.backdrop, isBottom && styles.backdropBottom]}>
-        <View
-          style={[styles.sheet, isBottom && styles.sheetBottom, containerStyle]}
-        >
-          <View style={[styles.headingContainer, headingContainerStyle]}>
-            <Heading variant={headingVariant} style={headingStyle}>
-              {headingText}
-            </Heading>
-            {hasCloseButton && (
-              <Pressable onPress={() => setVisible(false)}>
-                <Ionicons
-                  name="close-circle-outline"
-                  size={32}
-                  color={iconColor}
-                />
-              </Pressable>
-            )}
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={[styles.backdrop, isBottom && styles.backdropBottom]}>
+          <View
+            style={[
+              styles.sheet,
+              isBottom && styles.sheetBottom,
+              containerStyle,
+            ]}
+          >
+            <View style={[styles.headingContainer, headingContainerStyle]}>
+              <Heading variant={headingVariant} style={headingStyle}>
+                {headingText}
+              </Heading>
+              {hasCloseButton && (
+                <Pressable onPress={() => setVisible(false)}>
+                  <Ionicons
+                    name="close-circle-outline"
+                    size={32}
+                    color={iconColor}
+                  />
+                </Pressable>
+              )}
+            </View>
+            {children}
           </View>
-          {children}
         </View>
-      </View>
+      </SafeAreaView>
     </Modal>
   );
 }

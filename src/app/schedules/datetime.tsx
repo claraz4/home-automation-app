@@ -7,9 +7,14 @@ import { spaces, colors, paddings } from "@/src/theme";
 import TimeModal from "@/src/features/schedule/components/create/TimeModal";
 import DateModal from "@/src/features/schedule/components/create/DateModal";
 import { useScheduleDateEdit } from "@/src/features/schedule/hooks/useScheduleDateEdit";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 export default function DateTimeScreen() {
-  const { date, mode, setDate } = useScheduleDateEdit();
+  const { date: dateNoUtc, mode, setDate } = useScheduleDateEdit();
+  const date = dayjs.utc(dateNoUtc);
   const hour = date ? date.hour() : 0;
   const minute = date ? date.minute() : 0;
   const [isDateClicked, setIsDateClicked] = useState(false);

@@ -1,5 +1,8 @@
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { spaces } from "@/src/theme";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 export const LIST_SEPARATOR = spaces.md;
 export const DAYS_AFTER = 30;
@@ -30,12 +33,14 @@ export function isDayScheduled(
   return schedules.includes(currentDayFormatted);
 }
 
-export function getFormattedDateTime(day: dayjs.Dayjs): {
+export function getFormattedDateTime(date: Dayjs): {
   formattedDate: string;
   formattedTime: string;
 } {
-  const formattedDate = `${day.format("ddd, MMM D")}`;
-  const formattedTime = `${day.format("HH:mm")}`;
+  const d = dayjs.utc(date);
+
+  const formattedDate = d.format("ddd, MMM D");
+  const formattedTime = d.format("HH:mm");
 
   return { formattedDate, formattedTime };
 }

@@ -43,6 +43,7 @@ export default function CostOverview() {
             sourceName={powerSource.name}
             message={`${powerSource.kwh.toFixed(2)} kWh this month`}
             cost={powerSource.cost}
+            invert={idx % 2 !== 0}
           />
         ))}
       </View>

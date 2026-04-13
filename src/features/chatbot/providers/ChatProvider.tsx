@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode } from "react";
+import React, { useState, ReactNode } from "react";
 import { ChatMessage } from "@/src/features/chatbot/types/ChatMessage";
 import { ChatContext } from "@/src/features/chatbot/contexts/ChatContext";
 import { api } from "@/src/api/api";
@@ -30,10 +30,15 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         sessionId,
       });
 
+      let { answer } = data;
+      if (!answer) {
+        answer = "No data was found yet.";
+      }
+
       const assistantMessage: ChatMessage = {
         id: Crypto.randomUUID(),
         role: "assistant",
-        text: data.answer,
+        text: answer,
         createdAt: new Date(),
       };
 

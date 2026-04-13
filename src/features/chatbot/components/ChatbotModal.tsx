@@ -1,4 +1,11 @@
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  StyleSheet,
+  View,
+} from "react-native";
 import { borderRadius, colors, spaces } from "@/src/theme";
 import AppModal from "@/src/shared/components/AppModal";
 import AppTextInput from "@/src/shared/components/AppTextInput";
@@ -6,6 +13,7 @@ import { useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ChatMessages from "@/src/features/chatbot/components/ChatMessages";
 import { useChat } from "@/src/features/chatbot/hooks/useChat";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface ChatbotModalProps {
   isVisible: boolean;
@@ -18,10 +26,12 @@ export default function ChatbotModal({
 }: ChatbotModalProps) {
   const [newPrompt, setNewPrompt] = useState("");
   const { sendPrompt } = useChat();
+  const insets = useSafeAreaInsets();
 
   const onPress = () => {
     void sendPrompt(newPrompt);
     setNewPrompt("");
+    Keyboard.dismiss();
   };
 
   return (
@@ -32,27 +42,40 @@ export default function ChatbotModal({
       headingContainerStyle={styles.title}
       headingStyle={{ color: "white" }}
       containerStyle={{
-        padding: 0,
+        paddingHorizontal: 0,
+        paddingVertical: 0,
         height: "90%",
-        position: "relative",
         rowGap: spaces.xxl,
       }}
       hasCloseButton={true}
       iconColor="white"
       headingText="Smart Home Assistant"
     >
-      <ChatMessages />
-      <View style={styles.messageBoxContainer}>
-        <AppTextInput
-          value={newPrompt}
-          onChange={(msg) => setNewPrompt(msg)}
-          inputContainerStyle={styles.inputContainer}
-          containerStyle={{ flex: 1 }}
-        />
-        <Pressable onPress={onPress}>
-          <Ionicons name="send" size={24} color={colors.primary[500]} />
-        </Pressable>
-      </View>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={100}
+      >
+        <View style={{ flex: 1, marginBottom: spaces.md }}>
+          <ChatMessages />
+        </View>
+        <View
+          style={[
+            styles.messageBoxContainer,
+            { paddingBottom: insets.bottom || spaces.md },
+          ]}
+        >
+          <AppTextInput
+            value={newPrompt}
+            onChange={(msg) => setNewPrompt(msg)}
+            inputContainerStyle={styles.inputContainer}
+            containerStyle={{ flex: 1 }}
+          />
+          <Pressable onPress={onPress}>
+            <Ionicons name="send" size={24} color={colors.primary[500]} />
+          </Pressable>
+        </View>
+      </KeyboardAvoidingView>
     </AppModal>
   );
 }
@@ -60,14 +83,12 @@ export default function ChatbotModal({
 const styles = StyleSheet.create({
   title: {
     backgroundColor: colors.primary[500],
-    borderTopLeftRadius: borderRadius.md,
-    borderTopRightRadius: borderRadius.md,
+    borderTopLeftRadius: borderRadius.lg,
+    borderTopRightRadius: borderRadius.lg,
     paddingHorizontal: spaces.md,
-    paddingVertical: spaces.sm,
+    paddingVertical: spaces.lg * 0.8,
   },
   messageBoxContainer: {
-    position: "absolute",
-    bottom: 0,
     borderTopColor: colors.gray[300],
     borderTopWidth: 2,
     width: "100%",
@@ -79,7 +100,8 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     backgroundColor: colors.gray[100],
-    fontSize: 14,
+    fontSize: 16,
     padding: spaces.xs,
+    color: colors.text,
   },
 });
