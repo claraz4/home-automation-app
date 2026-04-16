@@ -5,13 +5,26 @@ import ChatBox from "@/src/features/chatbot/components/ChatBox";
 import { useRef } from "react";
 
 export default function ChatMessages() {
-  const { messages } = useChat();
+  const { messages, loading } = useChat();
   const flatListRef = useRef<FlatList>(null);
+
+  const displayMessages = loading
+    ? [
+        ...messages,
+        {
+          id: "thinking",
+          role: "assistant",
+          text: "...",
+          createdAt: new Date().toISOString(),
+          isThinking: true,
+        },
+      ]
+    : messages;
 
   return (
     <FlatList
       ref={flatListRef}
-      data={messages}
+      data={displayMessages}
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.messagesContainer}
       renderItem={({ item }) => (
@@ -19,6 +32,7 @@ export default function ChatMessages() {
           role={item.role}
           message={item.text}
           time={new Date(item.createdAt)}
+          isThinking={item?.isThinking}
         />
       )}
       onContentSizeChange={() =>

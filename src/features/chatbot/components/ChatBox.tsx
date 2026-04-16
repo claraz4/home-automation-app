@@ -3,17 +3,26 @@ import { ChatRole } from "@/src/features/chatbot/types/ChatMessage";
 import { borderRadius, colors, spaces } from "@/src/theme";
 import { AppText } from "@/src/shared/ui/AppText";
 import dayjs from "dayjs";
+import ThinkingBox from "@/src/features/chatbot/components/ThinkingBox";
 
 interface ChatBoxProps {
   role: ChatRole;
   message: string;
   time: Date;
+  isThinking: boolean;
 }
 
-export default function ChatBox({ role, message, time }: ChatBoxProps) {
+export default function ChatBox({
+  role,
+  message,
+  time,
+  isThinking,
+}: ChatBoxProps) {
   const timeJs = dayjs(time);
 
-  return (
+  return isThinking ? (
+    <ThinkingBox />
+  ) : (
     <View
       style={[
         styles.container,
