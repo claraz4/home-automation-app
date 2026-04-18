@@ -25,7 +25,7 @@ export default function useSchedules(scheduleId?: number) {
         params: arrayToParams("PlugIds", plugIds),
       });
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   }, []);
 
@@ -40,7 +40,7 @@ export default function useSchedules(scheduleId?: number) {
       );
       return res.data.days;
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   };
 
@@ -59,7 +59,7 @@ export default function useSchedules(scheduleId?: number) {
         params,
       });
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   };
 
@@ -68,7 +68,7 @@ export default function useSchedules(scheduleId?: number) {
     try {
       return await api.get<SingleScheduleDTO>(`/schedules/${scheduleId}`);
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   };
 
@@ -78,7 +78,7 @@ export default function useSchedules(scheduleId?: number) {
       await api.delete(`/schedules/${scheduleId}`);
       router.push("/schedules");
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   };
 
@@ -87,7 +87,7 @@ export default function useSchedules(scheduleId?: number) {
     try {
       await api.put("/schedules/toggle", { scheduleId, isEnabled: status });
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   };
 
@@ -125,8 +125,6 @@ export default function useSchedules(scheduleId?: number) {
         });
       }
     } catch (error: unknown) {
-      console.error(error);
-
       if (isAxiosError(error) && error.response) {
         const { data } = error.response;
 

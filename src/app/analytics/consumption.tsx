@@ -7,16 +7,25 @@ import ProgressList from "@/src/shared/components/ProgressList";
 import SourceBarChart from "@/src/features/analytics/components/consumption/WeeklyHourChart";
 import AllConsumption from "@/src/features/analytics/components/consumption/AllConsumption";
 import usePowerSourceDistribution from "@/src/features/analytics/hooks/usePowerDistribution";
+import StatusBox from "@/src/shared/components/StatusBox";
+import AppActivityIndicator from "@/src/shared/ui/AppActivityIndicator";
 
 export default function Consumption() {
-  const { cleanedPowerSourceDistribution } = usePowerSourceDistribution();
+  const { cleanedPowerSourceDistribution, error, loading } =
+    usePowerSourceDistribution();
 
   return (
     <ScreenView style={styles.container}>
       <Heading variant="h2" hasBackButton={true}>
         Consumption
       </Heading>
-      <ProgressList data={cleanedPowerSourceDistribution} />
+      {error ? (
+        <StatusBox message={error} />
+      ) : loading ? (
+        <AppActivityIndicator />
+      ) : (
+        <ProgressList data={cleanedPowerSourceDistribution} />
+      )}
       <SourceBarChart />
       <AllConsumption />
     </ScreenView>

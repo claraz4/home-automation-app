@@ -8,6 +8,8 @@ export default function usePowerSourceDistribution() {
     useState<PowerSourceDistributionDTO | null>(null);
   const [cleanedPowerSourceDistribution, setCleanedPowerSourceDistribution] =
     useState<{ value: number; label: string }[] | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const getPowerSourceDistribution = async () => {
     try {
@@ -22,7 +24,9 @@ export default function usePowerSourceDistribution() {
         })),
       );
     } catch (error) {
-      console.error(error);
+      setError("An error occurred while getting power distribution.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -32,5 +36,10 @@ export default function usePowerSourceDistribution() {
     }, []),
   );
 
-  return { powerSourceDistribution, cleanedPowerSourceDistribution };
+  return {
+    powerSourceDistribution,
+    cleanedPowerSourceDistribution,
+    error,
+    loading,
+  };
 }

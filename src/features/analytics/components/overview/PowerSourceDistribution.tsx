@@ -2,13 +2,16 @@ import AppPieChart from "@/src/shared/components/AppPieChart";
 import { StyleSheet } from "react-native";
 import { Heading } from "@/src/shared/ui/Heading";
 import usePowerSourceDistribution from "@/src/features/analytics/hooks/usePowerDistribution";
+import AppActivityIndicator from "@/src/shared/ui/AppActivityIndicator";
+import StatusBox from "@/src/shared/components/StatusBox";
 
 export default function PowerSourceDistribution() {
-  const { cleanedPowerSourceDistribution } = usePowerSourceDistribution();
+  const { cleanedPowerSourceDistribution, error, loading } =
+    usePowerSourceDistribution();
 
-  if (!cleanedPowerSourceDistribution) {
-    return;
-  }
+  if (loading) return <AppActivityIndicator />;
+  if (error) return <StatusBox message={error} />;
+  if (!cleanedPowerSourceDistribution) return;
 
   return (
     <AppPieChart

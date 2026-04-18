@@ -13,6 +13,8 @@ import AddButton from "@/src/shared/components/AddButton";
 import AppSingleFilter from "@/src/shared/components/AppSingleFilter";
 import { DropdownOption } from "@/src/shared/types/DropdownOption";
 import usePlugs from "@/src/hooks/usePlugs";
+import AppActivityIndicator from "@/src/shared/ui/AppActivityIndicator";
+import StatusBox from "@/src/shared/components/StatusBox";
 
 export default function Schedules() {
   const [currentDay, setCurrentDay] = useState<dayjs.Dayjs>(
@@ -20,7 +22,7 @@ export default function Schedules() {
   );
   const [scheduledDays, setScheduledDays] = useState<string[]>([]);
   const [currentDaySchedules, setCurrentDaySchedules] =
-    useState<DaySchedulesDTO>({ schedules: [] });
+    useState<DaySchedulesDTO | null>(null);
   const [selectedPlugs, setSelectedPlugs] = useState<DropdownOption[] | null>(
     null,
   );
@@ -31,6 +33,9 @@ export default function Schedules() {
     plugId?: string;
     plugName?: string;
   }>();
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Add the plugId if found in the params
   useEffect(() => {
@@ -59,13 +64,16 @@ export default function Schedules() {
 
   // Get all the schedules of the selected day
   const fetchDaySchedules = useCallback(async () => {
-    setCurrentDaySchedules({ schedules: [] });
+    setLoading(true);
     const currentDayFormatted = currentDay.format("YYYY-MM-DD");
 
-    const res = await getCurrentDaySchedules(currentDayFormatted, plugIds);
-
-    if (res) {
+    try {
+      const res = await getCurrentDaySchedules(currentDayFormatted, plugIds);
       setCurrentDaySchedules(res.data);
+    } catch (error) {
+      setError("An error occurred while fetching plugs.");
+    } finally {
+      setLoading(false);
     }
   }, [currentDay, plugIds, getCurrentDaySchedules]);
 
@@ -83,6 +91,7 @@ export default function Schedules() {
 
   // Fetch schedules reactively
   useEffect(() => {
+    setCurrentDaySchedules(null);
     void fetchDaySchedules();
   }, [currentDay, plugIds]);
 
@@ -115,10 +124,16 @@ export default function Schedules() {
         selectedOptions={selectedPlugs}
         setSelectedOptions={setSelectedPlugs}
       />
-      <DaySchedule
-        currentDay={currentDay}
-        schedules={currentDaySchedules.schedules}
-      />
+
+      {loading && <AppActivityIndicator />}
+      {error && <StatusBox message={error} />}
+
+      {currentDaySchedules && (
+        <DaySchedule
+          currentDay={currentDay}
+          schedules={currentDaySchedules.schedules}
+        />
+      )}
     </ScreenView>
   );
 }

@@ -3,6 +3,8 @@ import { useCallback, useState } from "react";
 import { api } from "@/src/api/api";
 import { useFocusEffect } from "expo-router";
 import { WeeklyCostDTO } from "@/src/features/analytics/types/WeeklyCostDTO";
+import AppActivityIndicator from "@/src/shared/ui/AppActivityIndicator";
+import StatusBox from "@/src/shared/components/StatusBox";
 
 function weeklyDataToSeriesMap(data: WeeklyCostDTO): Record<string, number[]> {
   const result: Record<string, number[]> = {};
@@ -25,9 +27,12 @@ export default function WeeklyCostChart() {
   const [data2, setData2] = useState<number[]>([]);
   const [data1Title, setData1Title] = useState("");
   const [data2Title, setData2Title] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const getWeeklyCostData = async () => {
     try {
+      setLoading(true);
       const { data } = await api.get<WeeklyCostDTO>(
         "/analytics/mains/weekly/costs",
       );
@@ -38,7 +43,9 @@ export default function WeeklyCostChart() {
       setData1Title(keys[0]);
       setData2Title(keys[1]);
     } catch (error) {
-      console.error(error);
+      setError("An error occurred while getting weekly cost data.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -48,9 +55,9 @@ export default function WeeklyCostChart() {
     }, []),
   );
 
-  if (data1.length === 0) {
-    return;
-  }
+  if (loading) return <AppActivityIndicator />;
+  if (error) return <StatusBox message={error} />;
+  if (data1.length === 0) return;
 
   return (
     <WeeklyChart

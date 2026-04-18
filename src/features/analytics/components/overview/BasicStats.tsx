@@ -2,6 +2,8 @@ import { View, StyleSheet } from "react-native";
 import { borderRadius, colors, spaces } from "@/src/theme";
 import BasicStatComponent from "@/src/features/analytics/components/overview/BasicStatComponent";
 import useMainsSummary from "@/src/features/analytics/hooks/useMainsSummary";
+import AppActivityIndicator from "@/src/shared/ui/AppActivityIndicator";
+import StatusBox from "@/src/shared/components/StatusBox";
 
 export default function BasicStats() {
   const {
@@ -9,7 +11,12 @@ export default function BasicStats() {
     differenceFromLastMonth: consumptionDiff,
     totalCostThisMonth: totalCost,
     costDifferenceFromLastMonth: costDiff,
+    error,
+    loading,
   } = useMainsSummary();
+
+  if (loading) return <AppActivityIndicator />;
+  if (error) return <StatusBox message={error} />;
 
   return (
     <View style={styles.container}>

@@ -4,6 +4,8 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useCallback, useState } from "react";
 import { useFocusEffect } from "expo-router";
 import { CostDTO } from "@/src/features/analytics/types/CostDTO";
+import AppActivityIndicator from "@/src/shared/ui/AppActivityIndicator";
+import StatusBox from "@/src/shared/components/StatusBox";
 
 interface CostPerElementProps {
   element: "plugs" | "rooms";
@@ -11,9 +13,12 @@ interface CostPerElementProps {
 
 export default function CostPerElement({ element }: CostPerElementProps) {
   const [costs, setCosts] = useState<CostDTO[] | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const getCosts = async () => {
     try {
+      setLoading(true);
       if (element === "rooms") {
         const { data } = await api.get(`/analytics/${element}/daily/costs`);
         setCosts(data.rooms);
@@ -22,7 +27,9 @@ export default function CostPerElement({ element }: CostPerElementProps) {
         setCosts(data.plugs);
       }
     } catch (error) {
-      console.error(error);
+      setError("An error occurred while getting daily costs.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -32,9 +39,9 @@ export default function CostPerElement({ element }: CostPerElementProps) {
     }, []),
   );
 
-  if (!costs) {
-    return;
-  }
+  if (loading) return <AppActivityIndicator />;
+  if (error) return <StatusBox message={error} />;
+  if (!costs) return;
 
   return (
     <ConsumptionHierarchy

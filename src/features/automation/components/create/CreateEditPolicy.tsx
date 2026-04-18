@@ -32,7 +32,7 @@ const emptyPolicy = {
   powerSourceName: null,
   tempGreaterThan: null,
   tempLessThan: null,
-  name: "Policy Name",
+  name: "",
   onPlugs: [],
   offPlugs: [],
 };

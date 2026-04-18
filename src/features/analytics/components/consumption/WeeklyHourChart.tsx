@@ -3,6 +3,8 @@ import useSources from "@/src/hooks/useSources";
 import { useEffect, useState } from "react";
 import { api } from "@/src/api/api";
 import { PowerSourceWeeklyHoursDTO } from "@/src/features/analytics/types/PowerSourceWeeklyHoursDTO";
+import AppActivityIndicator from "@/src/shared/ui/AppActivityIndicator";
+import StatusBox from "@/src/shared/components/StatusBox";
 
 export default function WeeklyHourChart() {
   const { sources } = useSources();
@@ -10,15 +12,20 @@ export default function WeeklyHourChart() {
   const [data2, setData2] = useState<number[]>([]);
   const [data1Title, setData1Title] = useState("");
   const [data2Title, setData2Title] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const getSourceHours = async (powerSourceId: number) => {
     try {
+      setLoading(true);
       const { data } = await api.get<PowerSourceWeeklyHoursDTO>(
         `/analytics/mains/weekly/powersources/${powerSourceId}/hours`,
       );
       return data;
     } catch (error) {
-      console.error(error);
+      setError("An error occurred while getting source hours.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -41,6 +48,9 @@ export default function WeeklyHourChart() {
       });
     }
   }, [sources]);
+
+  if (loading) return <AppActivityIndicator />;
+  if (error) return <StatusBox message={error} />;
 
   return (
     <WeeklyChart

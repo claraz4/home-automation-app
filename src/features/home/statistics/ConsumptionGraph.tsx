@@ -11,6 +11,8 @@ import { householdApi } from "@/src/api/api";
 import { RoomConsumptionGroupedDTO } from "@/src/features/home/types/RoomConsumptionGroupedDTO";
 import NoConsumptionData from "@/src/features/home/statistics/NoConsumptionData";
 import SegmentedControl from "@/src/shared/components/SegmentedControl";
+import AppActivityIndicator from "@/src/shared/ui/AppActivityIndicator";
+import StatusBox from "@/src/shared/components/StatusBox";
 
 type ChartItem = {
   label: string;
@@ -22,77 +24,90 @@ type ChartItem = {
 export default function ConsumptionGraph() {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [roomsConsumptions, setRoomsConsumptions] = useState<
-    RoomConsumptionGroupedDTO[]
-  >([]);
+    RoomConsumptionGroupedDTO[] | null
+  >(null);
   const segmentedControlOptions = ["Individual", "By Type"];
   const [selectedOption, setSelectedOption] = useState<string>(
     segmentedControlOptions[0],
   );
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Get the grouped rooms
   useEffect(() => {
-    const getRoomsConsumption = (isGrouped: boolean) => {
-      householdApi
-        .get(`/rooms/consumption/daily?groupByRoomType=${isGrouped}`)
-        .then((res) => {
-          setRoomsConsumptions(
-            isGrouped ? res.data.groupedRooms : res.data.rooms,
-          );
-        })
-        .catch((err) =>
-          console.error("Failed to fetch rooms consumption:", err),
+    const getRoomsConsumption = async (isGrouped: boolean) => {
+      try {
+        const { data } = await householdApi.get(
+          `/rooms/consumption/daily?groupByRoomType=${isGrouped}`,
         );
+        setRoomsConsumptions(isGrouped ? data.groupedRooms : data.rooms);
+      } catch (error) {
+        setError("An error occurred while getting rooms consumption.");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    getRoomsConsumption(selectedOption === "By Type");
+    void getRoomsConsumption(selectedOption === "By Type");
   }, [selectedOption]);
 
   // Get chart data (sorted by consumption descending)
-  const chartData = useMemo<ChartItem[]>(() => {
-    return [...roomsConsumptions]
-      .sort((a, b) => b.consumption - a.consumption)
-      .map((item, index) => ({
-        label:
-          item.roomType.charAt(0).toUpperCase() + item.roomType.substring(1),
-        value: item.consumption,
-        frontColor:
-          selectedIndex === index ? colors.secondary[500] : colors.primary[500],
-        onPress: () => setSelectedIndex(index),
-      }));
+  const chartData = useMemo<ChartItem[] | null>(() => {
+    return roomsConsumptions
+      ? [...roomsConsumptions]
+          .sort((a, b) => b.consumption - a.consumption)
+          .map((item, index) => ({
+            label:
+              item.roomType.charAt(0).toUpperCase() +
+              item.roomType.substring(1),
+            value: item.consumption,
+            frontColor:
+              selectedIndex === index
+                ? colors.secondary[500]
+                : colors.primary[500],
+            onPress: () => setSelectedIndex(index),
+          }))
+      : null;
   }, [roomsConsumptions, selectedIndex]);
 
   // Get chart max value
   const maxValue = useMemo(() => {
+    if (!chartData) return null;
     if (chartData.length === 0) return 0;
     return getNextMultiple(10, getMaxValue(chartData));
   }, [chartData]);
 
-  const selectedItem = chartData[selectedIndex];
+  const selectedItem = chartData ? chartData[selectedIndex] : null;
 
   return (
     <View style={styles.consumptionGraphContainer}>
       <Heading variant="h4">Daily Consumption</Heading>
-      {maxValue === 0 ? (
-        <NoConsumptionData />
-      ) : (
-        <View>
-          <Heading
-            variant="h3"
-            style={{ color: colors.secondary[500], marginBottom: spaces.md }}
-          >
-            {selectedItem.label}: {selectedItem.value} kW
-          </Heading>
-          <SegmentedControl
-            options={segmentedControlOptions}
-            value={selectedOption}
-            onPress={setSelectedOption}
-            style={{ marginBottom: spaces.md, width: 200, height: 32 }}
-          />
-          <ScrollView showsHorizontalScrollIndicator={false} horizontal>
-            <ConsumptionBarChart data={chartData} maxValue={maxValue} />
-          </ScrollView>
-        </View>
-      )}
+      {loading && <AppActivityIndicator />}
+      {error && <StatusBox message={error} />}
+
+      {selectedItem &&
+        chartData &&
+        (maxValue === 0 ? (
+          <NoConsumptionData />
+        ) : (
+          <View>
+            <Heading
+              variant="h3"
+              style={{ color: colors.secondary[500], marginBottom: spaces.md }}
+            >
+              {selectedItem.label}: {selectedItem.value} kW
+            </Heading>
+            <SegmentedControl
+              options={segmentedControlOptions}
+              value={selectedOption}
+              onPress={setSelectedOption}
+              style={{ marginBottom: spaces.md, width: 200, height: 32 }}
+            />
+            <ScrollView showsHorizontalScrollIndicator={false} horizontal>
+              <ConsumptionBarChart data={chartData} maxValue={maxValue ?? 0} />
+            </ScrollView>
+          </View>
+        ))}
     </View>
   );
 }

@@ -6,6 +6,8 @@ import { useFocusEffect } from "expo-router";
 export default function useMainsSummary() {
   const [mainsSummary, setMainsSummary] =
     useState<MainsMonthlySummaryDTO | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const getMainsSummary = async () => {
     try {
@@ -14,7 +16,9 @@ export default function useMainsSummary() {
       );
       setMainsSummary(data);
     } catch (error) {
-      console.error(error);
+      setError("An error occurred while getting mains summary.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -35,5 +39,7 @@ export default function useMainsSummary() {
     differenceFromLastMonth: consumptionDiff,
     totalCostThisMonth: totalCost,
     costDifferenceFromLastMonth: costDiff,
+    error,
+    loading,
   };
 }

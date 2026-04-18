@@ -7,16 +7,22 @@ import React, { useCallback, useState } from "react";
 import { api } from "@/src/api/api";
 import { MonthlyBillDTO } from "@/src/features/analytics/types/MonthlyBillDTO";
 import { useFocusEffect } from "expo-router";
+import AppActivityIndicator from "@/src/shared/ui/AppActivityIndicator";
+import StatusBox from "@/src/shared/components/StatusBox";
 
 export default function CostOverview() {
   const [monthlyBill, setMonthlyBill] = useState<MonthlyBillDTO | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const getMonthlyBill = async () => {
     try {
       const { data } = await api.get("/analytics/mains/monthly/bill");
       setMonthlyBill(data);
     } catch (error) {
-      console.error(error);
+      setError("An error occurred while getting monthly bills.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -26,9 +32,9 @@ export default function CostOverview() {
     }, []),
   );
 
-  if (!monthlyBill) {
-    return;
-  }
+  if (loading) return <AppActivityIndicator />;
+  if (error) return <StatusBox message={error} />;
+  if (!monthlyBill) return;
 
   return (
     <View>
