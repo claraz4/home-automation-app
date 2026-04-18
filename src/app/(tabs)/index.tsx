@@ -13,7 +13,7 @@ export default function App() {
       <View style={styles.componentsContainer}>
         <Rooms style={styles.componentsSubContainer} />
         <Statistics style={styles.componentsSubContainer} />
-        <Schedules style={styles.componentsSubContainer} />
+        <Schedules />
       </View>
     </ScreenView>
   );

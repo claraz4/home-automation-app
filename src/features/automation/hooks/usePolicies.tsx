@@ -17,17 +17,17 @@ export default function usePolicies() {
       const res = await api.get("/policy");
       return res.data.policies;
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   };
 
   // Get a single policy
   const getSinglePolicy = async (policyId: string) => {
     try {
-      const res = await api.get(`/policy/${policyId}`);
-      return res.data;
+      const { data } = await api.get(`/policy/${policyId}`);
+      return data;
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   };
 
@@ -36,7 +36,7 @@ export default function usePolicies() {
     try {
       await api.put("/policy/toggle", { policyId, enable: status });
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   };
 

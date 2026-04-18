@@ -4,10 +4,18 @@ import { api } from "@/src/api/api";
 
 export function usePlug(plugId: number) {
   const [plugInfo, setPlugInfo] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchPlug = async () => {
-    const { data } = await api.get(`plugs/${plugId}`);
-    setPlugInfo(data);
+    try {
+      const { data } = await api.get(`plugs/${plugId}`);
+      setPlugInfo(data);
+    } catch (error) {
+      setError("An error occurred while fetching plug details.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Fetch on mount
@@ -35,5 +43,7 @@ export function usePlug(plugId: number) {
     plugInfo,
     togglePlugStatus,
     refetch: fetchPlug,
+    loading,
+    error,
   };
 }

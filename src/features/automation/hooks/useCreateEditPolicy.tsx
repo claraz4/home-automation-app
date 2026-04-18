@@ -12,6 +12,7 @@ interface HooksProps {
   setStatusBoxProps?: Dispatch<SetStateAction<StatusBoxInfo>>;
   scrollToTop?: () => void;
   fetchSinglePolicy?: () => void;
+  setExtraError?: Dispatch<SetStateAction<string | null>>;
 }
 
 export default function useCreateEditPolicy({
@@ -20,6 +21,7 @@ export default function useCreateEditPolicy({
   setError,
   setStatusBoxProps,
   scrollToTop,
+  setExtraError,
 }: HooksProps) {
   const { togglePolicy, savePolicy } = usePolicies();
 
@@ -66,12 +68,6 @@ export default function useCreateEditPolicy({
     }
 
     const isActive = !policy.isActive;
-    // const updatedPolicy = {
-    //   ...policy,
-    //   isActive,
-    // };
-    //
-    // setPolicy(updatedPolicy);
 
     try {
       await togglePolicy(policy.id, isActive);
@@ -81,7 +77,9 @@ export default function useCreateEditPolicy({
     } catch (error) {
       // rollback on failure
       // setPolicy(policy);
-      console.error(error);
+      if (setExtraError) {
+        setExtraError("An error occurred while toggling the policy state.");
+      }
     }
   }; // TODO
 

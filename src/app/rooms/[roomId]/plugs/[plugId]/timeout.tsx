@@ -8,26 +8,34 @@ import { usePlug } from "@/src/features/plugs/hooks/usePlug";
 import { useLocalSearchParams } from "expo-router";
 import { api } from "@/src/api/api";
 import { useState } from "react";
+import AppActivityIndicator from "@/src/shared/ui/AppActivityIndicator";
+import StatusBox from "@/src/shared/components/StatusBox";
 
 export default function TimeoutScreen() {
   const { plugId } = useLocalSearchParams<{ plugId: string }>();
-  const { plugInfo, refetch } = usePlug(Number(plugId));
+  const {
+    plugInfo,
+    refetch,
+    loading: loading,
+    error: plugError,
+  } = usePlug(Number(plugId));
+  const [error, setError] = useState<string | null>(null);
 
   const hasTimeout = !!plugInfo?.timeout;
   const [isEditing, setIsEditing] = useState(false);
 
   const handleToggle = async (next: boolean) => {
     if (next) {
-      // User wants to enable → show options only
+      // User wants to enable: show options only
       setIsEditing(true);
     } else {
-      // User wants to disable → delete immediately
+      // User wants to disable: delete immediately
       try {
         await api.delete(`/plugs/${plugId}/timeout`);
         await refetch();
         setIsEditing(false);
-      } catch (e) {
-        console.error(e);
+      } catch (error) {
+        setError("An error occurred while fetching room details.");
       }
     }
   };
@@ -38,24 +46,31 @@ export default function TimeoutScreen() {
         Timeout
       </Heading>
 
-      <View>
-        <FeatureRow
-          headingText="Auto Turn Off"
-          hasSwitch
-          status={hasTimeout || isEditing}
-          setStatus={handleToggle}
-        />
+      {loading && <AppActivityIndicator />}
+      {error && <StatusBox message={error} />}
+      {plugError && <StatusBox message={plugError} />}
 
-        {(hasTimeout || isEditing) && (
-          <TimeoutOptions
-            initialTimeout={plugInfo?.timeout}
-            onConfirm={async () => {
-              await refetch();
-              setIsEditing(false);
-            }}
+      {!loading && !plugError && (
+        <View>
+          <FeatureRow
+            headingText="Auto Turn Off"
+            hasSwitch
+            status={hasTimeout || isEditing}
+            setStatus={handleToggle}
           />
-        )}
-      </View>
+
+          {(hasTimeout || isEditing) && (
+            <TimeoutOptions
+              initialTimeout={plugInfo?.timeout}
+              onConfirm={async () => {
+                await refetch();
+                setIsEditing(false);
+              }}
+              setError={setError}
+            />
+          )}
+        </View>
+      )}
     </ScreenView>
   );
 }

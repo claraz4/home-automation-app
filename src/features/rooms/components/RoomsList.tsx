@@ -4,21 +4,32 @@ import { RoomDTO } from "@/src/features/home/types/RoomDTO";
 import { householdApi } from "@/src/api/api";
 import RoomListBox from "@/src/features/rooms/components/RoomListBox";
 import { spaces } from "@/src/theme";
+import StatusBox from "@/src/shared/components/StatusBox";
+import AppActivityIndicator from "@/src/shared/ui/AppActivityIndicator";
 
 export default function RoomsList() {
   const [roomsInfo, setRoomsInfo] = useState<RoomDTO[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Get the general rooms info
-    const getRoomsInfo = () => {
-      householdApi
-        .get("/rooms/plugs/details")
-        .then((res) => setRoomsInfo(res.data.rooms))
-        .catch((err) => console.error("Failed to fetch rooms info:", err));
+    const getRoomsInfo = async () => {
+      try {
+        setLoading(true);
+        const { data } = await householdApi.get("/rooms/plugs/details");
+        setRoomsInfo(data.rooms);
+      } catch (error) {
+        setError("An error occurred while fetching room details.");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    getRoomsInfo();
+    void getRoomsInfo();
   }, []);
+
+  if (loading) return <AppActivityIndicator />;
+  if (error) return <StatusBox message={error} />;
 
   return (
     <View style={styles.roomsListContainer} key={1}>

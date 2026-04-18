@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import ChipOptions, { ChipOption } from "@/src/shared/components/ChipOptions";
-import { useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { Heading } from "@/src/shared/ui/Heading";
 import { spaces } from "@/src/theme";
 import CustomTimeSelection from "@/src/features/timeout/components/CustomTimeSelection";
@@ -18,11 +18,13 @@ const TIMEOUT_OPTIONS = [15, 30, 45, 60, 90, 120, 150, 180]; // in minutes
 interface TimeoutOptionsProp {
   initialTimeout: string | null;
   onConfirm?: () => void;
+  setError: Dispatch<SetStateAction<string | null>>;
 }
 
 export default function TimeoutOptions({
   initialTimeout,
   onConfirm,
+  setError,
 }: TimeoutOptionsProp) {
   const timeoutOptions = useMemo<ChipOption[]>(
     () => [
@@ -96,7 +98,7 @@ export default function TimeoutOptions({
         onConfirm();
       }
     } catch (error) {
-      console.error(error);
+      setError("An error occurred while saving the new timeout.");
     }
   };
 

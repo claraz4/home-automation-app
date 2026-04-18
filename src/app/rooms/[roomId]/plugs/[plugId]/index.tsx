@@ -8,18 +8,28 @@ import PlugSchedules from "@/src/features/plugs/components/PlugSchedules";
 import { useLocalSearchParams } from "expo-router";
 import PlugStatus from "@/src/features/plugs/components/PlugStatus";
 import { usePlug } from "@/src/features/plugs/hooks/usePlug";
+import AppActivityIndicator from "@/src/shared/ui/AppActivityIndicator";
+import StatusBox from "@/src/shared/components/StatusBox";
 
 export default function Plug() {
   const { plugId } = useLocalSearchParams<{
     plugId: string;
   }>();
-  const { plugInfo, togglePlugStatus } = usePlug(Number(plugId));
+  const { plugInfo, togglePlugStatus, error, loading } = usePlug(
+    Number(plugId),
+  );
 
   return (
-    <ScreenView style={{ padding: paddings.page, rowGap: spaces.md }}>
+    <ScreenView style={styles.screenContainer}>
       <Heading variant="h2" hasBackButton={true}>
         {plugInfo?.name}
       </Heading>
+      {loading && (
+        <View style={styles.centerScreen}>
+          <AppActivityIndicator />
+        </View>
+      )}
+      {error && <StatusBox message={error} />}
       {plugInfo && (
         <View style={styles.componentsContainer}>
           <PlugStatus
@@ -44,5 +54,15 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     rowGap: spaces.md,
+  },
+  screenContainer: {
+    padding: paddings.page,
+    rowGap: spaces.md,
+  },
+  centerScreen: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+    marginBottom: spaces.xxxl,
   },
 });

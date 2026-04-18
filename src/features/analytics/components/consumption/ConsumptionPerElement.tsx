@@ -6,6 +6,8 @@ import { RoomsDailyConsumptionDTO } from "@/src/features/analytics/types/RoomsDa
 import { useFocusEffect } from "expo-router";
 import { ConsumptionDTO } from "@/src/features/analytics/types/ConsumptionDTO";
 import { PlugsDailyConsumptionDTO } from "@/src/features/analytics/types/PlugsDailyConsumptionDTO";
+import AppActivityIndicator from "@/src/shared/ui/AppActivityIndicator";
+import StatusBox from "@/src/shared/components/StatusBox";
 
 interface ConsumptionPerElementProps {
   element: "plugs" | "rooms";
@@ -17,9 +19,12 @@ export default function ConsumptionPerElement({
   const [consumptions, setConsumptions] = useState<ConsumptionDTO[] | null>(
     null,
   );
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const getConsumptions = async () => {
     try {
+      setLoading(true);
       if (element === "rooms") {
         const { data } = await api.get<RoomsDailyConsumptionDTO>(
           `/analytics/${element}/daily/consumptions`,
@@ -32,7 +37,9 @@ export default function ConsumptionPerElement({
         setConsumptions(data.plugs);
       }
     } catch (error) {
-      console.error(error);
+      setError("An error occurred while fetching daily consumptions.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,9 +49,9 @@ export default function ConsumptionPerElement({
     }, []),
   );
 
-  if (!consumptions) {
-    return;
-  }
+  if (loading) return <AppActivityIndicator />;
+  if (error) return <StatusBox message={error} />;
+  if (!consumptions) return;
 
   return (
     <ConsumptionHierarchy

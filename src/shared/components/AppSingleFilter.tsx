@@ -11,6 +11,8 @@ interface AppSingleFilterProps {
   filterOptions: DropdownOption[];
   selectedOptions: DropdownOption[] | null;
   setSelectedOptions: Dispatch<SetStateAction<DropdownOption[] | null>>;
+  error?: string | null;
+  loading?: boolean;
 }
 
 export default function AppSingleFilter({

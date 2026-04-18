@@ -10,12 +10,12 @@ interface CustomTimeSelectionProps {
   selectedMinute: number;
   setSelectedHour: Dispatch<SetStateAction<number>>;
   setSelectedMinute: Dispatch<SetStateAction<number>>;
-  maxHour: number;
-  minHour: number;
-  stepHour: number;
-  minMinute: number;
-  maxMinute: number;
-  stepMinute: number;
+  maxHour?: number;
+  minHour?: number;
+  stepHour?: number;
+  minMinute?: number;
+  maxMinute?: number;
+  stepMinute?: number;
   padStart?: number;
   includeHeading?: boolean;
   headingText?: string;
