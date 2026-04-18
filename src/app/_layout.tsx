@@ -31,6 +31,7 @@ import {
   sendToken,
 } from "@/src/features/notifications/utils/notificationsHelper";
 import { detectBackend } from "@/src/api/backendUtils";
+import OfflineBanner from "@/src/shared/ui/OfflineBanner";
 
 export default function RootLayout() {
   useFonts({
@@ -88,6 +89,8 @@ function RootLayoutContent() {
         <Stack.Screen name="rooms/index" />
         <Stack.Screen name="(auth)/login" />
       </Stack>
+
+      <OfflineBanner />
 
       {isSignedIn && (
         <>

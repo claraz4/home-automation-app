@@ -5,6 +5,9 @@ import dayjs from "dayjs";
 import { CreateEditSchedule } from "@/src/features/schedule/components/create/CreateEditSchedule";
 import { useScheduleDateEdit } from "@/src/features/schedule/hooks/useScheduleDateEdit";
 import { SingleSchedule } from "@/src/features/schedule/types/SingleScheduleDTO";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 export default function CreateSchedule() {
   const { setMode, setDate, date } = useScheduleDateEdit();
@@ -20,10 +23,7 @@ export default function CreateSchedule() {
   // Set the necessary variables
   useEffect(() => {
     setMode("create");
-
-    if (!date) {
-      setDate(dayjs());
-    }
+    setDate(dayjs());
   }, []);
 
   // Scroll to top

@@ -40,9 +40,7 @@ export function CreateEditSchedule({
 }: CreateEditScheduleProps) {
   const { date, mode } = useScheduleDateEdit();
   const isCreating = mode === "create";
-  const { formattedDate, formattedTime } = getFormattedDateTime(
-    dayjs.utc(date),
-  );
+  const { formattedDate, formattedTime } = getFormattedDateTime(dayjs(date));
   const { name, onPlugs, offPlugs, isActive } = schedule;
 
   const [error, setError] = useState<FormError | null>(null);

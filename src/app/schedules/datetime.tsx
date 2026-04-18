@@ -9,23 +9,21 @@ import DateModal from "@/src/features/schedule/components/create/DateModal";
 import { useScheduleDateEdit } from "@/src/features/schedule/hooks/useScheduleDateEdit";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { getFormattedDateTime } from "@/src/features/schedule/utils/daysHelper";
 
 dayjs.extend(utc);
 
 export default function DateTimeScreen() {
-  const { date: dateNoUtc, mode, setDate } = useScheduleDateEdit();
-  const date = dayjs.utc(dateNoUtc);
-  const hour = date ? date.hour() : 0;
-  const minute = date ? date.minute() : 0;
+  const { date, mode, setDate } = useScheduleDateEdit();
   const [isDateClicked, setIsDateClicked] = useState(false);
   const [isTimeClicked, setIsTimeClicked] = useState(false);
-  let formattedDate = "";
 
-  if (date) {
-    formattedDate = `${date.format("dddd")}, ${date.format(
-      "MMMM",
-    )} ${date.format("D")}`;
-  }
+  const {
+    formattedDate,
+    formattedTime,
+    formattedHour: hour,
+    formattedMinute: minute,
+  } = getFormattedDateTime(dayjs(date));
 
   // Save date and time
   const saveTime = (h: number, m: number) => {
@@ -64,7 +62,7 @@ export default function DateTimeScreen() {
           containerStyles={styles.borderBottom}
         />
         <FeatureRow
-          headingText={`${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`}
+          headingText={formattedTime}
           hasExtra
           setIsExtraClicked={setIsTimeClicked}
           hasIcon
@@ -79,8 +77,8 @@ export default function DateTimeScreen() {
       <TimeModal
         visible={isTimeClicked}
         setVisible={setIsTimeClicked}
-        hour={hour}
-        minute={minute}
+        hour={Number(hour)}
+        minute={Number(minute)}
         saveTime={saveTime}
       />
       <DateModal

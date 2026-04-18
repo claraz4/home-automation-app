@@ -1,9 +1,10 @@
-import { Pressable, StyleSheet, View } from "react-native";
-import { borderRadius, colors, spaces } from "@/src/theme";
+import { Pressable, StyleSheet, View, ViewStyle } from "react-native";
+import { borderRadius, colors, fontWeight, spaces } from "@/src/theme";
 import { Heading } from "@/src/shared/ui/Heading";
 import { AppText } from "@/src/shared/ui/AppText";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { ReactNode } from "react";
 
 interface StatusBoxProps {
   message: string;
@@ -12,6 +13,9 @@ interface StatusBoxProps {
   isError?: boolean;
   hasClose?: boolean;
   onClose?: () => void;
+  containerStyle?: ViewStyle;
+  icon?: ReactNode;
+  showTitle?: boolean;
 }
 
 export default function StatusBox({
@@ -20,6 +24,9 @@ export default function StatusBox({
   message,
   hasClose = false,
   onClose,
+  containerStyle,
+  icon,
+  showTitle = true,
 }: StatusBoxProps) {
   const titleStatus = !title || title === "" ? "Error" : title;
 
@@ -28,25 +35,30 @@ export default function StatusBox({
       style={[
         styles.container,
         isError ? styles.errorContainer : styles.successContainer,
+        containerStyle,
       ]}
     >
-      {isError ? (
-        <MaterialIcons name="error" size={50} color="white" />
-      ) : (
-        <MaterialIcons name="check-circle" size={50} color="white" />
-      )}
+      {icon}
+      {!icon &&
+        (isError ? (
+          <MaterialIcons name="error" size={50} color="white" />
+        ) : (
+          <MaterialIcons name="check-circle" size={50} color="white" />
+        ))}
       <View style={styles.subContainer}>
         <View style={styles.headingContainer}>
-          <Heading variant="h4" style={{ color: "white" }}>
-            {titleStatus}
-          </Heading>
+          {showTitle && (
+            <Heading variant="h4" style={{ color: "white" }}>
+              {titleStatus}
+            </Heading>
+          )}
           {hasClose && onClose && (
             <Pressable onPress={onClose}>
               <Ionicons name="close" size={22} color="white" />
             </Pressable>
           )}
         </View>
-        <AppText variant="bodyWhite" style={{ flexShrink: 1 }}>
+        <AppText variant="bodyWhite" style={styles.text}>
           {message}
         </AppText>
       </View>
@@ -79,5 +91,10 @@ const styles = StyleSheet.create({
   },
   successContainer: {
     backgroundColor: colors.status.success,
+  },
+  text: {
+    flexShrink: 1,
+    fontFamily: fontWeight[400],
+    textAlign: "left",
   },
 });

@@ -8,6 +8,7 @@ import {
 import { useAuth } from "@/src/auth/useAuth";
 import { detectBackend } from "@/src/api/backendUtils";
 import NetInfo from "@react-native-community/netinfo";
+import { networkBridge } from "@/src/helpers/networkBridge";
 
 export function AuthInterceptorProvider({ children }: { children: ReactNode }) {
   const { signOut } = useAuth();
@@ -45,16 +46,23 @@ export function AuthInterceptorProvider({ children }: { children: ReactNode }) {
 
             // There is no internet connection
             if (!net.isConnected || net.isInternetReachable === false) {
-              console.log("Device has no internet connection");
+              console.log("here");
+              networkBridge.setOffline?.(true);
               throw error;
             }
 
             const currentBase = instance.defaults.baseURL;
 
             if (currentBase.includes(process.env.EXPO_PUBLIC_BACKEND_URL)) {
-              // we are on the local backend
-              await detectBackend();
-              return instance(config);
+              try {
+                // try switching backend (local to remote)
+                await detectBackend();
+                return instance(config);
+              } catch {
+                // both local and remote failed
+                networkBridge.setOffline?.(true);
+                throw error;
+              }
             }
           }
 
