@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useFocusEffect } from "expo-router";
 import { api } from "@/src/api/api";
 
-export function usePlug(plugId: number) {
+export function usePlug(plugId: number, refreshPlugInfo: boolean = false) {
   const [plugInfo, setPlugInfo] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -18,10 +18,21 @@ export function usePlug(plugId: number) {
     }
   };
 
-  // Fetch on mount
+  // Initial fetch
   useEffect(() => {
     void fetchPlug();
   }, [plugId]);
+
+  // Refresh every second only if refreshPlugInfo is true
+  useEffect(() => {
+    if (!refreshPlugInfo) return;
+
+    const interval = setInterval(() => {
+      void fetchPlug();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [plugId, refreshPlugInfo]);
 
   // Fetch every time screen gains focus
   useFocusEffect(

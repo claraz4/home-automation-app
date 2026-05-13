@@ -17,6 +17,7 @@ export default function Plug() {
   }>();
   const { plugInfo, togglePlugStatus, error, loading } = usePlug(
     Number(plugId),
+    true,
   );
 
   return (
@@ -40,6 +41,7 @@ export default function Plug() {
           <PlugStats
             currentConsumption={plugInfo.currentConsumption}
             isDeviceConnected={plugInfo.isDeviceConnected}
+            currentTemperature={plugInfo.currentTemperature}
           />
           <PlugAutomation timeout={plugInfo.timeout} />
           <PlugSchedules plugName={plugInfo.name} />

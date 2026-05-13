@@ -95,7 +95,13 @@ export default function ConsumptionGraph() {
               variant="h3"
               style={{ color: colors.secondary[500], marginBottom: spaces.md }}
             >
-              {selectedItem.label}: {Math.round(selectedItem.value)} kW
+              {selectedItem.label}:{" "}
+              {Math.round(
+                selectedItem.value < 1000
+                  ? selectedItem.value
+                  : selectedItem.value / 1000,
+              )}{" "}
+              {selectedItem.value < 1000 ? "Wh" : "kWh"}
             </Heading>
             <SegmentedControl
               options={segmentedControlOptions}

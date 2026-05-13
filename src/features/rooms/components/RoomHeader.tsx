@@ -9,7 +9,7 @@ export default function RoomHeader() {
         <InfoBox
           style={styles.statsSubContainer}
           title="Plugs"
-          subtitle="4 Active"
+          subtitle="1 Active"
         />
         <InfoBox
           style={styles.statsSubContainer}

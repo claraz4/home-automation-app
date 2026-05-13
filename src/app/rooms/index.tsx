@@ -3,16 +3,14 @@ import RoomsList from "@/src/features/rooms/components/RoomsList";
 import ScreenView from "@/src/shared/ui/ScreenView";
 import { View, StyleSheet } from "react-native";
 import { borderRadius, paddings } from "@/src/theme";
-import { AppText } from "@/src/shared/ui/AppText";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { colors, spaces } from "@/src/theme";
 import InfoBox from "@/src/shared/components/InfoBox";
 
 export default function AllRooms() {
-  const isIncreasing = true;
-  const consumptionColor = isIncreasing
-    ? colors.status.fail
-    : colors.status.success;
+  // const isIncreasing = true;
+  // const consumptionColor = isIncreasing
+  //   ? colors.status.fail
+  //   : colors.status.success;
 
   return (
     <ScreenView style={{ padding: paddings.page }}>
@@ -21,26 +19,30 @@ export default function AllRooms() {
       </Heading>
       <View style={styles.componentsContainer}>
         <View style={styles.statsContainer}>
-          <InfoBox style={{ flex: 1 }} title="Devices" subtitle="20 Active" />
-          <InfoBox style={{ width: 120 }} title="Rooms" subtitle="20" />
-          <View style={styles.consumptionContainer}>
-            <InfoBox
-              style={styles.currentConsumptionBox}
-              title="Current Consumption"
-              subtitle="120 kWh"
-              titleStyle={{ width: 130 }}
-            />
-            <View style={styles.consumptionPercentageContainer}>
-              <FontAwesome6
-                name={`arrow-trend-${isIncreasing ? "up" : "down"}`}
-                size={24}
-                color={consumptionColor}
-              />
-              <AppText style={{ color: consumptionColor }}>
-                1% {isIncreasing ? "increase" : "decrease"} from yesterday
-              </AppText>
-            </View>
-          </View>
+          <InfoBox
+            style={{ width: "48%" }}
+            title="Devices"
+            subtitle="1 Active"
+          />
+          <InfoBox style={{ width: "48%" }} title="Rooms" subtitle="8" />
+          {/*<View style={styles.consumptionContainer}>*/}
+          {/*<InfoBox*/}
+          {/*  style={styles.currentConsumptionBox}*/}
+          {/*  title="Current Consumption"*/}
+          {/*  subtitle="120 kWh"*/}
+          {/*  titleStyle={{ width: 130 }}*/}
+          {/*/>*/}
+          {/*<View style={styles.consumptionPercentageContainer}>*/}
+          {/*  <FontAwesome6*/}
+          {/*    name={`arrow-trend-${isIncreasing ? "up" : "down"}`}*/}
+          {/*    size={24}*/}
+          {/*    color={consumptionColor}*/}
+          {/*  />*/}
+          {/*  <AppText style={{ color: consumptionColor }}>*/}
+          {/*    1% {isIncreasing ? "increase" : "decrease"} from yesterday*/}
+          {/*  </AppText>*/}
+          {/*</View>*/}
+          {/*</View>*/}
         </View>
 
         <RoomsList />
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: spaces.md,
     flexWrap: "wrap",
-    gap: spaces.sm,
+    // gap: spaces.sm,
     marginBottom: spaces.lg,
   },
   consumptionContainer: {
