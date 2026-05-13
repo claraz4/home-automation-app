@@ -3,7 +3,6 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { conditionStyles } from "@/src/features/automation/styles/conditionStyles";
 import AppDropdown from "@/src/shared/components/AppDropdown";
 import { useEffect, useState } from "react";
-import { TSelectedItem } from "react-native-input-select/src/types/index.types";
 import AppTextInput from "@/src/shared/components/AppTextInput";
 import { spaces } from "@/src/theme";
 import ConditionHeader from "@/src/features/automation/components/create/ConditionHeader";

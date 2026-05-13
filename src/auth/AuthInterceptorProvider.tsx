@@ -46,7 +46,6 @@ export function AuthInterceptorProvider({ children }: { children: ReactNode }) {
 
             // There is no internet connection
             if (!net.isConnected || net.isInternetReachable === false) {
-              console.log("here");
               networkBridge.setOffline?.(true);
               throw error;
             }

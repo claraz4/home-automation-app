@@ -16,8 +16,6 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  console.log(isOffline);
-
   function setOffline(value: boolean) {
     setIsOffline(value);
   }

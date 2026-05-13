@@ -60,7 +60,7 @@ export default function ConsumptionGraph() {
             label:
               item.roomType.charAt(0).toUpperCase() +
               item.roomType.substring(1),
-            value: item.consumption,
+            value: Math.round(item.consumption),
             frontColor:
               selectedIndex === index
                 ? colors.secondary[500]
@@ -95,7 +95,7 @@ export default function ConsumptionGraph() {
               variant="h3"
               style={{ color: colors.secondary[500], marginBottom: spaces.md }}
             >
-              {selectedItem.label}: {selectedItem.value} kW
+              {selectedItem.label}: {Math.round(selectedItem.value)} kW
             </Heading>
             <SegmentedControl
               options={segmentedControlOptions}

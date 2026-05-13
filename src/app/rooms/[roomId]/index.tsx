@@ -9,7 +9,7 @@ export default function RoomPlugs() {
   return (
     <ScreenView style={{ padding: paddings.page, rowGap: spaces.md }}>
       <Heading variant="h2" hasBackButton={true}>
-        Room 1
+        Living Room
       </Heading>
       <View style={styles.componentsContainer}>
         <RoomHeader />
